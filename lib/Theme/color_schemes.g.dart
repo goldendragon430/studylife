@@ -35,7 +35,7 @@ import '../Utilities/constants.dart';
 
  ColorScheme darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
-  primary: Constants.darkThemePrimaryColor,
+  primary: Colors.purple,
   onPrimary: Color(0xFF381E72),
   primaryContainer: Color(0xFF4F378B),
   onPrimaryContainer: Color(0xFFEADDFF),

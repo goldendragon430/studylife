@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import './Theme/color_schemes.g.dart';
 
 import './app.dart';
+import './Utilities/constants.dart';
+import 'Onboarding_Screens/get_started.dart';
+import './Controllers/auth_controller.dart';
 
 void main() {
     runApp(const ProviderScope(child: MyStudyLife()));
 }
-
-final themeModeProvider = StateProvider<ThemeMode>((ref) {
-  return ThemeMode.dark;
-});
 
 class MyStudyLife extends ConsumerWidget {
   const MyStudyLife({super.key});
@@ -19,21 +18,21 @@ class MyStudyLife extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themMode = ref.watch(themeModeProvider);
+    final signInState = ref.watch(authControllerProvider);
 
     return MaterialApp(
       title: 'Flutter Demo',
         theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: lightColorScheme,
-       // textTheme: textTheme,
+        primarySwatch: Constants.kToLight,
+        brightness: Brightness.light
       ),
       darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: darkColorScheme,
-       // textTheme: textTheme,
+        primarySwatch: Constants.kToDark,
+        brightness: Brightness.dark
       ),
       themeMode: themMode,
-      home: const App(),
+      home: signInState.isSignedIn == true ? const App() : const GetStarted(),
+
     );
   }
 }

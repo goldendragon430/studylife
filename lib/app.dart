@@ -6,15 +6,49 @@ import './tab_item.dart';
 import './tab_navigator.dart';
 import 'main.dart';
 
+final themeModeProvider = StateProvider<ThemeMode>((ref) {
+  var brightness = WidgetsBinding.instance.window.platformBrightness;
 
-class App extends StatefulWidget {
+  if (brightness == Brightness.dark) {
+    return ThemeMode.dark;
+  } else {
+    return ThemeMode.light;
+  }
+});
+
+class App extends ConsumerStatefulWidget {
   const App({super.key});
 
   @override
-  State<StatefulWidget> createState() => AppState();
+  ConsumerState<App> createState() => AppState();
 }
 
-class AppState extends State<App> {
+class AppState extends ConsumerState<App> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    final Brightness brightness =
+        WidgetsBinding.instance.window.platformBrightness;
+    //inform listeners and rebuild widget tree
+
+    if (brightness == Brightness.dark) {
+      ref.read(themeModeProvider.notifier).state = ThemeMode.dark;
+    } else {
+      ref.read(themeModeProvider.notifier).state = ThemeMode.light;
+    }
+  }
+
   var _currentTab = TabItem.tabItems[0];
   final _navigatorKeys = {
     TabItem.tabItems[0]: GlobalKey<NavigatorState>(),
@@ -35,7 +69,6 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () async {
         final isFirstRouteInCurrentTab =
@@ -52,50 +85,54 @@ class AppState extends State<App> {
         // let system handle back button if we're on the first route
         return isFirstRouteInCurrentTab;
       },
-      child: Consumer (builder: (context, ref, child) {
-       final theme = ref.watch(themeModeProvider);
-        return Scaffold(
-          appBar: AppBar(
-            actions: [      
-             IconButton(
-                    onPressed: () {
-                      ref.read(themeModeProvider.notifier).state =
-                          theme == ThemeMode.light
-                              ? ThemeMode.dark
-                              : ThemeMode.light;
-                    },
-                    icon: Icon(theme == ThemeMode.dark
-                        ? Icons.light_mode
-                        : Icons.dark_mode),),
-            ],
-          ),
-          floatingActionButton: Container(
-            padding: const EdgeInsets.only(top: 45),
-            height: 125,
-            width: 65,
-            child: FloatingActionButton(
-              foregroundColor: Colors.transparent,
-              backgroundColor: Colors.transparent,
-              highlightElevation: 0,
-              onPressed: () => {},
-              elevation: 0.0,
-              child: Image.asset('assets/images/AddButtonIcon.png'),
+      child: Consumer(
+        builder: (context, ref, child) {
+          final theme = ref.watch(themeModeProvider);
+
+          return Scaffold(
+            appBar: AppBar(
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    ref.read(themeModeProvider.notifier).state =
+                        theme == ThemeMode.light
+                            ? ThemeMode.dark
+                            : ThemeMode.light;
+                  },
+                  icon: Icon(theme == ThemeMode.dark
+                      ? Icons.light_mode
+                      : Icons.dark_mode),
+                ),
+              ],
             ),
-          ),
-          body: Stack(children: <Widget>[
-            _buildOffstageNavigator(TabItem.tabItems[0]),
-            _buildOffstageNavigator(TabItem.tabItems[1]),
-            _buildOffstageNavigator(TabItem.tabItems[2]),
-            _buildOffstageNavigator(TabItem.tabItems[3]),
-            _buildOffstageNavigator(TabItem.tabItems[4]),
-          ]),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: BottomNavigation(
-            currentTab: _currentTab,
-            onSelectTab: _selectTab,
-            theme: ref.read(themeModeProvider.notifier).state
-          ),
-        );},
+            floatingActionButton: Container(
+              padding: const EdgeInsets.only(top: 45),
+              height: 125,
+              width: 65,
+              child: FloatingActionButton(
+                foregroundColor: Colors.transparent,
+                backgroundColor: Colors.transparent,
+                highlightElevation: 0,
+                onPressed: () => {},
+                elevation: 0.0,
+                child: Image.asset('assets/images/AddButtonIcon.png'),
+              ),
+            ),
+            body: Stack(children: <Widget>[
+              _buildOffstageNavigator(TabItem.tabItems[0]),
+              _buildOffstageNavigator(TabItem.tabItems[1]),
+              _buildOffstageNavigator(TabItem.tabItems[2]),
+              _buildOffstageNavigator(TabItem.tabItems[3]),
+              _buildOffstageNavigator(TabItem.tabItems[4]),
+            ]),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            bottomNavigationBar: BottomNavigation(
+                currentTab: _currentTab,
+                onSelectTab: _selectTab,
+                theme: ref.read(themeModeProvider.notifier).state),
+          );
+        },
       ),
     );
   }
