@@ -6,6 +6,9 @@ import './app.dart';
 import './Utilities/constants.dart';
 import 'Onboarding_Screens/get_started.dart';
 import './Controllers/auth_controller.dart';
+import './Onboarding_Screens/signup.dart';
+import './Onboarding_Screens/login.dart';
+import './Onboarding_Screens/forgot_password.dart';
 
 void main() {
     runApp(const ProviderScope(child: MyStudyLife()));
@@ -31,7 +34,8 @@ class MyStudyLife extends ConsumerWidget {
         brightness: Brightness.dark
       ),
       themeMode: themMode,
-      home: signInState.isSignedIn == true ? const App() : const GetStarted(),
+      //home: signInState.isSignedIn == true ? const App() : ForgotPasswordScreen(),
+      home: const App()
 
     );
   }

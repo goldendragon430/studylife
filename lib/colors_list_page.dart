@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import './Utilities/constants.dart';
+
 class ColorsListPage extends StatelessWidget {
   ColorsListPage(
       {super.key, required this.color, required this.title, this.onPush});
@@ -14,11 +16,11 @@ class ColorsListPage extends StatelessWidget {
           title: Text(
             title,
           ),
-          backgroundColor: color,
+          backgroundColor: Constants.lightThemePrimaryColor,
         ),
         body: Container(
-          color: Colors.blue,
-          child: _buildList(),
+          color: Colors.white,
+         // child: _buildList(),
         ));
   }
 

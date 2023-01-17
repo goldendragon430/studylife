@@ -20,6 +20,12 @@ class Constants {
   static Color darkThemeNavigationBarColor = HexColor.fromHex('#1A1B21');
   static Color lightThemeUnselectedTextColor = Colors.black.withOpacity(0.7);
   static Color darkThemeUnselectedTextColor = Colors.white.withOpacity(0.5);
+  static Color darkThemeDividerColor = Colors.white.withOpacity(0.2);
+  static Color lightThemeDividerColor = Colors.black.withOpacity(0.2);
+  static Color blueButtonBackgroundColor = HexColor.fromHex("#005ED3");
+  static Color lightThemeBorderColor = HexColor.fromHex("#CACCD5");
+
+  
 
     static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
@@ -70,5 +76,48 @@ class Constants {
     fontSize: 24,
     fontFamily: 'Roboto',
     fontWeight: FontWeight.bold,
+  );
+
+  static TextStyle roboto15LightThemeTextStyle = TextStyle(
+    fontSize: 15,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.normal,
+    color: Colors.black.withOpacity(0.6)
+  );
+
+  static TextStyle roboto15DarkThemeTextStyle = TextStyle(
+    fontSize: 15,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.normal,
+    color: Colors.white.withOpacity(0.6)
+  );
+
+  static TextStyle socialLoginDarkButtonTextStyle = TextStyle(
+    fontSize: 12,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.normal,
+    color: Colors.white.withOpacity(0.6)
+  );
+
+  static TextStyle socialLoginLightButtonTextStyle = TextStyle(
+    fontSize: 12,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.normal,
+    color: Colors.black.withOpacity(0.6)
+  );
+
+  static TextStyle lightThemeTextButtonTextStyle = TextStyle(
+    fontSize: 15,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.normal,
+    color: blueButtonBackgroundColor
+  );
+
+
+  static TextStyle darkThemeTextButtonTextStyle = TextStyle(
+    fontSize: 15,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.normal,
+    color: darkThemePrimaryColor
   );
 }

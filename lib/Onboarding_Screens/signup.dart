@@ -6,19 +6,19 @@ import '../Widgets/regular_teztField.dart';
 import '../Utilities/constants.dart';
 import '../Widgets/rounded_elevated_button.dart';
 
-class LoginScreen extends ConsumerWidget {
-  LoginScreen({super.key});
+class RegisterScreen extends ConsumerWidget {
+  RegisterScreen({super.key});
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
     // double screenWidth = MediaQuery.of(context).size.width;
 
-    void _login() {}
-    void _forgotPassword() {}
+    void _signUp() {}
 
     return Scaffold(
         body: Container(
@@ -60,7 +60,7 @@ class LoginScreen extends ConsumerWidget {
                         margin: const EdgeInsets.only(top: 52),
                         height: 28,
                         child: Text(
-                          'Log In with Email',
+                          'Sign up with Email',
                           style: Constants.lightThemeTitleTextStyle,
                         ),
                       ),
@@ -79,31 +79,18 @@ class LoginScreen extends ConsumerWidget {
                               FocusScope.of(context).unfocus();
                             }, TextInputType.visiblePassword,
                                 passwordController, false),
+                            RegularTextField("Confirm Password", (value) {
+                              FocusScope.of(context).unfocus();
+                            }, TextInputType.visiblePassword, confirmController,
+                                false),
                             RoundedElevatedButton(
-                                _login,
-                                "Log In",
+                                _signUp,
+                                "Sign up",
                                 Constants.lightThemePrimaryColor,
                                 Colors.black,
-                                45),
+                                45)
                           ],
                         ),
-                      ),
-                      Container(
-                         alignment: Alignment.topCenter,
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(top: 326),
-                        child:  TextButton(
-                                style: ButtonStyle(
-                                    overlayColor: MaterialStateProperty.all(
-                                        Colors.transparent),
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.transparent)),
-                                onPressed: _forgotPassword,
-                                child: Text(
-                                  "Forgot Password?",
-                                  style: Constants.lightThemeTextButtonTextStyle
-                                ),
-                              ),
                       ),
                     ],
                   ),
@@ -144,7 +131,7 @@ class LoginScreen extends ConsumerWidget {
                         margin: const EdgeInsets.only(top: 52),
                         height: 28,
                         child: Text(
-                          'Log In with Email',
+                          'Sign up with Email',
                           style: Constants.darkThemeTitleTextStyle,
                         ),
                       ),
@@ -163,31 +150,18 @@ class LoginScreen extends ConsumerWidget {
                               FocusScope.of(context).unfocus();
                             }, TextInputType.visiblePassword,
                                 passwordController, true),
+                            RegularTextField("Confirm Password", (value) {
+                              FocusScope.of(context).unfocus();
+                            }, TextInputType.visiblePassword, confirmController,
+                                true),
                             RoundedElevatedButton(
-                                _login,
-                                "Log In",
+                                _signUp,
+                                "Sign up",
                                 Constants.darkThemePrimaryColor,
                                 Colors.black,
-                                45),
+                                45)
                           ],
                         ),
-                      ),
-                        Container(
-                         alignment: Alignment.topCenter,
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(top: 326),
-                        child:  TextButton(
-                                style: ButtonStyle(
-                                    overlayColor: MaterialStateProperty.all(
-                                        Colors.transparent),
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.transparent)),
-                                onPressed: _forgotPassword,
-                                child: Text(
-                                  "Forgot Password?",
-                                  style: Constants.darkThemeTextButtonTextStyle
-                                ),
-                              ),
                       ),
                     ],
                   ),
@@ -197,5 +171,3 @@ class LoginScreen extends ConsumerWidget {
     ));
   }
 }
-
-

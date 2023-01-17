@@ -6,19 +6,18 @@ import '../Widgets/regular_teztField.dart';
 import '../Utilities/constants.dart';
 import '../Widgets/rounded_elevated_button.dart';
 
-class LoginScreen extends ConsumerWidget {
-  LoginScreen({super.key});
+class ForgotPasswordScreen extends ConsumerWidget {
+  ForgotPasswordScreen({super.key});
 
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
     // double screenWidth = MediaQuery.of(context).size.width;
 
-    void _login() {}
-    void _forgotPassword() {}
+    void _send() {}
+    void _goBack() {}
 
     return Scaffold(
         body: Container(
@@ -60,28 +59,36 @@ class LoginScreen extends ConsumerWidget {
                         margin: const EdgeInsets.only(top: 52),
                         height: 28,
                         child: Text(
-                          'Log In with Email',
+                          'Forgot Password?',
                           style: Constants.lightThemeTitleTextStyle,
                         ),
                       ),
                       Container(
                         alignment: Alignment.topCenter,
                         width: double.infinity,
+                        padding: const EdgeInsets.only(left: 35, right: 35),
+                        margin: const EdgeInsets.only(top: 93),
+                        height: 38,
+                        child: Text(
+                          'Enter your registered email and we will send you a password reset link.',
+                          style: Constants.roboto15LightThemeTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.topCenter,
+                        width: double.infinity,
                         margin: const EdgeInsets.only(
-                            top: 132, left: 39, right: 38),
+                            top: 179, left: 39, right: 38),
                         child: Column(
                           children: [
                             RegularTextField("Your email", (value) {
                               FocusScope.of(context).unfocus();
                             }, TextInputType.emailAddress, emailController,
                                 false),
-                            RegularTextField("New Password", (value) {
-                              FocusScope.of(context).unfocus();
-                            }, TextInputType.visiblePassword,
-                                passwordController, false),
                             RoundedElevatedButton(
-                                _login,
-                                "Log In",
+                                _send,
+                                "Send Password reset link",
                                 Constants.lightThemePrimaryColor,
                                 Colors.black,
                                 45),
@@ -89,21 +96,19 @@ class LoginScreen extends ConsumerWidget {
                         ),
                       ),
                       Container(
-                         alignment: Alignment.topCenter,
+                        alignment: Alignment.topCenter,
                         width: double.infinity,
                         margin: const EdgeInsets.only(top: 326),
-                        child:  TextButton(
-                                style: ButtonStyle(
-                                    overlayColor: MaterialStateProperty.all(
-                                        Colors.transparent),
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.transparent)),
-                                onPressed: _forgotPassword,
-                                child: Text(
-                                  "Forgot Password?",
-                                  style: Constants.lightThemeTextButtonTextStyle
-                                ),
-                              ),
+                        child: TextButton(
+                          style: ButtonStyle(
+                              overlayColor:
+                                  MaterialStateProperty.all(Colors.transparent),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Colors.transparent)),
+                          onPressed: _goBack,
+                          child: Text("Back To Login",
+                              style: Constants.lightThemeTextButtonTextStyle),
+                        ),
                       ),
                     ],
                   ),
@@ -144,50 +149,56 @@ class LoginScreen extends ConsumerWidget {
                         margin: const EdgeInsets.only(top: 52),
                         height: 28,
                         child: Text(
-                          'Log In with Email',
+                          'Forgot Password?',
                           style: Constants.darkThemeTitleTextStyle,
                         ),
                       ),
-                       Container(
+                      Container(
+                        alignment: Alignment.topCenter,
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(top: 93),
+                        padding: const EdgeInsets.only(left: 35, right: 35),
+                        height: 38,
+                        child: Text(
+                          'Enter your registered email and we will send you a password reset link.',
+                          style: Constants.roboto15DarkThemeTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
                         alignment: Alignment.topCenter,
                         width: double.infinity,
                         margin: const EdgeInsets.only(
-                            top: 132, left: 39, right: 38),
+                            top: 179, left: 39, right: 38),
                         child: Column(
                           children: [
                             RegularTextField("Your email", (value) {
                               FocusScope.of(context).unfocus();
                             }, TextInputType.emailAddress, emailController,
                                 true),
-                            RegularTextField("New Password", (value) {
-                              FocusScope.of(context).unfocus();
-                            }, TextInputType.visiblePassword,
-                                passwordController, true),
                             RoundedElevatedButton(
-                                _login,
-                                "Log In",
+                                _send,
+                                "Send Password reset link",
                                 Constants.darkThemePrimaryColor,
                                 Colors.black,
                                 45),
                           ],
                         ),
                       ),
-                        Container(
-                         alignment: Alignment.topCenter,
+                      Container(
+                        alignment: Alignment.topCenter,
                         width: double.infinity,
                         margin: const EdgeInsets.only(top: 326),
-                        child:  TextButton(
-                                style: ButtonStyle(
-                                    overlayColor: MaterialStateProperty.all(
-                                        Colors.transparent),
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Colors.transparent)),
-                                onPressed: _forgotPassword,
-                                child: Text(
-                                  "Forgot Password?",
-                                  style: Constants.darkThemeTextButtonTextStyle
-                                ),
-                              ),
+                        child: TextButton(
+                          style: ButtonStyle(
+                              overlayColor:
+                                  MaterialStateProperty.all(Colors.transparent),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Colors.transparent)),
+                          onPressed: _goBack,
+                          child: Text("Back To Login",
+                              style: Constants.darkThemeTextButtonTextStyle),
+                        ),
                       ),
                     ],
                   ),
@@ -197,5 +208,3 @@ class LoginScreen extends ConsumerWidget {
     ));
   }
 }
-
-
