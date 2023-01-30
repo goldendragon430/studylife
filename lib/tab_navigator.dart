@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './color_detail_page.dart';
 import './colors_list_page.dart';
 import './tab_item.dart';
+import 'Home_Screens/home_page.dart';
 
 class TabNavigatorRoutes {
   static const String root = '/';
@@ -28,13 +29,17 @@ class TabNavigator extends StatelessWidget {
 
   Map<String, WidgetBuilder> _routeBuilders(BuildContext context,
       {int materialIndex = 500}) {
-    return {
-      TabNavigatorRoutes.root: (context) => ColorsListPage(
-            color: Colors.green,
-            title: tabItem.name,
+    return { 
+      TabNavigatorRoutes.root: (context) => HomePage(
             onPush: (materialIndex) =>
                 _push(context, materialIndex: materialIndex),
           ),
+      // TabNavigatorRoutes.root: (context) => ColorsListPage(
+      //       color: Colors.green,
+      //       title: tabItem.name,
+      //       onPush: (materialIndex) =>
+      //           _push(context, materialIndex: materialIndex),
+      //     ),
       TabNavigatorRoutes.detail: (context) => ColorDetailPage(
             color: Colors.green,
             title: tabItem.name,
@@ -50,7 +55,6 @@ class TabNavigator extends StatelessWidget {
       key: navigatorKey,
       initialRoute: TabNavigatorRoutes.root,
       onGenerateRoute: (routeSettings) {
-              print("entered here");
 
         return MaterialPageRoute(
           builder: (context) => routeBuilders[routeSettings.name!]!(context),

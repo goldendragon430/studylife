@@ -90,21 +90,21 @@ class AppState extends ConsumerState<App> with WidgetsBindingObserver {
           final theme = ref.watch(themeModeProvider);
 
           return Scaffold(
-            appBar: AppBar(
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    ref.read(themeModeProvider.notifier).state =
-                        theme == ThemeMode.light
-                            ? ThemeMode.dark
-                            : ThemeMode.light;
-                  },
-                  icon: Icon(theme == ThemeMode.dark
-                      ? Icons.light_mode
-                      : Icons.dark_mode),
-                ),
-              ],
-            ),
+            // appBar: AppBar(
+            //   actions: [
+            //     IconButton(
+            //       onPressed: () {
+            //         ref.read(themeModeProvider.notifier).state =
+            //             theme == ThemeMode.light
+            //                 ? ThemeMode.dark
+            //                 : ThemeMode.light;
+            //       },
+            //       icon: Icon(theme == ThemeMode.dark
+            //           ? Icons.light_mode
+            //           : Icons.dark_mode),
+            //     ),
+            //   ],
+            // ),
             floatingActionButton: Container(
               padding: const EdgeInsets.only(top: 45),
               height: 125,

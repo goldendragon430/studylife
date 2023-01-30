@@ -24,10 +24,17 @@ class Constants {
   static Color lightThemeDividerColor = Colors.black.withOpacity(0.2);
   static Color blueButtonBackgroundColor = HexColor.fromHex("#005ED3");
   static Color lightThemeBorderColor = HexColor.fromHex("#CACCD5");
+  static Color lightThemeNotSelectedItemColor =
+      HexColor.fromHex('#00F6FF').withOpacity(0.2);
+  static Color darkThemeNotSelectedItemColor = Colors.white.withOpacity(0.2);
+  static Color classColor = HexColor.fromHex("#0EA8A2");
+  static Color lightThemeUpNextBannerBackgroundColor =
+      Colors.white;
+  static Color darkThemeUpNextBannerBackgroundColor =
+      HexColor.fromHex("#0F116C");
+  static Color taskDueBannerColor = HexColor.fromHex("#FF6705");
 
-  
-
-    static const MaterialColor kToLight = MaterialColor(
+  static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
     <int, Color>{
       50: Color(0xffe6e6e6), //10%
@@ -72,6 +79,18 @@ class Constants {
       fontWeight: FontWeight.bold,
       color: darkThemeTextPrimaryColor);
 
+  static TextStyle lightThemeTodayDateTextStyle = TextStyle(
+      fontSize: 36,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w300,
+      color: lightThemeTextPrimaryColor);
+
+  static TextStyle darkThemeTodayDateTextStyle = TextStyle(
+      fontSize: 36,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w300,
+      color: darkThemeTextPrimaryColor);
+
   static TextStyle titleTextStyle = const TextStyle(
     fontSize: 24,
     fontFamily: 'Roboto',
@@ -79,45 +98,92 @@ class Constants {
   );
 
   static TextStyle roboto15LightThemeTextStyle = TextStyle(
-    fontSize: 15,
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.normal,
-    color: Colors.black.withOpacity(0.6)
-  );
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black.withOpacity(0.6));
 
   static TextStyle roboto15DarkThemeTextStyle = TextStyle(
-    fontSize: 15,
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.normal,
-    color: Colors.white.withOpacity(0.6)
-  );
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white.withOpacity(0.6));
 
   static TextStyle socialLoginDarkButtonTextStyle = TextStyle(
-    fontSize: 12,
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.normal,
-    color: Colors.white.withOpacity(0.6)
-  );
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white.withOpacity(0.6));
 
   static TextStyle socialLoginLightButtonTextStyle = TextStyle(
-    fontSize: 12,
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.normal,
-    color: Colors.black.withOpacity(0.6)
-  );
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black.withOpacity(0.6));
 
   static TextStyle lightThemeTextButtonTextStyle = TextStyle(
-    fontSize: 15,
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.normal,
-    color: blueButtonBackgroundColor
-  );
-
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: blueButtonBackgroundColor);
 
   static TextStyle darkThemeTextButtonTextStyle = TextStyle(
-    fontSize: 15,
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.normal,
-    color: darkThemePrimaryColor
-  );
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: darkThemePrimaryColor);
+
+  static TextStyle lightThemeGreetingMessageStyle = TextStyle(
+      fontSize: 16,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: lightThemeTextPrimaryColor);
+
+  static TextStyle darkThemeGreetingMessageStyle = TextStyle(
+      fontSize: 16,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: darkThemeTextPrimaryColor);
+
+  static TextStyle tabItemBadgeTextStyle = TextStyle(
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w900,
+      color: lightThemeTextSelectionColor);
+
+  static TextStyle tabItemTitleTextStyle = TextStyle(
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: lightThemeTextSelectionColor);
+
+  static TextStyle lightThemeUpNextBannerTextStyle = TextStyle(
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: lightThemeTextSelectionColor);
+
+  static TextStyle darkThemeUpNextBannerTextStyle = const TextStyle(
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.white);
+
+  static TextStyle taskDueBannerTextStyle = const TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.white);
+
+  static TextStyle lightTHemeClassDateTextStyle = const TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.black);
+
+  static TextStyle DarkTHemeClassDateTextStyle = const TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.white);
 }

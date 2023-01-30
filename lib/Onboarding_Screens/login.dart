@@ -12,13 +12,13 @@ class LoginScreen extends ConsumerWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  void _login() {}
+  void _forgotPassword() {}
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
     // double screenWidth = MediaQuery.of(context).size.width;
-
-    void _login() {}
-    void _forgotPassword() {}
 
     return Scaffold(
         body: Container(

@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension ValidationString on String {
   bool get isValidEmail {
@@ -7,33 +7,34 @@ extension ValidationString on String {
     return emailRegExp.hasMatch(this);
   }
 
-  bool get isValidName{
-    final nameRegExp = RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$");
+  bool get isValidName {
+    final nameRegExp =
+        RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$");
     return nameRegExp.hasMatch(this);
   }
 
-  bool get isValidPassword{
-final passwordRegExp = 
-    RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\><*~]).{8,}/pre>');
+  bool get isValidPassword {
+    final passwordRegExp = RegExp(
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\><*~]).{8,}/pre>');
     return passwordRegExp.hasMatch(this);
   }
 
-  bool get isNotNull{
-    return this!=null;
-}
+  bool get isNotNull {
+    return this != null;
+  }
 
-  bool get isValidPhone{
+  bool get isValidPhone {
     final phoneRegExp = RegExp(r"^\+?0[0-9]{10}$");
     return phoneRegExp.hasMatch(this);
   }
-
 }
 
 extension Utility on BuildContext {
   void nextEditableTextFocus() {
     do {
       FocusScope.of(this).nextFocus();
-    } while (FocusScope.of(this).focusedChild?.context?.widget is! EditableText);
+    } while (
+        FocusScope.of(this).focusedChild?.context?.widget is! EditableText);
   }
 }
 
@@ -74,4 +75,39 @@ extension HexColor on Color {
       '${red.toRadixString(16).padLeft(2, '0')}'
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
+extension DefaultAppDateFormat on DateTime {
+  String getFormattedDate(DateTime date) {
+    /// Convert into local date format.
+    var localDate = date.toLocal();
+
+    /// inputFormat - format getting from api or other func.
+    /// e.g If 2021-05-27 9:34:12.781341 then format should be yyyy-MM-dd HH:mm
+    /// If 27/05/2021 9:34:12.781341 then format should be dd/MM/yyyy HH:mm
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse(localDate.toString());
+
+    /// outputFormat - convert into format you want to show.
+    var outputFormat = DateFormat('EEE, d MMM ');
+    var outputDate = outputFormat.format(inputDate);
+
+    return outputDate.toString();
+  }
+}
+
+extension DateHelpers on DateTime {
+  bool isToday() {
+    final now = DateTime.now();
+    return now.day == this.day &&
+        now.month == this.month &&
+        now.year == this.year;
+  }
+
+  bool isYesterday() {
+    final yesterday = DateTime.now().subtract(Duration(days: 1));
+    return yesterday.day == this.day &&
+        yesterday.month == this.month &&
+        yesterday.year == this.year;
+  }
 }

@@ -11,13 +11,13 @@ class ForgotPasswordScreen extends ConsumerWidget {
 
   final emailController = TextEditingController();
 
+    void _send() {}
+    void _goBack() {}
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
     // double screenWidth = MediaQuery.of(context).size.width;
-
-    void _send() {}
-    void _goBack() {}
 
     return Scaffold(
         body: Container(
