@@ -5,6 +5,7 @@ import './bottom_navigation.dart';
 import './tab_item.dart';
 import './tab_navigator.dart';
 import 'main.dart';
+import 'Home_Screens/create_screen.dart';
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) {
   var brightness = WidgetsBinding.instance.window.platformBrightness;
@@ -23,17 +24,35 @@ class App extends ConsumerStatefulWidget {
   ConsumerState<App> createState() => AppState();
 }
 
-class AppState extends ConsumerState<App> with WidgetsBindingObserver {
+class AppState extends ConsumerState<App> with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+ // late AnimationController controller;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+ 
+  //    _controller = AnimationController(
+  //     vsync: this,
+  //     duration: const Duration(
+  //       milliseconds: 1600,
+  //     ),
+  //   );
+
+  //     _controller.addListener(() {
+  //   setState(() {});
+  // });
+
+  //   _controller.forward();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+      //  controller.dispose();
     super.dispose();
+   // _controller.dispose();
+
   }
 
   @override
@@ -65,6 +84,34 @@ class AppState extends ConsumerState<App> with WidgetsBindingObserver {
     } else {
       setState(() => _currentTab = tabItem);
     }
+  }
+
+  bottomSheetForSignIn(BuildContext context) {
+    
+
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        context: context,
+       // transitionAnimationController: controller,
+        enableDrag: false,
+        builder: (context) {
+          return const CreateScreen();
+        });
+  }
+
+  void _openCreateScreen() {
+    bottomSheetForSignIn(context);
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => const CreateScreen(),
+    //         fullscreenDialog: false));
   }
 
   @override
@@ -113,7 +160,7 @@ class AppState extends ConsumerState<App> with WidgetsBindingObserver {
                 foregroundColor: Colors.transparent,
                 backgroundColor: Colors.transparent,
                 highlightElevation: 0,
-                onPressed: () => {},
+                onPressed: _openCreateScreen,
                 elevation: 0.0,
                 child: Image.asset('assets/images/AddButtonIcon.png'),
               ),

@@ -28,8 +28,7 @@ class Constants {
       HexColor.fromHex('#00F6FF').withOpacity(0.2);
   static Color darkThemeNotSelectedItemColor = Colors.white.withOpacity(0.2);
   static Color classColor = HexColor.fromHex("#0EA8A2");
-  static Color lightThemeUpNextBannerBackgroundColor =
-      Colors.white;
+  static Color lightThemeUpNextBannerBackgroundColor = Colors.white;
   static Color darkThemeUpNextBannerBackgroundColor =
       HexColor.fromHex("#0F116C");
   static Color taskDueBannerColor = HexColor.fromHex("#FF6705");
@@ -186,4 +185,16 @@ class Constants {
       fontFamily: 'Roboto',
       fontWeight: FontWeight.bold,
       color: Colors.white);
+
+  static TextStyle lightThemeTabBarTextStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: blueButtonBackgroundColor);
+
+  static TextStyle darkThemeTabBarTextStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: darkThemePrimaryColor);
 }
