@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:my_study_life_flutter/Widgets/class_widget.dart';
+import 'package:my_study_life_flutter/Widgets/ClassWidgets/class_widget.dart';
 
 import '../app.dart';
 import '../Utilities/constants.dart';

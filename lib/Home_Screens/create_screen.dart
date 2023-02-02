@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../app.dart';
 import '../Utilities/constants.dart';
 
+import '../Widgets/ClassWidgets/create_class_widget.dart';
+
 class CreateScreen extends StatefulWidget {
   const CreateScreen({super.key});
 
@@ -46,17 +48,20 @@ class _CreateScreenState extends State<CreateScreen>
       builder: (BuildContext context) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.9,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(50.0),
-          ),
+          // decoration: BoxDecoration(
+          //   color: Colors.red,
+          //   borderRadius: BorderRadius.circular(50.0),
+          // ),
           child: DefaultTabController(
             length: 5,
             child: Scaffold(
               appBar: AppBar(
+                backgroundColor: theme == ThemeMode.light ? Constants.lightThemeBackgroundColor : Constants.darkThemeBackgroundColor,
+                shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.1))),
                 elevation: 0,
                 automaticallyImplyLeading: false,
                 bottom: TabBar(
+                  indicatorWeight: 4,
                   indicatorColor: theme == ThemeMode.light ? Constants.blueButtonBackgroundColor : Constants.darkThemePrimaryColor,
                   isScrollable: true,
                   tabs: [
@@ -69,11 +74,11 @@ class _CreateScreenState extends State<CreateScreen>
                     Tab(child: Text("Extra", style: theme == ThemeMode.light ? Constants.lightThemeTabBarTextStyle : Constants.darkThemeTabBarTextStyle,)),
                   ],
                 ),
-                title: const Text('New'),
+                title: Text('New', style: theme == ThemeMode.light ? Constants.lightThemeTitleTextStyle : Constants.darkThemeTitleTextStyle,),
               ),
               body: const TabBarView(
                 children: [
-                  Icon(Icons.directions_car),
+                  CreateClass(),
                   Icon(Icons.directions_transit),
                   Icon(Icons.directions_bike),
                   Icon(Icons.directions_transit),

@@ -197,4 +197,28 @@ class Constants {
       fontFamily: 'Roboto',
       fontWeight: FontWeight.bold,
       color: darkThemePrimaryColor);
+
+  static TextStyle lightThemeSubtitleTextStyle = const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.black);
+
+  static TextStyle darkThemeSubtitleTextStyle = const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.white);
+
+  static TextStyle lightThemeMedium14TextStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w500,
+      color: lightThemeTextSelectionColor);
+
+  static TextStyle darkThemeMedium14TextStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w500,
+      color: lightThemeTextSelectionColor);
 }

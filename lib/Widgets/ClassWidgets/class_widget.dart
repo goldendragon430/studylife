@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Extensions/extensions.dart';
 import 'package:intl/intl.dart';
 
-import '../app.dart';
-import '../Models/class_datasource.dart';
-import '../Utilities/constants.dart';
+import '../../app.dart';
+import '../../Models/class_datasource.dart';
+import '../../Utilities/constants.dart';
 
 class ClassWidget extends ConsumerWidget {
   final int cardIndex;
