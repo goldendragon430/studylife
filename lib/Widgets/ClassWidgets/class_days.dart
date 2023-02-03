@@ -8,28 +8,27 @@ import '../../app.dart';
 import '../tag_card.dart';
 import '../../Models/subjects_datasource.dart';
 
-class SelectClassMode extends StatefulWidget {
+class ClassWeekDays extends StatefulWidget {
   final Function subjectSelected;
-  SelectClassMode({super.key, required this.subjectSelected});
+  ClassWeekDays({super.key, required this.subjectSelected});
 
   @override
-  State<SelectClassMode> createState() => _SelectClassModeState();
+  State<ClassWeekDays> createState() => _ClassWeekDaysState();
 }
 
-class _SelectClassModeState extends State<SelectClassMode> {
-  final List<ClassTagItem> _subjects = ClassTagItem.subjectModes;
+class _ClassWeekDaysState extends State<ClassWeekDays> {
+  final List<ClassTagItem> _days = ClassTagItem.classDays;
 
-  int selectedTabIndex = 0;
 
   void _selectTab(int index) {
     setState(() {
-      selectedTabIndex = index;
-      for (var item in _subjects) {
-        item.selected = false;
-      }
+      // for (var item in _repetitions) {
+      //   item.selected = false;
+      // }
 
-      _subjects[index].selected = true;
-      widget.subjectSelected(_subjects[index]);
+      _days[index].selected = true;
+      widget.subjectSelected(_days);
+      print("CARD SELECTED $index");
     });
   }
 
@@ -47,7 +46,7 @@ class _SelectClassModeState extends State<SelectClassMode> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Mode',
+              'Days*',
               style: theme == ThemeMode.light ? Constants.lightThemeSubtitleTextStyle : Constants.darkThemeSubtitleTextStyle,
               textAlign: TextAlign.left,
             ),
@@ -57,7 +56,7 @@ class _SelectClassModeState extends State<SelectClassMode> {
             Wrap(
               direction: Axis.horizontal,
               alignment: WrapAlignment.start,
-              children: _subjects
+              children: _days
                   .mapIndexed((e, i) => TagCard(
                         title: e.title,
                         selected: e.selected,

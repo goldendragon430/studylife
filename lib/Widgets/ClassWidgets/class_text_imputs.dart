@@ -9,7 +9,11 @@ import '../../Models/subjects_datasource.dart';
 
 class ClassTextImputs extends StatefulWidget {
   final Function subjectSelected;
-  ClassTextImputs({super.key, required this.subjectSelected});
+  final bool isClassInPerson;
+  const ClassTextImputs(
+      {super.key,
+      required this.subjectSelected,
+      required this.isClassInPerson});
 
   @override
   State<ClassTextImputs> createState() => _ClassTextImputsState();
@@ -20,6 +24,8 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
   final roomNameController = TextEditingController();
   final buildingNameController = TextEditingController();
   final teacherNameController = TextEditingController();
+  final onlineUrlController = TextEditingController();
+  final teachersEmailController = TextEditingController();
 
   final List<ClassTagItem> _subjects = ClassTagItem.subjectModes;
 
@@ -59,7 +65,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
               textAlign: TextAlign.left,
             ),
             Container(
-              height: 14,
+              height: 6,
             ),
             RegularTextField("Module Name", (value) {
               FocusScope.of(context).unfocus();
@@ -68,77 +74,117 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
             Container(
               height: 14,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 90,
-                  width: 150,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Room',
-                        style: theme == ThemeMode.light
-                            ? Constants.lightThemeSubtitleTextStyle
-                            : Constants.darkThemeSubtitleTextStyle,
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        height: 14,
-                      ),
-                      RegularTextField("Room", (value) {
-                        FocusScope.of(context).unfocus();
-                      }, TextInputType.emailAddress, roomNameController,
-                          theme == ThemeMode.dark),
-                    ],
+            if (widget.isClassInPerson) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 90,
+                    width: 150,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Room',
+                          style: theme == ThemeMode.light
+                              ? Constants.lightThemeSubtitleTextStyle
+                              : Constants.darkThemeSubtitleTextStyle,
+                          textAlign: TextAlign.left,
+                        ),
+                        Container(
+                          height: 6,
+                        ),
+                        RegularTextField("Room", (value) {
+                          FocusScope.of(context).unfocus();
+                        }, TextInputType.emailAddress, roomNameController,
+                            theme == ThemeMode.dark),
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                   height: 90,
-                  width: 150,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Building',
-                        style: theme == ThemeMode.light
-                            ? Constants.lightThemeSubtitleTextStyle
-                            : Constants.darkThemeSubtitleTextStyle,
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        height: 14,
-                      ),
-                      RegularTextField("Building", (value) {
-                        FocusScope.of(context).unfocus();
-                      }, TextInputType.emailAddress, buildingNameController,
-                          theme == ThemeMode.dark),
-                    ],
+                  Container(
+                    height: 90,
+                    width: 150,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Building',
+                          style: theme == ThemeMode.light
+                              ? Constants.lightThemeSubtitleTextStyle
+                              : Constants.darkThemeSubtitleTextStyle,
+                          textAlign: TextAlign.left,
+                        ),
+                        Container(
+                          height: 6,
+                        ),
+                        RegularTextField("Building", (value) {
+                          FocusScope.of(context).unfocus();
+                        }, TextInputType.emailAddress, buildingNameController,
+                            theme == ThemeMode.dark),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-               Text(
-              'Teacher Name',
+                ],
+              ),
+            ],
+            if (!widget.isClassInPerson) ...[
+              Text(
+                'Online URL',
+                style: theme == ThemeMode.light
+                    ? Constants.lightThemeSubtitleTextStyle
+                    : Constants.darkThemeSubtitleTextStyle,
+                textAlign: TextAlign.left,
+              ),
+              Container(
+                height: 6,
+              ),
+              RegularTextField("Online URL", (value) {
+                FocusScope.of(context).unfocus();
+              }, TextInputType.emailAddress, onlineUrlController,
+                  theme == ThemeMode.dark),
+              Container(
+                height: 14,
+              ),
+            ],
+            Text(
+              'Teacher',
               style: theme == ThemeMode.light
                   ? Constants.lightThemeSubtitleTextStyle
                   : Constants.darkThemeSubtitleTextStyle,
               textAlign: TextAlign.left,
             ),
             Container(
-              height: 14,
+              height: 6,
             ),
-            RegularTextField("Teacher Name", (value) {
+            RegularTextField("Teacher ASDAD", (value) {
               FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, teacherNameController,
                 theme == ThemeMode.dark),
             Container(
               height: 14,
             ),
+            if (!widget.isClassInPerson) ...[
+              Text(
+                'Teacher Email',
+                style: theme == ThemeMode.light
+                    ? Constants.lightThemeSubtitleTextStyle
+                    : Constants.darkThemeSubtitleTextStyle,
+                textAlign: TextAlign.left,
+              ),
+              Container(
+                height: 6,
+              ),
+              RegularTextField("Email", (value) {
+                FocusScope.of(context).unfocus();
+              }, TextInputType.emailAddress, teachersEmailController,
+                  theme == ThemeMode.dark),
+              Container(
+                height: 14,
+              ),
+            ],
           ],
         ),
       );
