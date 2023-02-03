@@ -216,9 +216,45 @@ class Constants {
       fontWeight: FontWeight.w500,
       color: lightThemeTextSelectionColor);
 
-  static TextStyle darkThemeMedium14TextStyle = TextStyle(
+  static TextStyle darkThemeMedium14TextStyle = const TextStyle(
       fontSize: 14,
       fontFamily: 'Roboto',
       fontWeight: FontWeight.w500,
+      color: Colors.white);
+
+  static TextStyle lightThemeRegular14TextStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
       color: lightThemeTextSelectionColor);
+
+  static TextStyle darkThemeRegular14TextStyle = const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white);
+
+  static TextStyle lightThemeRegular14TextSelectedStyle = const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
+
+  static TextStyle darkThemeRegular14TextSelectedStyle = const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
+
+  static TextStyle lightThemeMedium14SelectedTextStyle = const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w500,
+      color: Colors.black);
+
+  static TextStyle darkThemeMedium14SelectedTextStyle = const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w500,
+      color: Colors.black);
 }

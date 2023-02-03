@@ -44,10 +44,13 @@ class TagCard extends StatelessWidget {
           child: Container(
             height: 34,
            // alignment: Alignment.center,
-            padding: const EdgeInsets.only(left: 17, right: 17, top: 7, bottom:  7),
+            padding: const EdgeInsets.only(left: 17, right: 17, top: 9),
             child: Text(
               title,
-              style: isAddNewCard ? theme == ThemeMode.light ? Constants.lightThemeMedium14TextStyle : Constants.darkThemeMedium14TextStyle : Constants.tabItemTitleTextStyle,
+              textAlign: TextAlign.center,
+              style: isAddNewCard ? selected ? theme == ThemeMode.light ? Constants.lightThemeMedium14SelectedTextStyle : Constants.darkThemeMedium14SelectedTextStyle : theme == ThemeMode.light ? Constants.lightThemeMedium14TextStyle : Constants.darkThemeMedium14TextStyle : 
+              selected ? theme == ThemeMode.light ? Constants.lightThemeRegular14TextSelectedStyle : Constants.darkThemeRegular14TextSelectedStyle
+               : theme == ThemeMode.light ? Constants.lightThemeRegular14TextStyle : Constants.darkThemeRegular14TextStyle,
             ),
           ),
         ),

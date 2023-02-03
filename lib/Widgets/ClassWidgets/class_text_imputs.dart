@@ -159,7 +159,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
             Container(
               height: 6,
             ),
-            RegularTextField("Teacher ASDAD", (value) {
+            RegularTextField("Teacher Name", (value) {
               FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, teacherNameController,
                 theme == ThemeMode.dark),
@@ -167,23 +167,23 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
               height: 14,
             ),
             if (!widget.isClassInPerson) ...[
-              Text(
-                'Teacher Email',
-                style: theme == ThemeMode.light
-                    ? Constants.lightThemeSubtitleTextStyle
-                    : Constants.darkThemeSubtitleTextStyle,
-                textAlign: TextAlign.left,
-              ),
-              Container(
-                height: 6,
-              ),
-              RegularTextField("Email", (value) {
-                FocusScope.of(context).unfocus();
-              }, TextInputType.emailAddress, teachersEmailController,
-                  theme == ThemeMode.dark),
-              Container(
-                height: 14,
-              ),
+                Text(
+              'Teacher Email',
+              style: theme == ThemeMode.light
+                  ? Constants.lightThemeSubtitleTextStyle
+                  : Constants.darkThemeSubtitleTextStyle,
+              textAlign: TextAlign.left,
+            ),
+            Container(
+              height: 6,
+            ),
+            RegularTextField("Email", (value) {
+              FocusScope.of(context).unfocus();
+            }, TextInputType.emailAddress, teachersEmailController,
+                theme == ThemeMode.dark),
+            Container(
+              height: 14,
+            ),
             ],
           ],
         ),
