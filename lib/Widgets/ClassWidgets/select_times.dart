@@ -12,8 +12,8 @@ import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
 
 class SelectTimes extends StatefulWidget {
-  final Function subjectSelected;
-  SelectTimes({super.key, required this.subjectSelected});
+  final Function timeSelected;
+  SelectTimes({super.key, required this.timeSelected});
 
   @override
   State<SelectTimes> createState() => _SelectTimesState();
@@ -36,29 +36,16 @@ class _SelectTimesState extends State<SelectTimes> {
     super.initState();
   }
 
-  void _selectTab(int index) {
-    setState(() {
-      selectedTabIndex = index;
-      for (var item in _subjects) {
-        item.selected = false;
-      }
-
-      _subjects[index].selected = true;
-      widget.subjectSelected(_subjects[index]);
-      print("CARD SELECTED $index");
-    });
+  void _tappedOnTimeFrom(ThemeMode theme, bool isDateFrom) {
+    _showDatePicker(theme, isDateFrom);
   }
 
-  void _tappedOnTimeFrom() {
-    print("TIME FROM");
-    _showDatePicker();
-  }
-
-  void _tappedOnTimeTo() {
-    print("TIME TO");
+  void _tappedOnTimeTo(ThemeMode theme, bool isDateFrom) {
+        _showDatePicker(theme, isDateFrom);
   }
 
   void _showiOSDateSelectionDialog(Widget child) {
+    print('asdadjavdkagvdkhagsvdavdh');
     showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) => Container(
@@ -75,23 +62,50 @@ class _SelectTimesState extends State<SelectTimes> {
             ));
   }
 
-  void _showAndroidDateSelectionDialog(bool isLightTheme) {
-    _showAndroidDatePicker(context, isLightTheme);
+  void _showAndroidDateSelectionDialog(ThemeMode theme, bool isDateFrom) {
+    print("ADSADADADA");
+    _showAndroidDatePicker(context, theme == ThemeMode.light, isDateFrom);
   }
 
-  Future<void> _showAndroidDatePicker(BuildContext context, bool isLightTheme) async {
+  Future<void> _showAndroidDatePicker(
+      BuildContext context, bool isLightTheme, bool isDateFrom) async {
     final TimeOfDay? picked = await showTimePicker(
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                  primary: Colors.blue, // header background color
-                  onPrimary: Colors.white, // header text color
-                  onSurface: Colors.green // body text color
-                  ),
+              timePickerTheme: TimePickerThemeData(
+                backgroundColor: isLightTheme
+                    ? Constants.lightThemeBackgroundColor
+                    : Constants.darkThemeBackgroundColor,
+                hourMinuteColor: isLightTheme
+                    ? Colors.grey
+                    : Constants.darkThemeSecondaryBackgroundColor,
+                hourMinuteTextColor: isLightTheme
+                    ? Constants.lightThemePrimaryColor
+                    : Constants.darkThemePrimaryColor,
+                dayPeriodColor: isLightTheme
+                    ? Colors.grey
+                    : Constants.darkThemeSecondaryBackgroundColor,
+                dayPeriodTextColor: MaterialStateColor.resolveWith(
+                    (states) => states.contains(MaterialState.selected)
+                        ? isLightTheme
+                            ? Constants.lightThemePrimaryColor
+                            : Constants.darkThemePrimaryColor
+                        : isLightTheme
+                            ? Colors.black
+                            : Colors.grey),
+                dialTextColor: MaterialStateColor.resolveWith(
+                    (states) => states.contains(MaterialState.selected)
+                        ? isLightTheme
+                            ? Constants.lightThemePrimaryColor
+                            : Constants.darkThemePrimaryColor
+                        : Colors.grey),
+              ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.red, // button text color
+                  foregroundColor: isLightTheme
+                      ? Colors.black
+                      : Constants.darkThemePrimaryColor, // button text color
                 ),
               ),
             ),
@@ -114,21 +128,25 @@ class _SelectTimesState extends State<SelectTimes> {
     }
   }
 
-  void _showDatePicker() {
-    print("object");
+  void _showDatePicker(ThemeMode theme, bool isDateFrom) {
     Platform.isAndroid
         ? _showAndroidDateSelectionDialog
-        : () => _showiOSDateSelectionDialog(CupertinoTimerPicker(
-              mode: CupertinoTimerPickerMode.hm,
-              minuteInterval: 1,
-              initialTimerDuration: Duration.zero,
-              onTimerDurationChanged: (Duration changeTimer) {
-                setState(() {
+        : _showiOSDateSelectionDialog(CupertinoTimerPicker(
+            mode: CupertinoTimerPickerMode.hm,
+            minuteInterval: 1,
+            initialTimerDuration: Duration.zero,
+            onTimerDurationChanged: (Duration changeTimer) {
+              setState(() {
+                if (isDateFrom) {
                   pickedTimeFrom = minutesToTimeOfDay(changeTimer);
-                  print("ADASDADASDAD $pickedTimeFrom");
-                });
-              },
-            ));
+                  timeFromController.text = pickedTimeFrom.format(context);
+                } else {
+                  pickedTimeTo = minutesToTimeOfDay(changeTimer);
+                  timeToController.text = pickedTimeTo.format(context);
+                }
+              });
+            },
+          ));
   }
 
   TimeOfDay minutesToTimeOfDay(duration) {
@@ -171,24 +189,13 @@ class _SelectTimesState extends State<SelectTimes> {
                         height: 6,
                       ),
                       DateTimeSelectionTextField(
-                          timeFromController.text,
-                          Platform.isAndroid
-                              ? _showAndroidDateSelectionDialog
-                              : () => _showiOSDateSelectionDialog(
-                                      CupertinoTimerPicker(
-                                    mode: CupertinoTimerPickerMode.hm,
-                                    minuteInterval: 1,
-                                    initialTimerDuration: Duration.zero,
-                                    onTimerDurationChanged:
-                                        (Duration changeTimer) {
-                                      setState(() {
-                                        pickedTimeFrom =
-                                            minutesToTimeOfDay(changeTimer);
-                                        print("ADASDADASDAD $pickedTimeFrom");
-                                      });
-                                    },
-                                  )),
-                          textController: timeFromController),
+                        timeFromController.text,
+                        Platform.isAndroid
+                            ? _showAndroidDateSelectionDialog
+                            : _showDatePicker,
+                        textController: timeFromController,
+                        isDateFrom: true,
+                      ),
                     ],
                   ),
                 ),
@@ -210,24 +217,27 @@ class _SelectTimesState extends State<SelectTimes> {
                         height: 6,
                       ),
                       DateTimeSelectionTextField(
-                          timeToController.text,
-                          Platform.isAndroid
-                              ? _showAndroidDateSelectionDialog
-                              : () => _showiOSDateSelectionDialog(
-                                      CupertinoTimerPicker(
-                                    mode: CupertinoTimerPickerMode.hm,
-                                    minuteInterval: 1,
-                                    initialTimerDuration: Duration.zero,
-                                    onTimerDurationChanged:
-                                        (Duration changeTimer) {
-                                      setState(() {
-                                        pickedTimeFrom =
-                                            minutesToTimeOfDay(changeTimer);
-                                        print("ADASDADASDAD $pickedTimeFrom");
-                                      });
-                                    },
-                                  )),
-                          textController: timeToController)
+                        timeToController.text,
+                        Platform.isAndroid ? _showAndroidDateSelectionDialog :
+                        _showDatePicker,
+                        // Platform.isAndroid
+                        //     ? _showAndroidDateSelectionDialog
+                        //     : () => _showiOSDateSelectionDialog(
+                        //             CupertinoTimerPicker(
+                        //           mode: CupertinoTimerPickerMode.hm,
+                        //           minuteInterval: 1,
+                        //           initialTimerDuration: Duration.zero,
+                        //           onTimerDurationChanged:
+                        //               (Duration changeTimer) {
+                        //             setState(() {
+                        //               pickedTimeFrom =
+                        //                   minutesToTimeOfDay(changeTimer);
+                        //               print("ADASDADASDAD $pickedTimeFrom");
+                        //             });
+                        //           },
+                        //         )),
+                        textController: timeToController, isDateFrom: false,
+                      )
                     ],
                   ),
                 ),

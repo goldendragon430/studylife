@@ -32,6 +32,9 @@ class Constants {
   static Color darkThemeUpNextBannerBackgroundColor =
       HexColor.fromHex("#0F116C");
   static Color taskDueBannerColor = HexColor.fromHex("#FF6705");
+  static Color darkThemeInactiveSwitchColor = HexColor.fromHex("#414C71");
+  static Color lightThemeInactiveSwitchColor = HexColor.fromHex("#E1EAF1");
+
 
   static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.

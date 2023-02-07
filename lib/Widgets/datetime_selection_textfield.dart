@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dropdown_alert/alert_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io' show Platform;
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -8,7 +10,8 @@ class DateTimeSelectionTextField extends ConsumerWidget {
   final TextEditingController textController;
   final String hintText;
   final Function tappedOnTextField;
-  const DateTimeSelectionTextField(this.hintText, this.tappedOnTextField, {super.key, required this.textController});
+  final bool isDateFrom;
+  const DateTimeSelectionTextField(this.hintText, this.tappedOnTextField, {super.key, required this.textController, required this.isDateFrom});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,7 +20,8 @@ class DateTimeSelectionTextField extends ConsumerWidget {
     return Container(
       child: TextField(
         readOnly: true,
-        onTap: () => tappedOnTextField(),
+        onTap: () => tappedOnTextField(theme, isDateFrom),
+       // onTap: () => Platform.isAndroid ? tappedOnTextField(theme, isDateFrom) :  tappedOnTextField,
 
         textInputAction: TextInputAction.next,
         cursorColor: theme == ThemeMode.dark

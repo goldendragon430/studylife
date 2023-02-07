@@ -12,16 +12,15 @@ import './select_times.dart';
 import './class_days.dart';
 import '.././rounded_elevated_button.dart';
 import '../switch_row_widget.dart';
-import './select_dates.dart';
 
-class CreateClass extends StatefulWidget {
-  const CreateClass({super.key});
+class CreateExam extends StatefulWidget {
+  const CreateExam({super.key});
 
   @override
-  State<CreateClass> createState() => _CreateClassState();
+  State<CreateExam> createState() => _CreateExamState();
 }
 
-class _CreateClassState extends State<CreateClass> {
+class _CreateExamState extends State<CreateExam> {
   final ScrollController scrollcontroller = ScrollController();
 
   bool isClassInPerson = true;
@@ -55,10 +54,6 @@ class _CreateClassState extends State<CreateClass> {
     //print("Selected repetitionMode: ${repetition.title}");
   }
 
-  void _selectedDates(DateTime timtimeFromeTo, DateTime timeTo) {
-    //print("Selected repetitionMode: ${repetition.title}");
-  }
-
   void _classDaysSelected(List<ClassTagItem> days) {
     print("Selected repetitionMode: ${days}");
   }
@@ -66,7 +61,8 @@ class _CreateClassState extends State<CreateClass> {
   void _switchChangedState(bool isOn) {
     setState(() {
       addStartEndDates = isOn;
-      print("Swithc isOn : $isOn");
+              print("Swithc isOn : $isOn");
+
     });
   }
 
@@ -87,7 +83,7 @@ class _CreateClassState extends State<CreateClass> {
         child: ListView.builder(
             controller: scrollcontroller,
             padding: const EdgeInsets.only(top: 30),
-            itemCount: addStartEndDates ? 9 : 8,
+            itemCount: 8,
             itemBuilder: (context, index) {
               if (index == 10) {
                 // Save/Cancel Buttons
@@ -136,89 +132,46 @@ class _CreateClassState extends State<CreateClass> {
                     ],
                     if (index == 5) ...[
                       // Select Time From/To
-                      SelectTimes(
-                        timeSelected: _selectedTimes,
-                      )
+                      // SelectTimes(
+                      //  timeSelected: _selectedTimes,
+                      // )
                     ],
                     if (index == 6) ...[
                       // Switch Start dates
-                      RowSwitch(
-                          title: "Add Start/end dates?",
-                          isOn: addStartEndDates,
-                          changedState: _switchChangedState)
+                      RowSwitch(title: "Add Start/end dates?", isOn: addStartEndDates, changedState: _switchChangedState)
                     ],
-                    if (addStartEndDates) ...[
-                      if (index == 7) ...[
-                        SelectDates(dateSelected: _selectedDates),
-                      ],
-                      if (index == 8) ...[
-                        // Save/Cancel buttons
-                        Container(
-                          height: 68,
+                    if (index == 7) ...[
+                      // Save/Cancel buttons
+                      Container(
+                        height: 68,
+                      ),
+                      Container(
+                        alignment: Alignment.topCenter,
+                        width: double.infinity,
+                        // margin: const EdgeInsets.only(top: 260),
+                        padding: const EdgeInsets.only(left: 106, right: 106),
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            RoundedElevatedButton(
+                                _saveClass,
+                                "Save Class",
+                                Constants.lightThemePrimaryColor,
+                                Colors.black,
+                                45),
+                            RoundedElevatedButton(
+                                _cancel,
+                                "Cancel",
+                                Constants.blueButtonBackgroundColor,
+                                Colors.white,
+                                45)
+                          ],
                         ),
-                        Container(
-                          alignment: Alignment.topCenter,
-                          width: double.infinity,
-                          // margin: const EdgeInsets.only(top: 260),
-                          padding: const EdgeInsets.only(left: 106, right: 106),
-                          child: Column(
-                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              RoundedElevatedButton(
-                                  _saveClass,
-                                  "Save Class",
-                                  Constants.lightThemePrimaryColor,
-                                  Colors.black,
-                                  45),
-                              RoundedElevatedButton(
-                                  _cancel,
-                                  "Cancel",
-                                  Constants.blueButtonBackgroundColor,
-                                  Colors.white,
-                                  45)
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 88,
-                        ),
-                      ],
-                    ],
-                    if (!addStartEndDates) ...[
-                      if (index == 7) ...[
-                        // Save/Cancel buttons
-                        Container(
-                          height: 68,
-                        ),
-                        Container(
-                          alignment: Alignment.topCenter,
-                          width: double.infinity,
-                          // margin: const EdgeInsets.only(top: 260),
-                          padding: const EdgeInsets.only(left: 106, right: 106),
-                          child: Column(
-                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              RoundedElevatedButton(
-                                  _saveClass,
-                                  "Save Class",
-                                  Constants.lightThemePrimaryColor,
-                                  Colors.black,
-                                  45),
-                              RoundedElevatedButton(
-                                  _cancel,
-                                  "Cancel",
-                                  Constants.blueButtonBackgroundColor,
-                                  Colors.white,
-                                  45)
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 88,
-                        ),
-                      ],
+                      ),
+                      Container(
+                        height: 88,
+                      ),
                     ],
                   ],
                 );
