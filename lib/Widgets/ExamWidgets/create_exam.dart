@@ -3,15 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
-import 'select_subject.dart';
+import '../ClassWidgets/select_subject.dart';
 import '../../Models/subjects_datasource.dart';
-import './select_class_mode.dart';
-import './class_text_imputs.dart';
-import './class_repetition.dart';
-import './select_times.dart';
-import './class_days.dart';
-import '.././rounded_elevated_button.dart';
+import '../ClassWidgets/select_class_mode.dart';
+import '../ClassWidgets/class_text_imputs.dart';
+import '../ClassWidgets/select_times.dart';
+import '../ClassWidgets/class_days.dart';
+import '../rounded_elevated_button.dart';
 import '../switch_row_widget.dart';
+import '../ClassWidgets/select_exam_type.dart';
+import 'exam_text_imputs.dart';
+import 'exam_datetime_duration.dart';
 
 class CreateExam extends StatefulWidget {
   const CreateExam({super.key});
@@ -23,8 +25,8 @@ class CreateExam extends StatefulWidget {
 class _CreateExamState extends State<CreateExam> {
   final ScrollController scrollcontroller = ScrollController();
 
-  bool isClassInPerson = true;
-  bool addStartEndDates = false;
+  bool isExamInPerson = true;
+  bool resitOn = false;
 
   void _subjectSelected(ClassTagItem subject) {
     print("Selected subject: ${subject.title}");
@@ -35,9 +37,9 @@ class _CreateExamState extends State<CreateExam> {
 
     setState(() {
       if (mode.title == "In Person") {
-        isClassInPerson = true;
+        isExamInPerson = true;
       } else {
-        isClassInPerson = false;
+        isExamInPerson = false;
       }
     });
   }
@@ -46,25 +48,22 @@ class _CreateExamState extends State<CreateExam> {
     print("Selected subject: ${input}");
   }
 
-  void _classRepetitionSelected(ClassTagItem repetition) {
-    print("Selected repetitionMode: ${repetition.title}");
-  }
-
-  void _selectedTimes(DateTime timtimeFromeTo, DateTime timeTo) {
-    //print("Selected repetitionMode: ${repetition.title}");
-  }
-
-  void _classDaysSelected(List<ClassTagItem> days) {
-    print("Selected repetitionMode: ${days}");
+  void _examTypeSelected(ClassTagItem type) {
+    print("Selected repetitionMode: ${type.title}");
   }
 
   void _switchChangedState(bool isOn) {
     setState(() {
-      addStartEndDates = isOn;
-              print("Swithc isOn : $isOn");
-
+      resitOn = isOn;
+      print("Swithc isOn : $isOn");
     });
   }
+
+  void _dateOfExamSelected(DateTime date) {}
+
+  void _timeOfExamSelected(TimeOfDay time) {}
+
+  void _durationOfExamSelected(Duration duration) {}
 
   void _saveClass() {}
 
@@ -83,7 +82,7 @@ class _CreateExamState extends State<CreateExam> {
         child: ListView.builder(
             controller: scrollcontroller,
             padding: const EdgeInsets.only(top: 30),
-            itemCount: 8,
+            itemCount: 7,
             itemBuilder: (context, index) {
               if (index == 10) {
                 // Save/Cancel Buttons
@@ -106,41 +105,50 @@ class _CreateExamState extends State<CreateExam> {
                       height: 14,
                     ),
                     if (index == 1) ...[
+                      // Switch Start dates
+                      RowSwitch(
+                          title: "Resit",
+                          isOn: resitOn,
+                          changedState: _switchChangedState)
+                    ],
+                    if (index == 2) ...[
+                      SelectExamType(subjectSelected: _examTypeSelected)
+                    ],
+                    if (index == 3) ...[
                       // Select Mode
                       SelectClassMode(
                         subjectSelected: _subjectModeSelected,
                       )
                     ],
-                    if (index == 2) ...[
-                      // Add Text Descriptions
-                      ClassTextImputs(
-                        subjectSelected: _subjectModeSelected,
-                        isClassInPerson: isClassInPerson,
-                      )
-                    ],
-                    if (index == 3) ...[
-                      // Select Ocurring
-                      ClassRepetition(
-                        subjectSelected: _classRepetitionSelected,
-                      )
-                    ],
                     if (index == 4) ...[
-                      // Select Week days
-                      ClassWeekDays(
-                        subjectSelected: _classDaysSelected,
+                      // Add Text Descriptions
+                      ExamTextImputs(
+                        subjectSelected: _subjectModeSelected,
+                        isExamInPerson: isExamInPerson,
                       )
                     ],
+
+                    // if (index == 4) ...[
+                    //   // Select Week days
+                    //   ClassWeekDays(
+                    //     subjectSelected: _classDaysSelected,
+                    //   )
+                    // ],
                     if (index == 5) ...[
-                      // Select Time From/To
-                      // SelectTimes(
-                      //  timeSelected: _selectedTimes,
-                      // )
+                      // Select Day,Time, Duration
+                      ExamDateTimeDuration(
+                          dateSelected: _dateOfExamSelected,
+                          timeSelected: _timeOfExamSelected,
+                          durationSelected: _durationOfExamSelected),
                     ],
+                    // if (index == 6) ...[
+                    //   // Switch Start dates
+                    //   RowSwitch(
+                    //       title: "Add Start/end dates?",
+                    //       isOn: addStartEndDates,
+                    //       changedState: _switchChangedState)
+                    // ],
                     if (index == 6) ...[
-                      // Switch Start dates
-                      RowSwitch(title: "Add Start/end dates?", isOn: addStartEndDates, changedState: _switchChangedState)
-                    ],
-                    if (index == 7) ...[
                       // Save/Cancel buttons
                       Container(
                         height: 68,

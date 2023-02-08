@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class ExamStatic {
@@ -27,15 +26,73 @@ class ExamStatic {
     required this.examType,
   });
 
+  static List<ExamStatic> exams = [
+    ExamStatic(
+        title: "Biology",
+        description: "Redox Reactions",
+        dateFrom: DateTime.now().add(Duration(days: 3)),
+        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        tasksDue: 2,
+        upNext: false,
+        subjectColor: Colors.cyan,
+        duration: Duration(minutes: 60),
+        examType: 'Quiz'),
+    ExamStatic(
+        title: "Biology",
+        description: "Redox Reactions",
+        dateFrom: DateTime.now().add(Duration(days: 3)),
+        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        tasksDue: 2,
+        upNext: false,
+        subjectColor: Colors.cyan,
+        duration: Duration(minutes: 60),
+        examType: 'Quiz'),
+    ExamStatic(
+        title: "Biology",
+        description: "Redox Reactions",
+        dateFrom: DateTime.now().add(Duration(days: 3)),
+        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        tasksDue: 2,
+        upNext: false,
+        subjectColor: Colors.cyan,
+        duration: Duration(minutes: 60),
+        examType: 'Quiz'),
+    ExamStatic(
+        title: "Biology",
+        description: "Redox Reactions",
+        dateFrom: DateTime.now().add(Duration(days: 3)),
+        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        tasksDue: 2,
+        upNext: false,
+        subjectColor: Colors.cyan,
+        duration: Duration(minutes: 60),
+        examType: 'Quiz'),
+    ExamStatic(
+        title: "Biology",
+        description: "Redox Reactions",
+        dateFrom: DateTime.now().add(Duration(days: 3)),
+        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        tasksDue: 2,
+        upNext: false,
+        subjectColor: Colors.cyan,
+        duration: Duration(minutes: 60),
+        examType: 'Quiz'),
+  ];
+}
 
-     static List<ExamStatic> exams = [
-      ExamStatic(title: "Biology", description: "Redox Reactions", dateFrom: DateTime.now().add(Duration(days: 3)), subjectImage: Image.asset('assets/images/BiologyExample.png'), tasksDue: 2, upNext: false, subjectColor: Colors.cyan, duration: Duration(minutes: 60), examType: 'Quiz'),
-      ExamStatic(title: "Biology", description: "Redox Reactions", dateFrom: DateTime.now().add(Duration(days: 3)), subjectImage: Image.asset('assets/images/BiologyExample.png'), tasksDue: 2, upNext: false, subjectColor: Colors.cyan, duration: Duration(minutes: 60), examType: 'Quiz'),
-      ExamStatic(title: "Biology", description: "Redox Reactions", dateFrom: DateTime.now().add(Duration(days: 3)), subjectImage: Image.asset('assets/images/BiologyExample.png'), tasksDue: 2, upNext: false, subjectColor: Colors.cyan, duration: Duration(minutes: 60), examType: 'Quiz'),
-      ExamStatic(title: "Biology", description: "Redox Reactions", dateFrom: DateTime.now().add(Duration(days: 3)), subjectImage: Image.asset('assets/images/BiologyExample.png'), tasksDue: 2, upNext: false, subjectColor: Colors.cyan, duration: Duration(minutes: 60), examType: 'Quiz'),
-      ExamStatic(title: "Biology", description: "Redox Reactions", dateFrom: DateTime.now().add(Duration(days: 3)), subjectImage: Image.asset('assets/images/BiologyExample.png'), tasksDue: 2, upNext: false, subjectColor: Colors.cyan, duration: Duration(minutes: 60), examType: 'Quiz'),
+class ExamDuration {
+  final String title;
+  final int duration;
 
-  
+  ExamDuration({
+    required this.title,
+    required this.duration,
+  });
 
+    static List<ExamDuration> durations = [
+      ExamDuration(title: "30 minutes", duration: 30),
+      ExamDuration(title: "60 minutes", duration: 60),
+      ExamDuration(title: "90 minutes", duration: 90),
+      ExamDuration(title: "120 minutes", duration: 120),
     ];
 }

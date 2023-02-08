@@ -5,6 +5,7 @@ import '../app.dart';
 import '../Utilities/constants.dart';
 
 import '../Widgets/ClassWidgets/create_class_widget.dart';
+import '../Widgets/ExamWidgets/create_exam.dart';
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({super.key});
@@ -79,7 +80,7 @@ class _CreateScreenState extends State<CreateScreen>
               body: const TabBarView(
                 children: [
                   CreateClass(),
-                  Icon(Icons.directions_transit),
+                  CreateExam(),
                   Icon(Icons.directions_bike),
                   Icon(Icons.directions_transit),
                   Icon(Icons.directions_bike),

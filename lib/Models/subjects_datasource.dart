@@ -65,4 +65,13 @@ class ClassTagItem {
     ClassTagItem(
         title: "Sun", selected: false, isAddNewCard: false, cardIndex: 6)
   ];
+
+  static List<ClassTagItem> examTypes = [
+    ClassTagItem(
+        title: "Exam", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "Quiz", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: "Test", selected: false, isAddNewCard: false, cardIndex: 2),
+  ];
 }

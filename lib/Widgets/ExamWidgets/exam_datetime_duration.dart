@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_study_life_flutter/Models/exam_datasource.dart';
 
 import '../../Utilities/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../Extensions/extensions.dart';
-import '../regular_teztField.dart';
 import '../../app.dart';
 import '../../Models/subjects_datasource.dart';
 import 'dart:io' show Platform;
@@ -11,37 +10,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
 
-class SelectTimes extends StatefulWidget {
+class ExamDateTimeDuration extends StatefulWidget {
+  final Function dateSelected;
   final Function timeSelected;
-  SelectTimes({super.key, required this.timeSelected});
+  final Function durationSelected;
+
+  const ExamDateTimeDuration(
+      {super.key,
+      required this.dateSelected,
+      required this.timeSelected,
+      required this.durationSelected});
 
   @override
-  State<SelectTimes> createState() => _SelectTimesState();
+  State<ExamDateTimeDuration> createState() => _ExamDateTimeDurationState();
 }
 
-class _SelectTimesState extends State<SelectTimes> {
-  final timeFromController = TextEditingController();
-  final timeToController = TextEditingController();
-
-  final List<ClassTagItem> _subjects = ClassTagItem.subjectModes;
+class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
+  final dateController = TextEditingController();
+  final timeController = TextEditingController();
+  final List<ExamDuration> _durations = ExamDuration.durations;
+  String selectedDuration = ExamDuration.durations.first.title;
 
   int selectedTabIndex = 0;
+  late DateTime date = DateTime.now();
   late TimeOfDay pickedTimeFrom = const TimeOfDay(hour: 08, minute: 00);
-  late TimeOfDay pickedTimeTo = const TimeOfDay(hour: 09, minute: 00);
 
   @override
   void initState() {
-    timeFromController.text = "9:00AM";
-    timeToController.text = "10:30AM";
+    dateController.text = "Fri, 4 Mar 2023";
+    timeController.text = "10:30 AM";
     super.initState();
-  }
-
-  void _tappedOnTimeFrom(ThemeMode theme, bool isDateFrom) {
-    _showDatePicker(theme, isDateFrom);
-  }
-
-  void _tappedOnTimeTo(ThemeMode theme, bool isDateFrom) {
-        _showDatePicker(theme, isDateFrom);
   }
 
   void _showiOSDateSelectionDialog(Widget child) {
@@ -61,11 +59,78 @@ class _SelectTimesState extends State<SelectTimes> {
             ));
   }
 
+  // Date pickers
+
   void _showAndroidDateSelectionDialog(ThemeMode theme, bool isDateFrom) {
     _showAndroidDatePicker(context, theme == ThemeMode.light, isDateFrom);
   }
 
   Future<void> _showAndroidDatePicker(
+      BuildContext context, bool isLightTheme, bool isDateFrom) async {
+    final DateTime? picked = await showDatePicker(
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                primary: isLightTheme
+                    ? Constants.lightThemePrimaryColor
+                    : Constants
+                        .darkThemeBackgroundColor, // header background color
+                onPrimary: isLightTheme
+                    ? Colors.black
+                    : Constants.darkThemePrimaryColor, // header text color
+                onSurface: isLightTheme
+                    ? Colors.grey
+                    : Constants.darkThemeSecondaryColor, // body text color
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: isLightTheme
+                      ? Colors.black
+                      : Constants.darkThemePrimaryColor, // button text color
+                ),
+              ),
+            ),
+            child: child!,
+          );
+        },
+        context: context,
+        initialDatePickerMode: DatePickerMode.year,
+        initialDate: date,
+        firstDate: DateTime(1950, 1),
+        lastDate: DateTime(2025, 12));
+    if (picked != null && picked != date) {
+      setState(() {
+        date = picked;
+        dateController.text = DateFormat('EEE, d MMM, yyyy').format(picked);
+      });
+    }
+  }
+
+  void _showDatePicker(ThemeMode theme, bool isDateFrom) {
+    Platform.isAndroid
+        ? _showAndroidDateSelectionDialog
+        : _showiOSDateSelectionDialog(CupertinoDatePicker(
+            initialDateTime: DateTime.now(),
+            mode: CupertinoDatePickerMode.date,
+            use24hFormat: true,
+            onDateTimeChanged: (DateTime newDate) {
+              setState(() {
+                date = newDate;
+                dateController.text =
+                    DateFormat('EEE, d MMM, yyyy').format(newDate);
+              });
+            },
+          ));
+  }
+
+  // Time pickers
+
+  void _showAndroidTimeSelectionDialog(ThemeMode theme, bool isDateFrom) {
+    _showAndroidTimePicker(context, theme == ThemeMode.light, isDateFrom);
+  }
+
+  Future<void> _showAndroidTimePicker(
       BuildContext context, bool isLightTheme, bool isDateFrom) async {
     final TimeOfDay? picked = await showTimePicker(
         builder: (context, child) {
@@ -126,22 +191,17 @@ class _SelectTimesState extends State<SelectTimes> {
     }
   }
 
-  void _showDatePicker(ThemeMode theme, bool isDateFrom) {
+  void _showTimePicker(ThemeMode theme, bool isDateFrom) {
     Platform.isAndroid
-        ? _showAndroidDateSelectionDialog
+        ? _showAndroidTimeSelectionDialog
         : _showiOSDateSelectionDialog(CupertinoTimerPicker(
             mode: CupertinoTimerPickerMode.hm,
             minuteInterval: 1,
             initialTimerDuration: Duration.zero,
             onTimerDurationChanged: (Duration changeTimer) {
               setState(() {
-                if (isDateFrom) {
-                  pickedTimeFrom = minutesToTimeOfDay(changeTimer);
-                  timeFromController.text = pickedTimeFrom.format(context);
-                } else {
-                  pickedTimeTo = minutesToTimeOfDay(changeTimer);
-                  timeToController.text = pickedTimeTo.format(context);
-                }
+                pickedTimeFrom = minutesToTimeOfDay(changeTimer);
+                timeController.text = pickedTimeFrom.format(context);
               });
             },
           ));
@@ -177,7 +237,7 @@ class _SelectTimesState extends State<SelectTimes> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Start Time*',
+                        'Date*',
                         style: theme == ThemeMode.light
                             ? Constants.lightThemeSubtitleTextStyle
                             : Constants.darkThemeSubtitleTextStyle,
@@ -187,12 +247,12 @@ class _SelectTimesState extends State<SelectTimes> {
                         height: 6,
                       ),
                       DateTimeSelectionTextField(
-                        timeFromController.text,
+                        dateController.text,
                         Platform.isAndroid
                             ? _showAndroidDateSelectionDialog
                             : _showDatePicker,
-                        textController: timeFromController,
-                        isDateFrom: true,
+                        textController: dateController,
+                        isDateFrom: false,
                       ),
                     ],
                   ),
@@ -205,7 +265,7 @@ class _SelectTimesState extends State<SelectTimes> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'End Time',
+                        'Time*',
                         style: theme == ThemeMode.light
                             ? Constants.lightThemeSubtitleTextStyle
                             : Constants.darkThemeSubtitleTextStyle,
@@ -215,31 +275,66 @@ class _SelectTimesState extends State<SelectTimes> {
                         height: 6,
                       ),
                       DateTimeSelectionTextField(
-                        timeToController.text,
-                        Platform.isAndroid ? _showAndroidDateSelectionDialog :
-                        _showDatePicker,
-                        // Platform.isAndroid
-                        //     ? _showAndroidDateSelectionDialog
-                        //     : () => _showiOSDateSelectionDialog(
-                        //             CupertinoTimerPicker(
-                        //           mode: CupertinoTimerPickerMode.hm,
-                        //           minuteInterval: 1,
-                        //           initialTimerDuration: Duration.zero,
-                        //           onTimerDurationChanged:
-                        //               (Duration changeTimer) {
-                        //             setState(() {
-                        //               pickedTimeFrom =
-                        //                   minutesToTimeOfDay(changeTimer);
-                        //               print("ADASDADASDAD $pickedTimeFrom");
-                        //             });
-                        //           },
-                        //         )),
-                        textController: timeToController, isDateFrom: false,
+                        timeController.text,
+                        Platform.isAndroid
+                            ? _showAndroidTimeSelectionDialog
+                            : _showTimePicker,
+                        textController: timeController,
+                        isDateFrom: false,
                       )
                     ],
                   ),
                 ),
               ],
+            ),
+            Container(
+              height: 6,
+            ),
+            Text(
+              'Duration*',
+              style: theme == ThemeMode.light
+                  ? Constants.lightThemeSubtitleTextStyle
+                  : Constants.darkThemeSubtitleTextStyle,
+              textAlign: TextAlign.left,
+            ),
+            Container(
+              height: 6,
+            ),
+            Container(
+              height: 45,
+              width: double.infinity,
+              //margin: const EdgeInsets.only(left: 40, right: 40),
+              decoration: BoxDecoration(
+                color: theme == ThemeMode.light
+                    ? Colors.transparent
+                    : Colors.black,
+                border: Border.all(
+                  width: 1,
+                  color: theme == ThemeMode.dark
+                      ? Colors.transparent
+                      : Colors.black.withOpacity(0.2),
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: ButtonTheme(
+                  alignedDropdown: true,
+                  child: DropdownButton(
+                    value: selectedDuration,
+                    onChanged: (String? newValue) =>
+                        setState(() => selectedDuration = newValue ?? ""),
+                    items: _durations
+                        .map<DropdownMenuItem<String>>(
+                            (ExamDuration durationItem) =>
+                                DropdownMenuItem<String>(
+                                  value: durationItem.title,
+                                  child: Text(durationItem.title),
+                                ))
+                        .toList(),
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
