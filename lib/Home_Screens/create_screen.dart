@@ -6,6 +6,9 @@ import '../Utilities/constants.dart';
 
 import '../Widgets/ClassWidgets/create_class_widget.dart';
 import '../Widgets/ExamWidgets/create_exam.dart';
+import '../Widgets/TaskWidgets/create_task.dart';
+import '../Widgets/HolidayWidgets/create_holiday.dart';
+import '../Widgets/ExtrasWidgets/create_extra.dart';
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({super.key});
@@ -81,9 +84,9 @@ class _CreateScreenState extends State<CreateScreen>
                 children: [
                   CreateClass(),
                   CreateExam(),
-                  Icon(Icons.directions_bike),
-                  Icon(Icons.directions_transit),
-                  Icon(Icons.directions_bike),
+                  CreateTask(),
+                  CreateHoliday(),
+                  CreateExtra(),
                 ],
               ),
               // child: Container(
@@ -100,7 +103,6 @@ class _CreateScreenState extends State<CreateScreen>
       },
       onClosing: () {
         Navigator.pop(context);
-        print("ASDDADSASD");
       },
     );
     });

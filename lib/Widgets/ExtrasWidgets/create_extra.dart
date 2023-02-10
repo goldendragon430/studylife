@@ -5,51 +5,47 @@ import '../../app.dart';
 import '../../Utilities/constants.dart';
 import '../ClassWidgets/select_subject.dart';
 import '../../Models/subjects_datasource.dart';
-import '../ClassWidgets/select_class_mode.dart';
-import '../ClassWidgets/class_text_imputs.dart';
-import '../ClassWidgets/select_times.dart';
-import '../ClassWidgets/class_days.dart';
 import '../rounded_elevated_button.dart';
-import '../switch_row_widget.dart';
-import '../ClassWidgets/select_exam_type.dart';
-import 'exam_text_imputs.dart';
-import 'exam_datetime_duration.dart';
+import '../TaskWidgets/task_text_imputs.dart';
+import './select_eventType.dart';
+import '../ClassWidgets/class_repetition.dart';
+import '../ClassWidgets/class_days.dart';
+import '../ClassWidgets/select_times.dart';
+import '../HolidayWidgets/holiday_text_imputs.dart';
+import '../add_photo_widget.dart';
 
-class CreateExam extends StatefulWidget {
-  const CreateExam({super.key});
+// import './task_datetime.dart';
+// import './select_tasktype.dart';
+// import './select_taskOccuring.dart';
+// import './select_repeatOptions.dart';
+
+class CreateExtra extends StatefulWidget {
+  const CreateExtra({super.key});
 
   @override
-  State<CreateExam> createState() => _CreateExamState();
+  State<CreateExtra> createState() => _CreateExtraState();
 }
 
-class _CreateExamState extends State<CreateExam> {
+class _CreateExtraState extends State<CreateExtra> {
   final ScrollController scrollcontroller = ScrollController();
 
   bool isExamInPerson = true;
   bool resitOn = false;
 
-  void _subjectSelected(ClassTagItem subject) {
-    print("Selected subject: ${subject.title}");
+  void _classRepetitionSelected(ClassTagItem repetition) {
+    print("Selected repetitionMode: ${repetition.title}");
   }
 
-  void _subjectModeSelected(ClassTagItem mode) {
-    print("Selected mode: ${mode.title}");
-
-    setState(() {
-      if (mode.title == "In Person") {
-        isExamInPerson = true;
-      } else {
-        isExamInPerson = false;
-      }
-    });
+  void _extraTypeSelected(ClassTagItem taskType) {
+    print("Selected task: ${taskType.title}");
   }
 
   void _TextInputAdded(String input) {
     print("Selected subject: ${input}");
   }
 
-  void _examTypeSelected(ClassTagItem type) {
-    print("Selected repetitionMode: ${type.title}");
+  void _taskOccuringSelected(ClassTagItem occuring) {
+    print("Selected repetitionMode: ${occuring.title}");
   }
 
   void _switchChangedState(bool isOn) {
@@ -59,12 +55,19 @@ class _CreateExamState extends State<CreateExam> {
     });
   }
 
-  void _dateOfExamSelected(DateTime date) {}
+  void _classDaysSelected(List<ClassTagItem> days) {
+    print("Selected repetitionMode: ${days}");
+  }
 
-  void _timeOfExamSelected(TimeOfDay time) {}
+  void _taskRepeatOptionSelected(ClassTagItem repeatOption) {
+    print("Selected task: ${repeatOption.title}");
+  }
 
-  void _durationOfExamSelected(Duration duration) {}
+  void _tasRepeatDateSelect(DateTime date) {}
 
+  void _selectedTimes(DateTime timtimeFromeTo, DateTime timeTo) {
+    //print("Selected repetitionMode: ${repetition.title}");
+  }
   void _saveClass() {}
 
   void _cancel() {
@@ -97,8 +100,8 @@ class _CreateExamState extends State<CreateExam> {
                   children: [
                     if (index == 0) ...[
                       // Select Subject
-                      SelectSubject(
-                        subjectSelected: _subjectSelected,
+                      SelectExtraType(
+                        subjectSelected: _extraTypeSelected,
                       )
                     ],
                     Container(
@@ -106,34 +109,38 @@ class _CreateExamState extends State<CreateExam> {
                     ),
                     if (index == 1) ...[
                       // Switch Start dates
-                      RowSwitch(
-                          title: "Resit",
-                          isOn: resitOn,
-                          changedState: _switchChangedState)
+                      HolidayTextImputs(
+                        formsFilled: _TextInputAdded,
+                        hintText: 'Name',
+                        labelTitle: 'Name*',
+                      )
                     ],
                     if (index == 2) ...[
-                      SelectExamType(subjectSelected: _examTypeSelected)
+                      // Select Ocurring
+                      ClassRepetition(
+                        subjectSelected: _classRepetitionSelected,
+                      )
                     ],
                     if (index == 3) ...[
-                      // Select Mode
-                      SelectClassMode(
-                        subjectSelected: _subjectModeSelected,
+                      // Select Week days
+                      ClassWeekDays(
+                        subjectSelected: _classDaysSelected,
                       )
                     ],
                     if (index == 4) ...[
-                      // Add Text Descriptions
-                      ExamTextImputs(
-                        subjectSelected: _subjectModeSelected,
-                        isExamInPerson: isExamInPerson,
+                      // Select Time From/To
+                      SelectTimes(
+                        timeSelected: _selectedTimes,
                       )
                     ],
-                    if (index == 5) ...[
-                      // Select Day,Time, Duration
-                      ExamDateTimeDuration(
-                          dateSelected: _dateOfExamSelected,
-                          timeSelected: _timeOfExamSelected,
-                          durationSelected: _durationOfExamSelected),
-                    ],
+                    if (index == 5) ...[AddPhotoWidget()],
+                    // if (index == 5) ...[
+                    //   // Select Subject
+                    //   SelectTaskRepeatOptions(
+                    //     repeatOptionSelected: _taskRepeatOptionSelected,
+                    //     dateSelected: _tasRepeatDateSelect,
+                    //   )
+                    // ],
                     if (index == 6) ...[
                       // Save/Cancel buttons
                       Container(
@@ -150,7 +157,7 @@ class _CreateExamState extends State<CreateExam> {
                           children: [
                             RoundedElevatedButton(
                                 _saveClass,
-                                "Save Exam",
+                                "Save Task",
                                 Constants.lightThemePrimaryColor,
                                 Colors.black,
                                 45),

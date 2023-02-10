@@ -5,24 +5,21 @@ import '../../app.dart';
 import '../../Utilities/constants.dart';
 import '../ClassWidgets/select_subject.dart';
 import '../../Models/subjects_datasource.dart';
-import '../ClassWidgets/select_class_mode.dart';
-import '../ClassWidgets/class_text_imputs.dart';
-import '../ClassWidgets/select_times.dart';
-import '../ClassWidgets/class_days.dart';
 import '../rounded_elevated_button.dart';
-import '../switch_row_widget.dart';
-import '../ClassWidgets/select_exam_type.dart';
-import 'exam_text_imputs.dart';
-import 'exam_datetime_duration.dart';
+import '../TaskWidgets/task_text_imputs.dart';
+import './task_datetime.dart';
+import './select_tasktype.dart';
+import './select_taskOccuring.dart';
+import './select_repeatOptions.dart';
 
-class CreateExam extends StatefulWidget {
-  const CreateExam({super.key});
+class CreateTask extends StatefulWidget {
+  const CreateTask({super.key});
 
   @override
-  State<CreateExam> createState() => _CreateExamState();
+  State<CreateTask> createState() => _CreateTaskState();
 }
 
-class _CreateExamState extends State<CreateExam> {
+class _CreateTaskState extends State<CreateTask> {
   final ScrollController scrollcontroller = ScrollController();
 
   bool isExamInPerson = true;
@@ -32,24 +29,16 @@ class _CreateExamState extends State<CreateExam> {
     print("Selected subject: ${subject.title}");
   }
 
-  void _subjectModeSelected(ClassTagItem mode) {
-    print("Selected mode: ${mode.title}");
-
-    setState(() {
-      if (mode.title == "In Person") {
-        isExamInPerson = true;
-      } else {
-        isExamInPerson = false;
-      }
-    });
+  void _taskTypeSelected(ClassTagItem taskType) {
+    print("Selected task: ${taskType.title}");
   }
 
   void _TextInputAdded(String input) {
     print("Selected subject: ${input}");
   }
 
-  void _examTypeSelected(ClassTagItem type) {
-    print("Selected repetitionMode: ${type.title}");
+  void _taskOccuringSelected(ClassTagItem occuring) {
+    print("Selected repetitionMode: ${occuring.title}");
   }
 
   void _switchChangedState(bool isOn) {
@@ -59,11 +48,16 @@ class _CreateExamState extends State<CreateExam> {
     });
   }
 
-  void _dateOfExamSelected(DateTime date) {}
+  void _dateOfTaskSelected(DateTime date) {}
 
-  void _timeOfExamSelected(TimeOfDay time) {}
+  void _taskRepeatOptionSelected(ClassTagItem repeatOption) {
+    print("Selected task: ${repeatOption.title}");
+  }
 
-  void _durationOfExamSelected(Duration duration) {}
+  void _tasRepeatDateSelect(DateTime date) {}
+
+
+  void _timeOfTaskelected(TimeOfDay time) {}
 
   void _saveClass() {}
 
@@ -106,33 +100,34 @@ class _CreateExamState extends State<CreateExam> {
                     ),
                     if (index == 1) ...[
                       // Switch Start dates
-                      RowSwitch(
-                          title: "Resit",
-                          isOn: resitOn,
-                          changedState: _switchChangedState)
+                      TaskTextImputs(
+                        formsFilled: _TextInputAdded, labelTitle: 'Title*', hintText: 'Task Title',
+                      ),
                     ],
                     if (index == 2) ...[
-                      SelectExamType(subjectSelected: _examTypeSelected)
+                      // Select Day,Time, Duration
+                      TaskDateTime(
+                          dateSelected: _dateOfTaskSelected,
+                          timeSelected: _timeOfTaskelected),
                     ],
                     if (index == 3) ...[
-                      // Select Mode
-                      SelectClassMode(
-                        subjectSelected: _subjectModeSelected,
+                      // Select Subject
+                      SelectTaskType(
+                        taskSelected: _taskTypeSelected,
                       )
                     ],
                     if (index == 4) ...[
-                      // Add Text Descriptions
-                      ExamTextImputs(
-                        subjectSelected: _subjectModeSelected,
-                        isExamInPerson: isExamInPerson,
+                      // Select Subject
+                      SelectTaskOccuring(
+                        occuringSelected: _taskOccuringSelected,
                       )
                     ],
                     if (index == 5) ...[
-                      // Select Day,Time, Duration
-                      ExamDateTimeDuration(
-                          dateSelected: _dateOfExamSelected,
-                          timeSelected: _timeOfExamSelected,
-                          durationSelected: _durationOfExamSelected),
+                      // Select Subject
+                      SelectTaskRepeatOptions(
+                        repeatOptionSelected: _taskRepeatOptionSelected,
+                        dateSelected: _tasRepeatDateSelect,
+                      )
                     ],
                     if (index == 6) ...[
                       // Save/Cancel buttons
@@ -150,7 +145,7 @@ class _CreateExamState extends State<CreateExam> {
                           children: [
                             RoundedElevatedButton(
                                 _saveClass,
-                                "Save Exam",
+                                "Save Task",
                                 Constants.lightThemePrimaryColor,
                                 Colors.black,
                                 45),

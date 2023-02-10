@@ -74,4 +74,79 @@ class ClassTagItem {
     ClassTagItem(
         title: "Test", selected: false, isAddNewCard: false, cardIndex: 2),
   ];
+
+  static List<ClassTagItem> taskTypes = [
+    ClassTagItem(
+        title: "Assignment",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 0),
+    ClassTagItem(
+        title: "Reminder", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: "Revision", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: "Essay", selected: false, isAddNewCard: false, cardIndex: 3),
+    ClassTagItem(
+        title: "Group Project",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 4),
+    ClassTagItem(
+        title: "Reading", selected: false, isAddNewCard: false, cardIndex: 5),
+    ClassTagItem(
+        title: "Meeting", selected: false, isAddNewCard: false, cardIndex: 6),
+  ];
+
+  static List<ClassTagItem> taskOccuring = [
+    ClassTagItem(
+        title: "Once",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 0),
+    ClassTagItem(
+        title: "Every Day", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: "Every Other Day", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: "Every 3 Days", selected: false, isAddNewCard: false, cardIndex: 3),
+    ClassTagItem(
+        title: "Every 4 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 4),
+    ClassTagItem(
+        title: "Every 5 Days", selected: false, isAddNewCard: false, cardIndex: 5),
+    ClassTagItem(
+        title: "Every 6 Days", selected: false, isAddNewCard: false, cardIndex: 6),
+           ClassTagItem(
+        title: "Weekly",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 7),
+           ClassTagItem(
+        title: "Every Other Week",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 8),
+           ClassTagItem(
+        title: "Monthly",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 9),
+  ];
+
+   static List<ClassTagItem> taskRepeatOptions = [
+    ClassTagItem(
+        title: "End on a Specific Date", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "Forever", selected: false, isAddNewCard: false, cardIndex: 1),
+  ];
+
+  static List<ClassTagItem> extraEventType = [
+    ClassTagItem(
+        title: "Academic", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "Non-Academic", selected: false, isAddNewCard: false, cardIndex: 1),
+  ];
 }

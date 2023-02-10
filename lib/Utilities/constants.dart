@@ -35,7 +35,6 @@ class Constants {
   static Color darkThemeInactiveSwitchColor = HexColor.fromHex("#414C71");
   static Color lightThemeInactiveSwitchColor = HexColor.fromHex("#E1EAF1");
 
-
   static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
     <int, Color>{
@@ -260,4 +259,16 @@ class Constants {
       fontFamily: 'Roboto',
       fontWeight: FontWeight.w500,
       color: Colors.black);
+
+  static TextStyle lightThemePhotoDescriptionStyle = TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: darkThemeUpNextBannerBackgroundColor);
+
+  static TextStyle darkThemePhotoDescriptionStyle = TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white.withOpacity(0.7));
 }
