@@ -13,6 +13,7 @@ import '../Models/class_datasource.dart';
 import '../Models/exam_datasource.dart';
 import '../Widgets/exam_widget.dart';
 import '../Widgets/quotes_widget.dart';
+import './class_details_screen.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, this.onPush});
@@ -69,6 +70,11 @@ class _HomePageState extends State<HomePage> {
 
   void _selectedCard(int index) {
     print("CLass ITEM SELECTED $index");
+         Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const ClassDetailsScreen(),
+            fullscreenDialog: true));
   }
 
   @override

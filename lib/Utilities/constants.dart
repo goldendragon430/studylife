@@ -34,6 +34,8 @@ class Constants {
   static Color taskDueBannerColor = HexColor.fromHex("#FF6705");
   static Color darkThemeInactiveSwitchColor = HexColor.fromHex("#414C71");
   static Color lightThemeInactiveSwitchColor = HexColor.fromHex("#E1EAF1");
+  static Color darkThemeClassExamCardBackgroundColor =
+      HexColor.fromHex("#273052");
 
   static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
@@ -104,6 +106,12 @@ class Constants {
       fontWeight: FontWeight.normal,
       color: Colors.black.withOpacity(0.6));
 
+  static TextStyle roboto15NormalWhiteTextStyle = const TextStyle(
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white);
+
   static TextStyle roboto15DarkThemeTextStyle = TextStyle(
       fontSize: 15,
       fontFamily: 'Roboto',
@@ -152,11 +160,29 @@ class Constants {
       fontWeight: FontWeight.w900,
       color: lightThemeTextSelectionColor);
 
+  static TextStyle lightThemeDetailsDateStyle = TextStyle(
+      fontSize: 20,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: lightThemeTextSelectionColor);
+
+  static TextStyle darkThemeDetailsDateStyle = const TextStyle(
+      fontSize: 20,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white);
+
   static TextStyle tabItemTitleTextStyle = TextStyle(
       fontSize: 15,
       fontFamily: 'Roboto',
       fontWeight: FontWeight.normal,
       color: lightThemeTextSelectionColor);
+
+  static TextStyle darkThemeInfoSubtitleTextStyle = const TextStyle(
+      fontSize: 15,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white);
 
   static TextStyle lightThemeUpNextBannerTextStyle = TextStyle(
       fontSize: 15,
@@ -247,6 +273,18 @@ class Constants {
       fontFamily: 'Roboto',
       fontWeight: FontWeight.normal,
       color: Colors.black);
+
+      static TextStyle lightThemeRegular14HalfOppacityTextSelectedStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black.withOpacity(0.5));
+
+  static TextStyle darkThemeRegular14HalfOppacityTextSelectedStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white.withOpacity(0.5));
 
   static TextStyle lightThemeMedium14SelectedTextStyle = const TextStyle(
       fontSize: 14,
