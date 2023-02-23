@@ -26,36 +26,39 @@ class TabBarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-                                      color: selected 
-                                          ? isLightTheme ? Constants.lightThemePrimaryColor : Constants.darkThemePrimaryColor : isLightTheme ? Constants.lightThemeNotSelectedItemColor : Constants.darkThemeNotSelectedItemColor,
-                                      shadowColor: Colors.transparent,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0)),
-                                      child: InkWell(
-                                        onTap: _cardTapped,
-                                        child: Container(
-                                          height: 64,
-                                          padding: const EdgeInsets.only(left: 17,right: 17),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                badgeNumber.toString(),
-                                                style: Constants.tabItemBadgeTextStyle,
-                                              ),
-                                                 Text(
-                                                " ",
-                                                style: Constants.tabItemBadgeTextStyle,
-                                              ),
-                                                Text(
-                                                title,
-                                                style: Constants.tabItemTitleTextStyle,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
+      color: selected
+          ? isLightTheme
+              ? Constants.lightThemePrimaryColor
+              : Constants.darkThemePrimaryColor
+          : isLightTheme
+              ? Constants.lightThemeNotSelectedItemColor
+              : Constants.darkThemeNotSelectedItemColor,
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      child: InkWell(
+        onTap: _cardTapped,
+        child: Container(
+          height: 64,
+          padding: const EdgeInsets.only(left: 17, right: 17),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                badgeNumber.toString(),
+                style: Constants.tabItemBadgeTextStyle,
+              ),
+              Text(
+                " ",
+                style: Constants.tabItemBadgeTextStyle,
+              ),
+              Text(
+                title,
+                style: Constants.tabItemTitleTextStyle,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

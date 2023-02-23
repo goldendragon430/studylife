@@ -14,11 +14,13 @@ import '../Models/exam_datasource.dart';
 import '../Widgets/exam_widget.dart';
 import '../Widgets/quotes_widget.dart';
 import './class_details_screen.dart';
+import '../login_state.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key, this.onPush});
-  final ValueChanged<int>? onPush;
+  HomePage({super.key, required this.detailsPath});
+ // final ValueChanged<int>? onPush;
   late ScrollController _controller;
+  final String detailsPath;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -68,13 +70,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+    void _logOut(BuildContext context, WidgetRef ref) {
+      ref.read(loginStateProvider).loggedIn = false;
+     // context.beamToNamed('/login');
+      //context.go(Constants.homeRouteName);
+
+  }
+
   void _selectedCard(int index) {
     print("CLass ITEM SELECTED $index");
-         Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const ClassDetailsScreen(),
-            fullscreenDialog: true));
+        //  Navigator.push(
+        // context,
+        // MaterialPageRoute(
+        //     builder: (context) => const ClassDetailsScreen(),
+        //     fullscreenDialog: true));
   }
 
   @override
@@ -93,8 +102,7 @@ class _HomePageState extends State<HomePage> {
             actions: [
               // Navigate to the Search Screen
               IconButton(
-                onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SearchPage())),
+                onPressed: () => _logOut(context, ref),
                 icon: theme == ThemeMode.light
                     ? Image.asset('assets/images/SearchIconLightTheme.png')
                     : Image.asset('assets/images/SearchIconDarkTheme.png'),

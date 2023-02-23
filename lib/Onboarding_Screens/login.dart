@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:beamer/beamer.dart';
+
 
 import '../app.dart';
+import '../login_state.dart';
+import '../Utilities/constants.dart';
 import '../Widgets/regular_teztField.dart';
 import '../Utilities/constants.dart';
 import '../Widgets/rounded_elevated_button.dart';
+import '../Controllers/auth_controller.dart';
 
 class LoginScreen extends ConsumerWidget {
   LoginScreen({super.key});
@@ -12,15 +17,39 @@ class LoginScreen extends ConsumerWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void _login() {}
+  void _login(BuildContext context, WidgetRef ref) {
+      ref.read(loginStateProvider).loggedIn = true;
+     // context.beamToNamed('/login');
+      //context.go(Constants.homeRouteName);
+
+  }
   void _forgotPassword() {}
+
+   void saveLoginState(BuildContext context) {
+   // final themeasd = ref.read(provider)
+  //  Provider.of<LoginState>(context, listen: false).loggedIn = true;
+
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
     // double screenWidth = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).padding.top;
 
     return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+        backgroundColor: Colors.transparent,
+       // surfaceTintColor: Colors.transparent,
+       foregroundColor: theme == ThemeMode.light ? Colors.black : Colors.white,
+        shadowColor: Colors.transparent,
+        elevation: 0.0,
+        title: const Text(
+          '',
+        ),
+      ),
+
         body: Container(
       color: theme == ThemeMode.light
           ? Colors.white
@@ -33,7 +62,7 @@ class LoginScreen extends ConsumerWidget {
                 Container(
                   alignment: Alignment.topCenter,
                   width: double.infinity,
-                  margin: const EdgeInsets.only(top: 133),
+                  margin:  EdgeInsets.only(top: (height + 133)),
                   height: double.infinity,
                   decoration: const BoxDecoration(
                     color: Colors.white,
@@ -80,7 +109,7 @@ class LoginScreen extends ConsumerWidget {
                             }, TextInputType.visiblePassword,
                                 passwordController, false),
                             RoundedElevatedButton(
-                                _login,
+                                () => _login(context, ref),
                                 "Log In",
                                 Constants.lightThemePrimaryColor,
                                 Colors.black,
@@ -164,7 +193,7 @@ class LoginScreen extends ConsumerWidget {
                             }, TextInputType.visiblePassword,
                                 passwordController, true),
                             RoundedElevatedButton(
-                                _login,
+                                () => _login,
                                 "Log In",
                                 Constants.darkThemePrimaryColor,
                                 Colors.black,

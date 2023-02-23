@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../Utilities/constants.dart';
 
@@ -12,14 +11,18 @@ class ClassDetailsScreen extends ConsumerWidget {
 
   void _editButtonPressed() {}
 
-  void _closeButtonPressed() {}
+  void _closeButtonPressed(context) {
+   // Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
 
     return Container(
-      color: theme == ThemeMode.light ? Constants.lightThemeBackgroundColor : Constants.darkThemeBackgroundColor,
+      color: theme == ThemeMode.light
+          ? Constants.lightThemeBackgroundColor
+          : Constants.darkThemeBackgroundColor,
       width: double.infinity,
       height: double.infinity,
       child: Stack(
@@ -58,7 +61,7 @@ class ClassDetailsScreen extends ConsumerWidget {
               splashColor: Colors.transparent,
               elevation: 0.0,
               // ),
-              onPressed: _closeButtonPressed,
+              onPressed: () => _closeButtonPressed(context),
               child: Container(
                 height: 36,
                 width: 36,
@@ -69,17 +72,37 @@ class ClassDetailsScreen extends ConsumerWidget {
               ),
             ),
           ),
-           ClassExamDetailsInfoCard(Colors.red, "Class", "Chemistry", "Redox Reactions", DateTime.now(), DateTime.now()),
-           Container(
+          ClassExamDetailsInfoCard(Colors.red, "Class", "Chemistry",
+              "Redox Reactions", DateTime.now(), DateTime.now()),
+          Container(
             margin: const EdgeInsets.only(left: 20, top: 349),
-             child: Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               IconLabelDetailsRow(Image.asset("assets/images/LocationPinGrey.png"), "Where", "Room 5, Block D"),
+                IconLabelDetailsRow(
+                    Image.asset("assets/images/LocationPinGrey.png"),
+                    "Where",
+                    "Room 5, Block D"),
+                Container(
+                  height: 8,
+                ),
+                IconLabelDetailsRow(
+                    Image.asset("assets/images/ProfessorIconGrey.png"),
+                    "Professor",
+                    "Mark Anderson"),
+                Container(
+                  height: 58,
+                ),
+                Text(
+                  'Tasks due for Chemistry',
+                  style: theme == ThemeMode.light
+                      ? Constants.lightThemeRegular14TextSelectedStyle
+                      : Constants.darkThemeRegular14TextStyle,
+                )
               ],
-             ),
-           ),
+            ),
+          ),
         ],
       ),
     );

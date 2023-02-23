@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:beamer/beamer.dart';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -19,7 +20,10 @@ class GetStarted extends ConsumerWidget {
 
   void _officeLogin() {}
 
-  void _login() {}
+  void _login(BuildContext context) {
+  print('asdsadadsadsasdad');
+   context.beamToNamed('/get_started/login');
+  }
 
   void _signUp() {}
 
@@ -163,7 +167,7 @@ class GetStarted extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               RoundedElevatedButton(
-                                  _login,
+                                  () => _login(context),
                                   "Log in with email",
                                   Constants.lightThemePrimaryColor,
                                   Colors.black,
@@ -341,7 +345,7 @@ class GetStarted extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               RoundedElevatedButton(
-                                  _login,
+                                  () => _login(context),
                                   "Log in with email",
                                   Constants.darkThemePrimaryColor,
                                   Colors.black,

@@ -2,6 +2,19 @@ import 'package:flutter/material.dart';
 import '../Extensions/extensions.dart';
 
 class Constants {
+
+//Keys
+static String homeRouteName = 'home';
+static String loggedInKey = 'LoggedIn';
+static String loginRouteName = 'login';
+static String rootRouteName = 'root';
+static String registerRouteName = 'register';
+static String getStartedRouteName = 'getStarted';
+static String forgotPasswordRouteName = 'forgotPassword';
+static String searchRouteName = 'searchRoute';
+static String classDetailsRouteName = 'classDetails';
+static String createScreenRouteName = 'createScreen';
+
 //Colors
   static Color lightThemeBackgroundColor = Colors.white;
   static Color darkThemeBackgroundColor = HexColor.fromHex("#1E2439");
