@@ -8,6 +8,49 @@ import '../app.dart';
 import '../Utilities/constants.dart';
 import '../Widgets/social_login_widget.dart';
 import '../Widgets/rounded_elevated_button.dart';
+import './login.dart';
+import '../Controllers/auth_notifier.dart';
+
+// Location defining the pages for the first tab
+// class OnboardingLocation extends BeamLocation<BeamState> {
+//   @override
+//   List<String> get pathPatterns => ['/get_started/:login'];
+
+//   @override
+//   List<BeamPage> buildPages(BuildContext context, BeamState state) {
+//     final pages = [
+//       const BeamPage(
+//         key: ValueKey('get_started'),
+//         title: 'Get Srarted',
+//         child: GetStarted(),
+//       ),
+//       if (state.pathParameters.containsKey('login'))
+//         BeamPage(
+//           key: ValueKey('login'),
+//           title: "login",
+//           child: LoginScreen(),
+//         ),
+
+//       // BeamPage(
+//       //   key: const ValueKey('login'),
+//       //   title: 'Login',
+//       //   child: LoginScreen(),
+//       // ),
+//       // BeamPage(
+//       //   key: const ValueKey('signup'),
+//       //   title: 'Signup',
+//       //   child: RegisterScreen(),
+//       // ),
+//       // BeamPage(
+//       //   key: const ValueKey('forgot_password'),
+//       //   title: 'Forgot Password',
+//       //   child: ForgotPasswordScreen(),
+//       // ),
+//     ];
+
+//     return pages;
+//   }
+// }
 
 class GetStarted extends ConsumerWidget {
   const GetStarted({super.key});
@@ -20,14 +63,23 @@ class GetStarted extends ConsumerWidget {
 
   void _officeLogin() {}
 
-  void _login(BuildContext context) {
-  print('asdsadadsadsasdad');
-   context.beamToNamed('/get_started/login');
+  void _login(BuildContext context, WidgetRef ref) {
+        context.beamToNamed('/started/login');
   }
 
-  void _signUp() {}
+  void _signUp(BuildContext context) {
+    context.beamToNamed('/started/signup');
+  }
 
   void _openTermsAndConditions() {}
+
+  // static final loginRouterDelegate = BeamerDelegate(
+  //   initialPath: '/get_started',
+  //   locationBuilder: BeamerLocationBuilder(
+  //     beamLocations: [OnboardingLocation()],
+  //   ),
+  //   notFoundRedirectNamed: '/get_started',
+  // );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -166,14 +218,15 @@ class GetStarted extends ConsumerWidget {
                             // mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              RoundedElevatedButton(
-                                  () => _login(context),
+                              RoundedElevatedButton(() => _login(context, ref),
                                   "Log in with email",
                                   Constants.lightThemePrimaryColor,
                                   Colors.black,
                                   45),
+                              //  LoginButton(),
+
                               RoundedElevatedButton(
-                                  _signUp,
+                                  () => _signUp(context),
                                   "Sign up with email",
                                   Constants.blueButtonBackgroundColor,
                                   Colors.white,
@@ -344,14 +397,13 @@ class GetStarted extends ConsumerWidget {
                             // mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              RoundedElevatedButton(
-                                  () => _login(context),
+                              RoundedElevatedButton(() => _login(context, ref),
                                   "Log in with email",
                                   Constants.darkThemePrimaryColor,
                                   Colors.black,
                                   45),
                               RoundedElevatedButton(
-                                  _signUp,
+                                  () => _signUp(context),
                                   "Sign up with email",
                                   Constants.blueButtonBackgroundColor,
                                   Colors.white,
@@ -400,3 +452,23 @@ class GetStarted extends ConsumerWidget {
     );
   }
 }
+
+// class LoginButton extends ConsumerWidget {
+//   const LoginButton({super.key});
+
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     return Container(
+//       width: double.infinity,
+//       child: ElevatedButton(
+//         onPressed: () async {
+//           await ref
+//               .read(authProvider.notifier)
+//               .loginUser("beamer", "supersecret");
+//           Beamer.of(context).update();
+//         },
+//         child: Text('Login'),
+//       ),
+//     );
+//   }
+// }

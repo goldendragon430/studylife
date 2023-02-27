@@ -4,7 +4,7 @@ class ExamStatic {
   final String title;
   final String description;
   final DateTime dateFrom;
-  final Image subjectImage;
+  final String subjectImage;
   final int tasksDue;
   final bool upNext;
   final Color subjectColor;
@@ -31,7 +31,7 @@ class ExamStatic {
         title: "Biology",
         description: "Redox Reactions",
         dateFrom: DateTime.now().add(Duration(days: 3)),
-        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        subjectImage: 'assets/images/BiologyExample.png',
         tasksDue: 2,
         upNext: false,
         subjectColor: Colors.cyan,
@@ -41,7 +41,7 @@ class ExamStatic {
         title: "Biology",
         description: "Redox Reactions",
         dateFrom: DateTime.now().add(Duration(days: 3)),
-        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        subjectImage: 'assets/images/BiologyExample.png',
         tasksDue: 2,
         upNext: false,
         subjectColor: Colors.cyan,
@@ -51,7 +51,7 @@ class ExamStatic {
         title: "Biology",
         description: "Redox Reactions",
         dateFrom: DateTime.now().add(Duration(days: 3)),
-        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        subjectImage: 'assets/images/BiologyExample.png',
         tasksDue: 2,
         upNext: false,
         subjectColor: Colors.cyan,
@@ -61,7 +61,7 @@ class ExamStatic {
         title: "Biology",
         description: "Redox Reactions",
         dateFrom: DateTime.now().add(Duration(days: 3)),
-        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        subjectImage: 'assets/images/BiologyExample.png',
         tasksDue: 2,
         upNext: false,
         subjectColor: Colors.cyan,
@@ -71,7 +71,7 @@ class ExamStatic {
         title: "Biology",
         description: "Redox Reactions",
         dateFrom: DateTime.now().add(Duration(days: 3)),
-        subjectImage: Image.asset('assets/images/BiologyExample.png'),
+        subjectImage: 'assets/images/BiologyExample.png',
         tasksDue: 2,
         upNext: false,
         subjectColor: Colors.cyan,

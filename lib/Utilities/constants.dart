@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import '../Extensions/extensions.dart';
 
 class Constants {
-
 //Keys
-static String homeRouteName = 'home';
-static String loggedInKey = 'LoggedIn';
-static String loginRouteName = 'login';
-static String rootRouteName = 'root';
-static String registerRouteName = 'register';
-static String getStartedRouteName = 'getStarted';
-static String forgotPasswordRouteName = 'forgotPassword';
-static String searchRouteName = 'searchRoute';
-static String classDetailsRouteName = 'classDetails';
-static String createScreenRouteName = 'createScreen';
+  static String homeRouteName = 'home';
+  static String loggedInKey = 'LoggedIn';
+  static String loginRouteName = 'login';
+  static String rootRouteName = 'root';
+  static String registerRouteName = 'register';
+  static String getStartedRouteName = 'getStarted';
+  static String forgotPasswordRouteName = 'forgotPassword';
+  static String searchRouteName = 'searchRoute';
+  static String classDetailsRouteName = 'classDetails';
+  static String createScreenRouteName = 'createScreen';
 
 //Colors
   static Color lightThemeBackgroundColor = Colors.white;
@@ -49,6 +48,13 @@ static String createScreenRouteName = 'createScreen';
   static Color lightThemeInactiveSwitchColor = HexColor.fromHex("#E1EAF1");
   static Color darkThemeClassExamCardBackgroundColor =
       HexColor.fromHex("#273052");
+  static Color lightThemeClassExamDetailsBackgroundColor =
+      HexColor.fromHex("#F5F9FC");
+  static Color lightThemeScoreBackgroundColor = HexColor.fromHex("#00DEFF");
+  static Color lightThemeAddScoreBackgroundColor =
+      HexColor.fromHex("#00DEFF").withOpacity(0.15);
+  static Color darkThemeAddScoreBackgroundColor =
+      Colors.white.withOpacity(0.15);
 
   static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
@@ -245,6 +251,18 @@ static String createScreenRouteName = 'createScreen';
       fontWeight: FontWeight.bold,
       color: Colors.black);
 
+  static TextStyle darkThemeTaskDueDescriptionTextStyle = const TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.white);
+
+  static TextStyle lightThemeTaskDueDescriptionTextStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: lightThemeTextSelectionColor);
+
   static TextStyle darkThemeSubtitleTextStyle = const TextStyle(
       fontSize: 14,
       fontFamily: 'Roboto',
@@ -287,7 +305,7 @@ static String createScreenRouteName = 'createScreen';
       fontWeight: FontWeight.normal,
       color: Colors.black);
 
-      static TextStyle lightThemeRegular14HalfOppacityTextSelectedStyle = TextStyle(
+  static TextStyle lightThemeRegular14HalfOppacityTextSelectedStyle = TextStyle(
       fontSize: 14,
       fontFamily: 'Roboto',
       fontWeight: FontWeight.normal,
@@ -322,4 +340,40 @@ static String createScreenRouteName = 'createScreen';
       fontFamily: 'Roboto',
       fontWeight: FontWeight.normal,
       color: Colors.white.withOpacity(0.7));
+
+  static TextStyle darkThemeTaskSubjectStyle = TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white.withOpacity(0.4));
+
+  static TextStyle lightThemeTaskSubjectStyle = TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black.withOpacity(0.4));
+
+  static TextStyle darkThemeTaskDueDatetStyle = const TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white);
+
+  static TextStyle lightThemeTaskDueDatetStyle = const TextStyle(
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
+
+  static TextStyle darkThemeNavigationButtonStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: darkThemePrimaryColor);
+
+  static TextStyle lightThemeNavigationButtonStyle = TextStyle(
+      fontSize: 14,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: blueButtonBackgroundColor);
 }

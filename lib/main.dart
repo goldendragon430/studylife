@@ -33,16 +33,16 @@ Future<void> main() async {
       // override the previous value with the new object
       sharedPreferencesProvider.overrideWithValue(sharedPreferences),
     ],
-    child: const MyStudyLife(),
+    child: App(),
   ));
 }
 
-class MyStudyLife extends ConsumerWidget {
-  const MyStudyLife({super.key});
+// class MyStudyLife extends ConsumerWidget {
+//   const MyStudyLife({super.key});
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return App();
-  }
-}
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     return MyApp();
+//   }
+// }

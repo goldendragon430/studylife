@@ -1,27 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../Utilities/constants.dart';
+import '../Extensions/extensions.dart';
 
 import '../../app.dart';
 import '../Widgets/class_exam_details_info_card.dart';
 import '../Widgets/icon_label_details_row.dart';
+import '../Models/tasks_due_dataSource.dart';
+import '../Widgets/task_due_card.dart';
+import '../Widgets/custom_alert.dart';
 
 class ClassDetailsScreen extends ConsumerWidget {
   const ClassDetailsScreen({super.key});
 
-  void _editButtonPressed() {}
+  void _editButtonPressed(BuildContext context) {
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => const CustomAlertView(),
+      //       fullscreenDialog: true));
+  }
 
   void _closeButtonPressed(context) {
-   // Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  void _selectTaskDue(int index) {
+    print("CARD SELECTED $index");
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
+    final List<TaskDueStatic> _tasksDue = TaskDueStatic.tasksDue;
 
     return Container(
       color: theme == ThemeMode.light
-          ? Constants.lightThemeBackgroundColor
+          ? Constants.lightThemeClassExamDetailsBackgroundColor
           : Constants.darkThemeBackgroundColor,
       width: double.infinity,
       height: double.infinity,
@@ -51,7 +66,7 @@ class ClassDetailsScreen extends ConsumerWidget {
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white))),
-                onPressed: _editButtonPressed,
+                onPressed: () => _editButtonPressed(context),
                 child: Text("Edit")),
           ),
           Positioned(
@@ -99,10 +114,24 @@ class ClassDetailsScreen extends ConsumerWidget {
                   style: theme == ThemeMode.light
                       ? Constants.lightThemeRegular14TextSelectedStyle
                       : Constants.darkThemeRegular14TextStyle,
-                )
+                ),
               ],
             ),
           ),
+            Container(
+                  alignment: Alignment.topCenter,
+                  height: double.infinity,
+                  margin: const EdgeInsets.only(top: 483),
+                  child: ListView.builder(
+                     // controller: widget._controller,
+                      itemCount: _tasksDue.length,
+                      itemBuilder: (context, index) {
+                        return TaskDueCardForClassOrExam(
+                            index,
+                            _tasksDue[index],
+                            _selectTaskDue,);
+                      }),
+                ),
         ],
       ),
     );

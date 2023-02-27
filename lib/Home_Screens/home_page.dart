@@ -15,6 +15,7 @@ import '../Widgets/exam_widget.dart';
 import '../Widgets/quotes_widget.dart';
 import './class_details_screen.dart';
 import '../login_state.dart';
+import './exam_details_screen.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required this.detailsPath});
@@ -78,12 +79,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _selectedCard(int index) {
-    print("CLass ITEM SELECTED $index");
-        //  Navigator.push(
-        // context,
-        // MaterialPageRoute(
-        //     builder: (context) => const ClassDetailsScreen(),
-        //     fullscreenDialog: true));
+         Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const ClassDetailsScreen(),
+            fullscreenDialog: true));
+  }
+
+   void _selectedExamCard(int index) {
+         Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const ExamDetailsScreen(),
+            fullscreenDialog: true));
   }
 
   @override
@@ -203,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                             classItem: _exams[index],
                             cardIndex: index,
                             upNext: true,
-                            cardselected: _selectedCard);
+                            cardselected: _selectedExamCard);
                       }),
                 ),
                 ],

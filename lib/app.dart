@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:beamer/beamer.dart';
-import 'package:my_study_life_flutter/login_state.dart';
 
 import './bottom_navigation.dart';
 import './tab_item.dart';
-import './tab_navigator.dart';
 import 'main.dart';
 import 'Home_Screens/create_screen.dart';
 import './Utilities/constants.dart';
@@ -14,6 +12,8 @@ import 'Home_Screens/create_screen.dart';
 import './Home_Screens/class_details_screen.dart';
 import './Controllers/auth_controller.dart';
 import './Router/routes.dart';
+import './Controllers/auth_notifier.dart';
+import './Onboarding_Screens/forgot_password.dart';
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) {
   var brightness = WidgetsBinding.instance.window.platformBrightness;
@@ -26,7 +26,7 @@ final themeModeProvider = StateProvider<ThemeMode>((ref) {
 });
 
 class App extends ConsumerStatefulWidget {
- App({super.key});
+  App({super.key});
 
   @override
   ConsumerState<App> createState() => AppState();
@@ -34,10 +34,41 @@ class App extends ConsumerStatefulWidget {
 
 class AppState extends ConsumerState<App>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+  late final _routerDelegate;
 
   @override
   void initState() {
     super.initState();
+    _routerDelegate = BeamerDelegate(
+      guards: [
+        /// if the user is authenticated
+        /// else send them to /login
+        BeamGuard(
+            pathPatterns: ['/home'],
+            check: (context, state) {
+              final container =
+                  ProviderScope.containerOf(context, listen: false);
+              return container.read(authProvider).status ==
+                  AuthStatus.authenticated;
+            },
+            beamToNamed: (_, __) => '/started'),
+
+        /// if the user is anything other than authenticated
+        /// else send them to /home
+        BeamGuard(
+            pathPatterns: ['/started'],
+            check: (context, state) {
+              final container =
+                  ProviderScope.containerOf(context, listen: false);
+              return container.read(authProvider).status !=
+                  AuthStatus.authenticated;
+            },
+            beamToNamed: (_, __) => '/home'),
+      ],
+      initialPath: '/started',
+      locationBuilder: (routeInformation, _) =>
+          BeamerLocations(routeInformation),
+    );
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -62,122 +93,29 @@ class AppState extends ConsumerState<App>
     }
   }
 
-    static final navigationBarRouterDelegate = BeamerDelegate(
-    initialPath: '/home',
-    locationBuilder: RoutesLocationBuilder(
-      routes: {
-        '*': (context, state, data) =>  const ScaffoldWithBottomNavBar(),
-      },
-    ),
-  );
-
-     static final loginRouterDelegate = BeamerDelegate(
-    initialPath: '/get_started',
-    locationBuilder: BeamerLocationBuilder(
-      beamLocations: [OnboardingLocation()],
-    ),
-    notFoundRedirectNamed: '/get_started',
-  );
-
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeModeProvider);
-    final signInState = ref.watch(loginStateProvider);
-    print("object ${signInState.loggedIn}");
+    // final signInState = ref.watch(loginStateProvider);
 
-  return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-         theme: ThemeData(
-          primarySwatch: Constants.kToLight, brightness: Brightness.light),
-      darkTheme: ThemeData(
-          primarySwatch: Constants.kToDark, brightness: Brightness.dark),
-      themeMode: theme,
-      routerDelegate: signInState.loggedIn ? navigationBarRouterDelegate : loginRouterDelegate,
-      routeInformationParser: BeamerParser(),
-      backButtonDispatcher: BeamerBackButtonDispatcher(
-        delegate: signInState.loggedIn ? navigationBarRouterDelegate : loginRouterDelegate,
+    final signInState = ref.watch(authProvider);
+    print("object ${signInState.status}");
+
+    return BeamerProvider(
+      routerDelegate: _routerDelegate,
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            primarySwatch: Constants.kToLight, brightness: Brightness.light),
+        darkTheme: ThemeData(
+            primarySwatch: Constants.kToDark, brightness: Brightness.dark),
+        themeMode: theme,
+        routeInformationParser: BeamerParser(),
+        routerDelegate: _routerDelegate,
+        backButtonDispatcher: BeamerBackButtonDispatcher(
+          delegate: _routerDelegate,
+        ),
       ),
     );
-
-
-    // return MaterialApp.router(
-    //   // routeInformationParser: router.router.routeInformationParser,
-    //   // routerDelegate: router.router.routerDelegate,
-    //   routerConfig: router,
-    //   debugShowCheckedModeBanner: false,
-    //   title: '',
-    //   theme: ThemeData(
-    //       primarySwatch: Constants.kToLight, brightness: Brightness.light),
-    //   darkTheme: ThemeData(
-    //       primarySwatch: Constants.kToDark, brightness: Brightness.dark),
-    //   themeMode: theme,
-    //   // home: signInState.isSignedIn == true ? const App() : ForgotPasswordScreen(),
-    //   //  home: const App(),
-    // );
-    // return WillPopScope(
-    //   onWillPop: () async {
-    //     final isFirstRouteInCurrentTab =
-    //         !await _navigatorKeys[_currentTab]!.currentState!.maybePop();
-    //     if (isFirstRouteInCurrentTab) {
-    //       // if not on the 'main' tab
-    //       if (_currentTab != TabItem.tabItems[0]) {
-    //         // select 'main' tab
-    //         _selectTab(TabItem.tabItems[0]);
-    //         // back button handled by app
-    //         return false;
-    //       }
-    //     }
-    //     // let system handle back button if we're on the first route
-    //     return isFirstRouteInCurrentTab;
-    //   },
-    // return Consumer(
-    //     builder: (context, ref, child) {
-
-    //       final theme = ref.watch(themeModeProvider);
-    //       return Scaffold(
-    //         // appBar: AppBar(
-    //         //   actions: [
-    //         //     IconButton(
-    //         //       onPressed: () {
-    //         //         ref.read(themeModeProvider.notifier).state =
-    //         //             theme == ThemeMode.light
-    //         //                 ? ThemeMode.dark
-    //         //                 : ThemeMode.light;
-    //         //       },
-    //         //       icon: Icon(theme == ThemeMode.dark
-    //         //           ? Icons.light_mode
-    //         //           : Icons.dark_mode),
-    //         //     ),
-    //         //   ],
-    //         // ),
-    //         floatingActionButton: Container(
-    //           padding: const EdgeInsets.only(top: 45),
-    //           height: 125,
-    //           width: 65,
-    //           child: FloatingActionButton(
-    //             foregroundColor: Colors.transparent,
-    //             backgroundColor: Colors.transparent,
-    //             highlightElevation: 0,
-    //             onPressed: _openCreateScreen,
-    //             elevation: 0.0,
-    //             child: Image.asset('assets/images/AddButtonIcon.png'),
-    //           ),
-    //         ),
-    //         body: Stack(children: <Widget>[
-    //           _buildOffstageNavigator(TabItem.tabItems[0]),
-    //           _buildOffstageNavigator(TabItem.tabItems[1]),
-    //           _buildOffstageNavigator(TabItem.tabItems[2]),
-    //           _buildOffstageNavigator(TabItem.tabItems[3]),
-    //           _buildOffstageNavigator(TabItem.tabItems[4]),
-    //         ]),
-    //         floatingActionButtonLocation:
-    //             FloatingActionButtonLocation.centerDocked,
-    //         bottomNavigationBar: BottomNavigation(
-    //             currentTab: _currentTab,
-    //             onSelectTab: _selectTab,
-    //             theme: ref.read(themeModeProvider.notifier).state),
-    //       );
-    //     },
-    // );
   }
 }

@@ -91,33 +91,35 @@ class ClassWidget extends ConsumerWidget {
                   ],
                 ),
               ),
-              Container(
-                // Subject Image
-                margin: const EdgeInsets.only(left: 192),
-                alignment: Alignment.bottomRight,
-                child: classItem.subjectImage,
+              Positioned(
+                right: 0,
+                child: Container(
+                  child: Image.asset(
+                    classItem.subjectImage,
+                  ),
+                ),
               ),
-              Container(
-                // Gradient Color filler
-                alignment: Alignment.centerRight,
-                margin: const EdgeInsets.only(left: 192),
-                width: 98,
-                decoration: BoxDecoration(
+              Positioned(
+                right: 45,
+                child: Container(
+                  height: 114.0,
+                  width: 98,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
                     gradient: LinearGradient(
-                        begin: Alignment.center,
-                        end: Alignment.centerLeft,
-                        stops: const [
-                      0.1,
-                      0.5,
-                    ],
-                        colors: [
-                      theme == ThemeMode.light
-                          ? Colors.white.withOpacity(.1)
-                          : Constants.darkThemeSecondaryBackgroundColor
-                              .withOpacity(.8),
-                           Colors.white,
-
-                    ])),
+                      begin: FractionalOffset.centerRight,
+                      end: FractionalOffset.centerLeft,
+                      colors: theme == ThemeMode.light
+                          ? [Colors.white.withOpacity(0.0), Colors.white]
+                          : [
+                              Constants.darkThemeSecondaryBackgroundColor
+                                  .withOpacity(0.0),
+                              Constants.darkThemeSecondaryBackgroundColor
+                            ],
+                      stops: const [0.0, 1.0],
+                    ),
+                  ),
+                ),
               ),
               if (classItem.upNext) ...[
                 // Up Next banner
@@ -171,26 +173,6 @@ class ClassWidget extends ConsumerWidget {
             ],
           ),
         ),
-        // child: Container(
-        //   height: 126,
-        //   padding: const EdgeInsets.only(left: 17, right: 17),
-        // child: Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //   children: [
-        //     Text(
-        //       badgeNumber.toString(),
-        //       style: Constants.tabItemBadgeTextStyle,
-        //     ),
-        //     Text(
-        //       " ",
-        //       style: Constants.tabItemBadgeTextStyle,
-        //     ),
-        //     Text(
-        //       title,
-        //       style: Constants.tabItemTitleTextStyle,
-        //     ),
-        //   ],
-        // ),
       ),
     );
   }

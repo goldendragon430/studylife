@@ -6,7 +6,6 @@ import 'package:my_study_life_flutter/Home_Screens/home_page.dart';
 import 'package:my_study_life_flutter/Onboarding_Screens/login.dart';
 
 import './tab_item.dart';
-import './tab_navigator.dart';
 import 'main.dart';
 import 'app.dart';
 import './Utilities/constants.dart';
@@ -16,44 +15,49 @@ import './Onboarding_Screens/login.dart';
 import './Onboarding_Screens/forgot_password.dart';
 import './Onboarding_Screens/signup.dart';
 
-// Location defining the pages for the first tab
-class OnboardingLocation extends BeamLocation<BeamState> {
+class BeamerLocations extends BeamLocation<BeamState> {
+  BeamerLocations(RouteInformation routeInformation) : super(routeInformation);
+
   @override
-  List<String> get pathPatterns => ['/get_started/:login'];
+  List<Pattern> get pathPatterns => [
+        '/started',
+        '/home',
+      ];
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    final pages = [
-      const BeamPage(
-        key: ValueKey('get_started'),
-        title: 'Get Srarted',
-        child: GetStarted(),
-      ),
-      if (state.pathParameters.containsKey('login'))
+    return [
+      if (state.uri.pathSegments.contains('started'))
+        const BeamPage(
+          key: ValueKey('started'),
+          title: 'Get Started',
+          child: GetStarted(),
+        ),
+      if (state.uri.pathSegments.contains('login'))
         BeamPage(
-          key: ValueKey('login'),
-          title: "login",
+          key: const ValueKey('login'),
+          title: 'Login',
           child: LoginScreen(),
         ),
-
-      // BeamPage(
-      //   key: const ValueKey('login'),
-      //   title: 'Login',
-      //   child: LoginScreen(),
-      // ),
-      // BeamPage(
-      //   key: const ValueKey('signup'),
-      //   title: 'Signup',
-      //   child: RegisterScreen(),
-      // ),
-      // BeamPage(
-      //   key: const ValueKey('forgot_password'),
-      //   title: 'Forgot Password',
-      //   child: ForgotPasswordScreen(),
-      // ),
+      if (state.uri.pathSegments.contains('signup'))
+        BeamPage(
+          key: const ValueKey('signup'),
+          title: 'Signup',
+          child: RegisterScreen(),
+        ),
+      if (state.uri.pathSegments.contains('forgot_password'))
+        BeamPage(
+          key: const ValueKey('forgot_password'),
+          title: 'Forgot Password',
+          child: ForgotPasswordScreen(),
+        ),
+      if (state.uri.pathSegments.contains('home'))
+        BeamPage(
+          key: ValueKey('home'),
+          title: 'Home',
+          child: ScaffoldWithBottomNavBar(),
+        ),
     ];
-
-    return pages;
   }
 }
 
@@ -153,7 +157,7 @@ class ScaffoldWithNavBarTabItem extends BottomNavigationBarItem {
       required Widget icon,
       required Widget activeIcon,
       String? label})
-      : super(icon: icon, label: label);
+      : super(icon: icon, label: label, activeIcon: activeIcon);
 
   /// The initial location/path
   final String initialLocation;
@@ -184,6 +188,15 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
       initialPath: '/calendar',
       locationBuilder: (routeInformation, _) {
         if (routeInformation.location!.contains('calendar')) {
+          return CalendarTabItemLocation(routeInformation);
+        }
+        return NotFound(path: routeInformation.location!);
+      },
+    ),
+    BeamerDelegate(
+      initialPath: '/empty-tab',
+      locationBuilder: (routeInformation, _) {
+        if (routeInformation.location!.contains('empty-tab')) {
           return CalendarTabItemLocation(routeInformation);
         }
         return NotFound(path: routeInformation.location!);
@@ -296,6 +309,7 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
       ];
 
       return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: IndexedStack(
           index: _currentIndex,
           children: [
@@ -304,6 +318,15 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
             ),
             Beamer(
               routerDelegate: _routerDelegates[1],
+            ),
+            Beamer(
+              routerDelegate: _routerDelegates[2],
+            ),
+            Beamer(
+              routerDelegate: _routerDelegates[3],
+            ),
+            Beamer(
+              routerDelegate: _routerDelegates[4],
             ),
           ],
         ),

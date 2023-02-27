@@ -6,7 +6,7 @@ class ClassStatic {
   final String description;
   final DateTime dateFrom;
   final DateTime dateTo;
-  final Image subjectImage;
+  final String subjectImage;
   final int tasksDue;
   final bool upNext;
   final Color subjectColor;
@@ -27,10 +27,10 @@ class ClassStatic {
 
 
      static List<ClassStatic> classes = [
-      ClassStatic(title: "Chemistry", description: "Redox Reactions", dateFrom: DateTime.now(), dateTo: DateTime.now().add(const Duration(hours: 1)), subjectImage: Image.asset('assets/images/ChemistryClassImage.png'), tasksDue: 2, upNext: false, subjectColor: Colors.red),
-            ClassStatic(title: "Chemistry", description: "Redox Reactions", dateFrom: DateTime.now(), dateTo: DateTime.now().add(const Duration(hours: 1)), subjectImage: Image.asset('assets/images/ChemistryClassImage.png'), tasksDue: 2, upNext: true, subjectColor: Colors.red)
-,      ClassStatic(title: "Chemistry", description: "Redox Reactions", dateFrom: DateTime.now().add(Duration(days: 2)), dateTo: DateTime.now().add(const Duration(days: 2, hours: 1)), subjectImage: Image.asset('assets/images/ChemistryClassImage.png'), tasksDue: 2, upNext: true, subjectColor: Colors.red)
-,      ClassStatic(title: "Chemistry", description: "Redox Reactions", dateFrom: DateTime.now(), dateTo: DateTime.now().add(const Duration(hours: 1)), subjectImage: Image.asset('assets/images/ChemistryClassImage.png'), tasksDue: 2, upNext: true, subjectColor: Colors.red)
+      ClassStatic(title: "Chemistry", description: "Redox Reactions", dateFrom: DateTime.now(), dateTo: DateTime.now().add(const Duration(hours: 1)), subjectImage: 'assets/images/ChemistryClassImage.png', tasksDue: 2, upNext: false, subjectColor: Colors.red),
+            ClassStatic(title: "Chemistry", description: "Redox Reactions", dateFrom: DateTime.now(), dateTo: DateTime.now().add(const Duration(hours: 1)), subjectImage: 'assets/images/ChemistryClassImage.png', tasksDue: 2, upNext: true, subjectColor: Colors.red)
+,      ClassStatic(title: "Chemistry", description: "Redox Reactions", dateFrom: DateTime.now().add(Duration(days: 2)), dateTo: DateTime.now().add(const Duration(days: 2, hours: 1)), subjectImage: 'assets/images/ChemistryClassImage.png', tasksDue: 2, upNext: true, subjectColor: Colors.red)
+,      ClassStatic(title: "Chemistry", description: "Redox Reactions", dateFrom: DateTime.now(), dateTo: DateTime.now().add(const Duration(hours: 1)), subjectImage: 'assets/images/ChemistryClassImage.png', tasksDue: 2, upNext: true, subjectColor: Colors.red)
 
     ];
 }

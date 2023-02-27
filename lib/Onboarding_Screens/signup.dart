@@ -13,14 +13,27 @@ class RegisterScreen extends ConsumerWidget {
   final passwordController = TextEditingController();
   final confirmController = TextEditingController();
 
+ void _signUp() {
+
+ }
+
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    // double screenWidth = MediaQuery.of(context).size.width;
-
-    void _signUp() {}
+    var height = MediaQuery.of(context).padding.top;
 
     return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+        backgroundColor: Colors.transparent,
+       foregroundColor: theme == ThemeMode.light ? Colors.black : Colors.white,
+        shadowColor: Colors.transparent,
+        elevation: 0.0,
+        title: const Text(
+          '',
+        ),
+      ),
         body: Container(
       color: theme == ThemeMode.light
           ? Colors.white
@@ -33,7 +46,7 @@ class RegisterScreen extends ConsumerWidget {
                 Container(
                   alignment: Alignment.topCenter,
                   width: double.infinity,
-                  margin: const EdgeInsets.only(top: 133),
+                  margin: EdgeInsets.only(top: (height +133)),
                   height: double.infinity,
                   decoration: const BoxDecoration(
                     color: Colors.white,

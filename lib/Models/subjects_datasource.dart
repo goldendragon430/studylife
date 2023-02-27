@@ -100,45 +100,51 @@ class ClassTagItem {
 
   static List<ClassTagItem> taskOccuring = [
     ClassTagItem(
-        title: "Once",
-        selected: false,
-        isAddNewCard: false,
-        cardIndex: 0),
+        title: "Once", selected: false, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
         title: "Every Day", selected: false, isAddNewCard: false, cardIndex: 1),
     ClassTagItem(
-        title: "Every Other Day", selected: false, isAddNewCard: false, cardIndex: 2),
+        title: "Every Other Day",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 2),
     ClassTagItem(
-        title: "Every 3 Days", selected: false, isAddNewCard: false, cardIndex: 3),
+        title: "Every 3 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 3),
     ClassTagItem(
         title: "Every 4 Days",
         selected: false,
         isAddNewCard: false,
         cardIndex: 4),
     ClassTagItem(
-        title: "Every 5 Days", selected: false, isAddNewCard: false, cardIndex: 5),
-    ClassTagItem(
-        title: "Every 6 Days", selected: false, isAddNewCard: false, cardIndex: 6),
-           ClassTagItem(
-        title: "Weekly",
+        title: "Every 5 Days",
         selected: false,
         isAddNewCard: false,
-        cardIndex: 7),
-           ClassTagItem(
+        cardIndex: 5),
+    ClassTagItem(
+        title: "Every 6 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 6),
+    ClassTagItem(
+        title: "Weekly", selected: false, isAddNewCard: false, cardIndex: 7),
+    ClassTagItem(
         title: "Every Other Week",
         selected: false,
         isAddNewCard: false,
         cardIndex: 8),
-           ClassTagItem(
-        title: "Monthly",
-        selected: false,
-        isAddNewCard: false,
-        cardIndex: 9),
+    ClassTagItem(
+        title: "Monthly", selected: false, isAddNewCard: false, cardIndex: 9),
   ];
 
-   static List<ClassTagItem> taskRepeatOptions = [
+  static List<ClassTagItem> taskRepeatOptions = [
     ClassTagItem(
-        title: "End on a Specific Date", selected: false, isAddNewCard: false, cardIndex: 0),
+        title: "End on a Specific Date",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 0),
     ClassTagItem(
         title: "Forever", selected: false, isAddNewCard: false, cardIndex: 1),
   ];
@@ -147,6 +153,21 @@ class ClassTagItem {
     ClassTagItem(
         title: "Academic", selected: false, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
-        title: "Non-Academic", selected: false, isAddNewCard: false, cardIndex: 1),
+        title: "Non-Academic",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
+  ];
+
+  static List<ClassTagItem> scoreTypes = [
+    ClassTagItem(
+        title: "%", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "Number", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: "Letter Grade",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
   ];
 }
