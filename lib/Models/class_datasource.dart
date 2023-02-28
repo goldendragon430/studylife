@@ -34,3 +34,19 @@ class ClassStatic {
 
     ];
 }
+
+class ClassSubject {
+  final String title;
+
+  ClassSubject({
+    required this.title,
+  });
+
+    static List<ClassSubject> subjects = [
+     ClassSubject(title: "All Subjects"),
+     ClassSubject(title: "Science"),
+     ClassSubject(title: "Maths"),
+     ClassSubject(title: "French"),
+     ClassSubject(title: "Biology"),
+    ];
+}

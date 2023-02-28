@@ -14,6 +14,7 @@ import './Onboarding_Screens/get_started.dart';
 import './Onboarding_Screens/login.dart';
 import './Onboarding_Screens/forgot_password.dart';
 import './Onboarding_Screens/signup.dart';
+import './Activities_Screens/activities_screen.dart';
 
 class BeamerLocations extends BeamLocation<BeamState> {
   BeamerLocations(RouteInformation routeInformation) : super(routeInformation);
@@ -56,6 +57,13 @@ class BeamerLocations extends BeamLocation<BeamState> {
           key: ValueKey('home'),
           title: 'Home',
           child: ScaffoldWithBottomNavBar(),
+        ),
+      if (state.uri.pathSegments.contains('activities'))
+        BeamPage(
+          key: ValueKey('activities'),
+          title: 'Tab Activities',
+          type: BeamPageType.noTransition,
+          child: ActivitiesScreen(),
         ),
     ];
   }
@@ -117,7 +125,7 @@ class ActivitiesTabItemLocation extends BeamLocation<BeamState> {
           key: ValueKey('activities'),
           title: 'Tab Activities',
           type: BeamPageType.noTransition,
-          child: HomePage(detailsPath: 'activities/details'),
+          child: ActivitiesScreen(),
         ),
         //  const BeamPage(
         //       key: ValueKey('/activities/details'),

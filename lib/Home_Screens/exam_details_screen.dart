@@ -11,9 +11,14 @@ import '../Widgets/task_due_card.dart';
 import '../Widgets/custom_alert.dart';
 import './add_exam_score.dart';
 
-class ExamDetailsScreen extends ConsumerWidget {
+class ExamDetailsScreen extends StatefulWidget {
   const ExamDetailsScreen({super.key});
 
+  @override
+  State<ExamDetailsScreen> createState() => _ExamDetailsScreenState();
+}
+
+class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   void _editButtonPressed(BuildContext context) {
     // Navigator.push(
     //   context,
@@ -52,7 +57,9 @@ class ExamDetailsScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    return Consumer(builder: (_, WidgetRef ref, __) {
+
     final theme = ref.watch(themeModeProvider);
     final List<TaskDueStatic> _tasksDue = TaskDueStatic.tasksDue;
 
@@ -67,7 +74,7 @@ class ExamDetailsScreen extends ConsumerWidget {
           Container(
             height: 206,
             alignment: Alignment.topCenter,
-            child: Image.asset("assets/images//ClassExamBackgroundImage.png"),
+            child: Image.asset("assets/images/ClassExamBackgroundImage.png"),
           ),
           Container(
             height: 36,
@@ -90,6 +97,31 @@ class ExamDetailsScreen extends ConsumerWidget {
                         color: Colors.white))),
                 onPressed: () => _editButtonPressed(context),
                 child: Text("Edit")),
+          ),
+          Container(
+             height: 36,
+            width: 80,
+             margin: const EdgeInsets.only(left: 107, top: 50),
+
+            child: ElevatedButton.icon(
+              style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(0.0),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    )),
+                    minimumSize:
+                        MaterialStateProperty.all(const Size((75), 45)),
+                    backgroundColor: MaterialStateProperty.all(Colors.black),
+                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    textStyle: MaterialStateProperty.all(const TextStyle(
+                        fontFamily: "Roboto",
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white))),
+              onPressed: () {},
+              icon: Image.asset('assets/images/PinIconWhite.png'),
+              label: Text('Pin'),
+            ),
           ),
           Positioned(
             right: -10,
@@ -163,7 +195,8 @@ class ExamDetailsScreen extends ConsumerWidget {
                       onPressed: () => _addScorePressed(context),
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(0.0),
-                          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          shape:
+                              MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
                           )),
                           minimumSize:
@@ -216,5 +249,6 @@ class ExamDetailsScreen extends ConsumerWidget {
         ],
       ),
     );
+  });
   }
 }
