@@ -55,6 +55,10 @@ class Constants {
       HexColor.fromHex("#00DEFF").withOpacity(0.15);
   static Color darkThemeAddScoreBackgroundColor =
       Colors.white.withOpacity(0.15);
+  static Color darkThemeTaskTypeColorColor =
+      HexColor.fromHex("#72788E").withOpacity(0.7);
+
+      
 
   static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
@@ -376,4 +380,8 @@ class Constants {
       fontFamily: 'Roboto',
       fontWeight: FontWeight.normal,
       color: blueButtonBackgroundColor);
+
+
+
+      
 }

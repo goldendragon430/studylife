@@ -6,6 +6,7 @@ import '../Extensions/extensions.dart';
 import '../../app.dart';
 import './activities_classes_screen.dart';
 import './activities_exams_screen.dart';
+import './activities_tasks_screen.dart';
 
 class ActivitiesScreen extends StatefulWidget {
   const ActivitiesScreen({super.key});
@@ -92,7 +93,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
               ActivitiesClassesScreen(),
               ActivitiesExamsScreen(),
 
-              ActivitiesClassesScreen(),
+              ActivitiesTasksScreen(),
 
               ActivitiesClassesScreen(),
 

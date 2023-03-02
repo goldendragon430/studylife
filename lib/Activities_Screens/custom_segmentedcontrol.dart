@@ -7,7 +7,8 @@ import '../../app.dart';
 
 class CustomSegmentedControl extends ConsumerWidget {
   final Map<int, Widget> tabs;
-  const CustomSegmentedControl({super.key, required this.tabs});
+  final Function valueChanged;
+  const CustomSegmentedControl(this.valueChanged, {super.key, required this.tabs});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +44,7 @@ class CustomSegmentedControl extends ConsumerWidget {
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInToLinear,
       onValueChanged: (v) {
-        print(v);
+        valueChanged(v);
       },
     );
   }

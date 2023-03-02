@@ -95,7 +95,7 @@ extension DefaultAppDateFormat on DateTime {
     return outputDate.toString();
   }
 
-    String getFormattedHoursFromDate(DateTime date) {
+  String getFormattedHoursFromDate(DateTime date) {
     /// Convert into local date format.
     var localDate = date.toLocal();
 
@@ -121,10 +121,36 @@ extension DateHelpers on DateTime {
         now.year == this.year;
   }
 
+  bool isThisMonth() {
+    final now = DateTime.now();
+    return now.month == this.month;
+  }
+
   bool isYesterday() {
     final yesterday = DateTime.now().subtract(Duration(days: 1));
     return yesterday.day == this.day &&
         yesterday.month == this.month &&
         yesterday.year == this.year;
+  }
+}
+
+extension DateHelper on DateTime {
+  bool isSameDate(DateTime other) {
+    return this.year == other.year &&
+        this.month == other.month &&
+        this.day == other.day;
+  }
+
+  bool isSameDay(DateTime other) {
+    return this.day == other.day;
+  }
+
+   bool isSameMonth(DateTime other) {
+    return this.month == other.month;
+  }
+
+  int getDifferenceInDaysWithNow() {
+    final now = DateTime.now();
+    return now.difference(this).inDays;
   }
 }

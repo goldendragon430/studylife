@@ -8,13 +8,21 @@ import '../Extensions/extensions.dart';
 import '.././Widgets/exam_widget.dart';
 import '../Models/exam_datasource.dart';
 import '../Home_Screens/exam_details_screen.dart';
+import '../Models/task_datasource.dart';
+import '../Widgets/TaskWidgets/task_widget.dart';
 
 class ExpandableListView extends StatefulWidget {
   final String period;
   final String numberOfItems;
+  final List<ExamStatic>? exams;
+  final List<TaskItem>? tasks;
 
   const ExpandableListView(
-      {Key? key, required this.period, required this.numberOfItems})
+      {Key? key,
+      required this.period,
+      required this.numberOfItems,
+      this.exams,
+      this.tasks})
       : super(key: key);
 
   @override
@@ -23,14 +31,21 @@ class ExpandableListView extends StatefulWidget {
 
 class _ExpandableListViewState extends State<ExpandableListView> {
   bool expandFlag = false;
-  final List<ExamStatic> _exams = ExamStatic.exams;
 
-    void _selectedExamCard(int index) {
+  void _selectedExamCard(int index) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => const ExamDetailsScreen(),
             fullscreenDialog: true));
+  }
+
+  void _selectedTaskCard(int index) {
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => const ExamDetailsScreen(),
+    //         fullscreenDialog: true));
   }
 
   @override
@@ -40,11 +55,11 @@ class _ExpandableListViewState extends State<ExpandableListView> {
         final theme = ref.watch(themeModeProvider);
 
         return Container(
-         // margin: EdgeInsets.only(left: 20, right: 20),
+          // margin: EdgeInsets.only(left: 20, right: 20),
           child: Column(
             children: <Widget>[
               Container(
-                          margin: EdgeInsets.only(left: 20, right: 20),
+                margin: EdgeInsets.only(left: 20, right: 20),
                 decoration: BoxDecoration(
                   color: theme == ThemeMode.light
                       ? Colors.white
@@ -84,12 +99,12 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                           child: Center(
                             child: expandFlag
                                 ? theme == ThemeMode.light
-                                    ?  Image.asset(
+                                    ? Image.asset(
                                         'assets/images/ExpandableSectionArrowBlack.png')
                                     : Image.asset(
                                         'assets/images/ExpandableSectionArrowWhiteUp.png')
                                 : theme == ThemeMode.light
-                                    ?  Image.asset(
+                                    ? Image.asset(
                                         'assets/images/ExpandableSectionArrowBlackDown.png')
                                     : Image.asset(
                                         'assets/images/ExpandableSectionArrowWhiteDown.png'),
@@ -110,30 +125,22 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   expanded: expandFlag,
                   child: ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
-                            return ExamWidget(
-                      classItem: _exams[index],
-                      cardIndex: index,
-                      upNext: true,
-                      cardselected: _selectedExamCard);
-                      // return Container(
-                      //   decoration: BoxDecoration(
-                      //       border: Border.all(width: 1.0, color: Colors.grey),
-                      //       color: Colors.black),
-                      //   child: ListTile(
-                      //     title: Text(
-                      //       "Cool $index",
-                      //       style: TextStyle(
-                      //           fontWeight: FontWeight.bold,
-                      //           color: Colors.white),
-                      //     ),
-                      //     leading: const Icon(
-                      //       Icons.local_pizza,
-                      //       color: Colors.white,
-                      //     ),
-                      //   ),
-                      // );
+                      if (widget.exams != null) {
+                        return ExamWidget(
+                            classItem: widget.exams![index],
+                            cardIndex: index,
+                            upNext: true,
+                            cardselected: _selectedExamCard);
+                      } else {
+                        return TaskWidget(
+                            taskItem: widget.tasks![index],
+                            cardIndex: index,
+                            upNext: true,
+                            cardselected: _selectedTaskCard);
+                        ;
+                      }
                     },
-                    itemCount: _exams.length,
+                    itemCount: widget.exams != null ? widget.exams!.length : widget.tasks!.length,
                   ))
             ],
           ),

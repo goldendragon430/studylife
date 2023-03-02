@@ -12,25 +12,22 @@ import '../Models/exam_datasource.dart';
 import '../Home_Screens/exam_details_screen.dart';
 import './custom_segmentedcontrol.dart';
 import '../Widgets/expandable_listview.dart';
+import '../Activities_Screens/tasks_current.dart';
+import '../Activities_Screens/tasks_past.dart';
+import '../Activities_Screens/tasks_overdue.dart';
 
-class ActivitiesExamsScreen extends StatefulWidget {
-  const ActivitiesExamsScreen({super.key});
+class ActivitiesTasksScreen extends StatefulWidget {
+  const ActivitiesTasksScreen({super.key});
 
   @override
-  State<ActivitiesExamsScreen> createState() => _ActivitiesExamsScreenState();
+  State<ActivitiesTasksScreen> createState() => _ActivitiesTasksScreenState();
 }
 
-class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
+class _ActivitiesTasksScreenState extends State<ActivitiesTasksScreen> {
   final List<ClassSubject> _durations = ClassSubject.subjects;
   String selectedSubject = ClassSubject.subjects.first.title;
   final List<ExamStatic> _exams = ExamStatic.exams;
-  int selectedTabIndex = 0;
-
-  void _selectedTabWithIndex(int index) {
-    setState(() {
-      selectedTabIndex = index;
-    });
-  }
+  int selectedTabIndex = 1;
 
   void _selectedExamCard(int index) {
     Navigator.push(
@@ -38,6 +35,13 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
         MaterialPageRoute(
             builder: (context) => const ExamDetailsScreen(),
             fullscreenDialog: true));
+  }
+
+  void _selectedTabWithIndex(int index) {
+    setState(() {
+      selectedTabIndex = index;
+      print(index);
+    });
   }
 
   @override
@@ -55,13 +59,19 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
               _selectedTabWithIndex,
               tabs: {
                 1: Text(
-                  'Current',
+                  'Current (3)',
                   style: theme == ThemeMode.light
                       ? Constants.lightThemeRegular14TextSelectedStyle
                       : Constants.darkThemeRegular14TextSelectedStyle,
                 ),
                 2: Text(
-                  'Past',
+                  'Past (4)',
+                  style: theme == ThemeMode.light
+                      ? Constants.lightThemeRegular14TextSelectedStyle
+                      : Constants.darkThemeRegular14TextSelectedStyle,
+                ),
+                3: Text(
+                  'Overdue (12)',
                   style: theme == ThemeMode.light
                       ? Constants.lightThemeRegular14TextSelectedStyle
                       : Constants.darkThemeRegular14TextSelectedStyle,
@@ -105,32 +115,16 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
               ),
             ),
           ),
-          // Exams
-          Container(
-            alignment: Alignment.topCenter,
-            height: double.infinity,
-            margin: const EdgeInsets.only(top: 186),
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return ExpandableListView(
-                  period: "Earlier This Month - Mar 2022",
-                  numberOfItems: '10',
-                  exams: _exams,
-                );
-              },
-              itemCount: 5,
-            ),
-            // child: ListView.builder(
-            //     // controller: widget._controller,
-            //     itemCount: _exams.length,
-            //     itemBuilder: (context, index) {
-            //       return ExamWidget(
-            //           classItem: _exams[index],
-            //           cardIndex: index,
-            //           upNext: true,
-            //           cardselected: _selectedExamCard);
-            //     }),
-          ),
+          // Check which tab is selected
+          if (selectedTabIndex == 1) ...[
+            TasksCurrentList(),
+          ],
+          if (selectedTabIndex == 2) ...[
+            TasksPastList(),
+          ],
+          if (selectedTabIndex == 3) ...[
+            TasksOverdueList(),
+          ]
         ],
       );
     });
