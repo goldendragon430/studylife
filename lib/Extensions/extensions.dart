@@ -123,7 +123,51 @@ extension DateHelpers on DateTime {
 
   bool isThisMonth() {
     final now = DateTime.now();
-    return now.month == this.month;
+    return now.day == this.day &&
+        now.month == this.month &&
+        now.year == this.year;
+  }
+
+  int get weekOfMonth {
+    var date = this;
+    final firstDayOfTheMonth = DateTime(date.year, date.month, 1);
+    int sum = firstDayOfTheMonth.weekday - 1 + date.day;
+    if (sum % 7 == 0) {
+      return sum ~/ 7;
+    } else {
+      return sum ~/ 7 + 1;
+    }
+  }
+
+  DateTime findFirstDateOfTheWeek(DateTime dateTime) {
+    return dateTime.subtract(Duration(days: dateTime.weekday - 1));
+  }
+
+  DateTime findLastDateOfTheWeek(DateTime dateTime) {
+    return dateTime
+        .add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+  }
+
+  bool isAfterOrEqualTo(DateTime dateTime) {
+    final date = this;
+    final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
+    return isAtSameMomentAs | date.isAfter(dateTime);
+  }
+
+  bool isBeforeOrEqualTo(DateTime dateTime) {
+    final date = this;
+    final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
+    return isAtSameMomentAs | date.isBefore(dateTime);
+  }
+
+  bool isBetween(
+    DateTime fromDateTime,
+    DateTime toDateTime,
+  ) {
+    final date = this;
+    final isAfter = date.isAfterOrEqualTo(fromDateTime);
+    final isBefore = date.isBeforeOrEqualTo(toDateTime);
+    return isAfter && isBefore;
   }
 
   bool isYesterday() {
@@ -145,7 +189,7 @@ extension DateHelper on DateTime {
     return this.day == other.day;
   }
 
-   bool isSameMonth(DateTime other) {
+  bool isSameMonth(DateTime other) {
     return this.month == other.month;
   }
 

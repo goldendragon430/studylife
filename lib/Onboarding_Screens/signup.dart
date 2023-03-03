@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:beamer/beamer.dart';
 
 import '../app.dart';
 import '../Widgets/regular_teztField.dart';
 import '../Utilities/constants.dart';
 import '../Widgets/rounded_elevated_button.dart';
+import '../Controllers/auth_notifier.dart';
 
 class RegisterScreen extends ConsumerWidget {
   RegisterScreen({super.key});
@@ -97,7 +99,13 @@ class RegisterScreen extends ConsumerWidget {
                             }, TextInputType.visiblePassword, confirmController,
                                 false),
                             RoundedElevatedButton(
-                                _signUp,
+                                () async {
+                                  await ref
+                                      .read(authProvider.notifier)
+                                      .loginUser("beamer", "supersecret");
+                                     context.beamBack();
+                                  Beamer.of(context).update();
+                                },
                                 "Sign up",
                                 Constants.lightThemePrimaryColor,
                                 Colors.black,
@@ -168,7 +176,13 @@ class RegisterScreen extends ConsumerWidget {
                             }, TextInputType.visiblePassword, confirmController,
                                 true),
                             RoundedElevatedButton(
-                                _signUp,
+                                () async {
+                                  await ref
+                                      .read(authProvider.notifier)
+                                      .loginUser("beamer", "supersecret");
+                                     context.beamBack();
+                                  Beamer.of(context).update();
+                                },
                                 "Sign up",
                                 Constants.darkThemePrimaryColor,
                                 Colors.black,

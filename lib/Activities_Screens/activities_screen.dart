@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../Utilities/constants.dart';
-import '../Extensions/extensions.dart';
 
 import '../../app.dart';
 import './activities_classes_screen.dart';
 import './activities_exams_screen.dart';
 import './activities_tasks_screen.dart';
+import 'activities_holidays_screen.dart';
+import 'activities_extras_screen.dart';
 
 class ActivitiesScreen extends StatefulWidget {
   const ActivitiesScreen({super.key});
@@ -92,14 +93,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             children: [
               ActivitiesClassesScreen(),
               ActivitiesExamsScreen(),
-
               ActivitiesTasksScreen(),
-
-              ActivitiesClassesScreen(),
-
-              ActivitiesClassesScreen(),
-
-              
+              ActivitiesHolidaysScreen(),
+              ActivitiesExtrasScreen(),
             ],
           ),
           // child: Container(
