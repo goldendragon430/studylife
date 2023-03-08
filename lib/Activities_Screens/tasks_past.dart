@@ -26,7 +26,7 @@ class TasksPastList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    var groupByDate = groupBy(_tasks, (obj) => obj.date.isToday());
+   // var groupByDate = groupBy(_tasks, (obj) => obj.date.isToday());
 
     return Container(
       margin: const EdgeInsets.only(top: 164),
