@@ -19,7 +19,7 @@ import './exam_details_screen.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required this.detailsPath});
- // final ValueChanged<int>? onPush;
+  // final ValueChanged<int>? onPush;
   late ScrollController _controller;
   final String detailsPath;
 
@@ -28,7 +28,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   DateTime now = DateTime.now();
   final List<HomeTabItem> _homeTabItemsDataSource = HomeTabItem.tabItems;
   final List<ClassStatic> _classes = ClassStatic.classes;
@@ -71,23 +70,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-    void _logOut(BuildContext context, WidgetRef ref) {
-      ref.read(loginStateProvider).loggedIn = false;
-     // context.beamToNamed('/login');
-      //context.go(Constants.homeRouteName);
-
+  void _logOut(BuildContext context, WidgetRef ref) {
+    ref.read(loginStateProvider).loggedIn = false;
+    // context.beamToNamed('/login');
+    //context.go(Constants.homeRouteName);
   }
 
   void _selectedCard(int index) {
-         Navigator.push(
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => const ClassDetailsScreen(),
             fullscreenDialog: true));
   }
 
-   void _selectedExamCard(int index) {
-         Navigator.push(
+  void _selectedExamCard(int index) {
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => const ExamDetailsScreen(),
@@ -100,6 +98,9 @@ class _HomePageState extends State<HomePage> {
       final theme = ref.watch(themeModeProvider);
 
       return Scaffold(
+          backgroundColor: theme == ThemeMode.light
+              ? Constants.lightThemeBackgroundColor
+              : Constants.darkThemeBackgroundColor,
           extendBodyBehindAppBar: false,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -181,58 +182,57 @@ class _HomePageState extends State<HomePage> {
                 ),
                 if (selectedTabIndex == 0) ...[
                   // Classes
-                    Container(
-                  alignment: Alignment.topCenter,
-                  height: double.infinity,
-                  margin: const EdgeInsets.only(top: 186),
-                  child: ListView.builder(
-                     // controller: widget._controller,
-                      itemCount: _classes.length,
-                      itemBuilder: (context, index) {
-                        return ClassWidget(
-                            classItem: _classes[index],
-                            cardIndex: index,
-                            upNext: true,
-                            cardselected: _selectedCard);
-                      }),
-                ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    height: double.infinity,
+                    margin: const EdgeInsets.only(top: 186),
+                    child: ListView.builder(
+                        // controller: widget._controller,
+                        itemCount: _classes.length,
+                        itemBuilder: (context, index) {
+                          return ClassWidget(
+                              classItem: _classes[index],
+                              cardIndex: index,
+                              upNext: true,
+                              cardselected: _selectedCard);
+                        }),
+                  ),
                 ],
-                 if (selectedTabIndex == 1) ...[
+                if (selectedTabIndex == 1) ...[
                   // Exams
-                    Container(
-                  alignment: Alignment.topCenter,
-                  height: double.infinity,
-                  margin: const EdgeInsets.only(top: 186),
-                  child: ListView.builder(
-                     // controller: widget._controller,
-                      itemCount: _exams.length,
-                      itemBuilder: (context, index) {
-                        return ExamWidget(
-                            classItem: _exams[index],
-                            cardIndex: index,
-                            upNext: true,
-                            cardselected: _selectedExamCard);
-                      }),
-                ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    height: double.infinity,
+                    margin: const EdgeInsets.only(top: 186),
+                    child: ListView.builder(
+                        // controller: widget._controller,
+                        itemCount: _exams.length,
+                        itemBuilder: (context, index) {
+                          return ExamWidget(
+                              classItem: _exams[index],
+                              cardIndex: index,
+                              upNext: true,
+                              cardselected: _selectedExamCard);
+                        }),
+                  ),
                 ],
-                  if (selectedTabIndex == 2) ...[
+                if (selectedTabIndex == 2) ...[
                   // Tasks Due
-                    Container(
-                  alignment: Alignment.topCenter,
-                  height: double.infinity,
-                  margin: const EdgeInsets.only(top: 186),
-                  child: ListView.builder(
-                     // controller: widget._controller,
-                      itemCount: 1,
-                      itemBuilder: (context, index) {
-                        return QuotesWidget(
-                            quote: "Wake up determined, Go to bed Satisfied",
-                            cardIndex: index,
-                            cardselected: _selectedCard);
-                      }),
-                ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    height: double.infinity,
+                    margin: const EdgeInsets.only(top: 186),
+                    child: ListView.builder(
+                        // controller: widget._controller,
+                        itemCount: 1,
+                        itemBuilder: (context, index) {
+                          return QuotesWidget(
+                              quote: "Wake up determined, Go to bed Satisfied",
+                              cardIndex: index,
+                              cardselected: _selectedCard);
+                        }),
+                  ),
                 ],
-              
               ],
             ),
           ));

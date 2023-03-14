@@ -15,6 +15,7 @@ import './Onboarding_Screens/login.dart';
 import './Onboarding_Screens/forgot_password.dart';
 import './Onboarding_Screens/signup.dart';
 import './Activities_Screens/activities_screen.dart';
+import './Profile_Screens/profile_screen.dart';
 
 class BeamerLocations extends BeamLocation<BeamState> {
   BeamerLocations(RouteInformation routeInformation) : super(routeInformation);
@@ -23,6 +24,7 @@ class BeamerLocations extends BeamLocation<BeamState> {
   List<Pattern> get pathPatterns => [
         '/started',
         '/home',
+        '/activities'
       ];
 
   @override
@@ -52,19 +54,24 @@ class BeamerLocations extends BeamLocation<BeamState> {
           title: 'Forgot Password',
           child: ForgotPasswordScreen(),
         ),
-      if (state.uri.pathSegments.contains('home'))
+      if (state.uri.pathSegments.contains('home') || state.uri.pathSegments.contains('activities') || state.uri.pathSegments.contains('profile'))
         BeamPage(
           key: ValueKey('home'),
           title: 'Home',
           child: ScaffoldWithBottomNavBar(),
         ),
-      if (state.uri.pathSegments.contains('activities'))
-        BeamPage(
-          key: ValueKey('activities'),
-          title: 'Tab Activities',
-          type: BeamPageType.noTransition,
-          child: ActivitiesScreen(),
-        ),
+      // if (state.uri.pathSegments.contains('activities'))
+      //   BeamPage(
+      //     key: ValueKey('activities'),
+      //     title: 'Tab Activities',
+      //     child: ScaffoldWithBottomNavBar(),
+      //   ),
+      //     if (state.uri.pathSegments.contains('profile'))
+      //   BeamPage(
+      //     key: ValueKey('profile'),
+      //     title: 'Tab Profile',
+      //     child: ScaffoldWithBottomNavBar(),
+      //   ),
     ];
   }
 }
@@ -121,7 +128,7 @@ class ActivitiesTabItemLocation extends BeamLocation<BeamState> {
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
-        BeamPage(
+        const BeamPage(
           key: ValueKey('activities'),
           title: 'Tab Activities',
           type: BeamPageType.noTransition,
@@ -147,7 +154,7 @@ class ProfileTabItemLocation extends BeamLocation<BeamState> {
           key: ValueKey('profile'),
           title: 'Tab Profile',
           type: BeamPageType.noTransition,
-          child: HomePage(detailsPath: 'profile/details'),
+          child: const ProfileScreen(),
         ),
         //  const BeamPage(
         //       key: ValueKey('/profile/details'),
@@ -180,7 +187,7 @@ class ScaffoldWithBottomNavBar extends StatefulWidget {
 }
 
 class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
-  late int _currentIndex;
+   int _currentIndex = 0;
 
   final _routerDelegates = [
     BeamerDelegate(
@@ -234,7 +241,22 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final uriString = Beamer.of(context).configuration.location!;
-    _currentIndex = uriString.contains('home') ? 0 : 1;
+    if (uriString.contains('home')) {
+      _currentIndex = 0;
+    }
+    else  if (uriString.contains('calendar')) {
+      _currentIndex = 1;
+    }
+    else   if (uriString.contains('activities')) {
+      _currentIndex = 3;
+    }
+    else   if (uriString.contains('profile')) {
+      _currentIndex = 4;
+    }
+    else {
+      _currentIndex = 0;
+    }
+   /// _currentIndex = uriString.contains('home') ? 0 : 1;
   }
 
   bottomSheetForSignIn(BuildContext context) {

@@ -57,6 +57,11 @@ class Constants {
       Colors.white.withOpacity(0.15);
   static Color darkThemeTaskTypeColorColor =
       HexColor.fromHex("#72788E").withOpacity(0.7);
+  static Color lightThemeProfileImageCntainerColor = HexColor.fromHex("#F2F2F5");
+  static Color darkThemeProfileImageCntainerColor = Colors.black;
+  static Color overdueTextColor =  HexColor.fromHex("#FF3B3B");
+
+      
 
       
 
@@ -231,7 +236,7 @@ class Constants {
       fontWeight: FontWeight.bold,
       color: Colors.black);
 
-  static TextStyle DarkTHemeClassDateTextStyle = const TextStyle(
+  static TextStyle darkTHemeClassDateTextStyle = const TextStyle(
       fontSize: 12,
       fontFamily: 'Roboto',
       fontWeight: FontWeight.bold,

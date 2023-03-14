@@ -86,7 +86,7 @@ class ExamWidget extends ConsumerWidget {
                       '${_getFormattedTime(classItem.dateFrom)}',
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
-                          : Constants.DarkTHemeClassDateTextStyle,
+                          : Constants.darkTHemeClassDateTextStyle,
                     ),
                       Text(
                       '${classItem.duration.abs().inMinutes} Minutes - ${classItem.examType}',

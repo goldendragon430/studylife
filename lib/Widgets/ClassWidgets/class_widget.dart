@@ -86,7 +86,7 @@ class ClassWidget extends ConsumerWidget {
                       '${_getFormattedTime(classItem.dateFrom)} - ${_getFormattedTime(classItem.dateTo)}',
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
-                          : Constants.DarkTHemeClassDateTextStyle,
+                          : Constants.darkTHemeClassDateTextStyle,
                     ),
                   ],
                 ),

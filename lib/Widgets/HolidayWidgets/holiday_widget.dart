@@ -84,7 +84,7 @@ class HolidayWidget extends ConsumerWidget {
                           : _getFormattedTime(holidayItem.dateFrom),
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
-                          : Constants.DarkTHemeClassDateTextStyle,
+                          : Constants.darkTHemeClassDateTextStyle,
                     ),
                   ],
                 ),
