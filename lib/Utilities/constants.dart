@@ -60,6 +60,7 @@ class Constants {
   static Color lightThemeProfileImageCntainerColor = HexColor.fromHex("#F2F2F5");
   static Color darkThemeProfileImageCntainerColor = Colors.black;
   static Color overdueTextColor =  HexColor.fromHex("#FF3B3B");
+  static Color logOutButtonColor =  HexColor.fromHex("#FFB9B9");
 
       
 

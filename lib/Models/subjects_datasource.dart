@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+
+
 class ClassTagItem {
   final String title;
   bool selected;
@@ -170,4 +173,36 @@ class ClassTagItem {
         isAddNewCard: false,
         cardIndex: 1),
   ];
+}
+
+
+class SubjectListItem {
+  final String title;
+  final Color subjectColor;
+  final String subjectImage;
+
+  final int cardIndex;
+
+  SubjectListItem( {
+    required this.subjectImage,
+    required this.title,
+    required this.subjectColor,
+    required this.cardIndex,
+  });
+
+    static List<SubjectListItem> subjectsList = [
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png" , cardIndex: 0, title: "Chemistry", subjectColor: Colors.green),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 1, title: "Maths", subjectColor: Colors.red),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 2, title: "Biology", subjectColor: Colors.purple),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 3, title: "Genetic Mutations", subjectColor: Colors.yellow),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 0, title: "Chemistry", subjectColor: Colors.green),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 1, title: "Maths", subjectColor: Colors.red),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 2, title: "Biology", subjectColor: Colors.purple),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 3, title: "Genetic Mutations", subjectColor: Colors.yellow),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 0, title: "Chemistry", subjectColor: Colors.green),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 1, title: "Maths", subjectColor: Colors.red),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 2, title: "Biology", subjectColor: Colors.purple),
+      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 3, title: "Genetic Mutations", subjectColor: Colors.yellow),
+    ];
+
 }

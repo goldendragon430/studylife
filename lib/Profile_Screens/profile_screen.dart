@@ -6,7 +6,14 @@ import '../Extensions/extensions.dart';
 
 import '../../app.dart';
 import '../Profile_Screens/profile_screen.dart';
+import '../Widgets/ProfileWidgets/edit_list.dart';
+import '../Widgets/ProfileWidgets/personalization_list.dart';
 import '../Widgets/ProfileWidgets/most_least_practiced_subject.dart';
+import '../Widgets/rounded_elevated_button.dart';
+import '../../Models/profile_datasource.dart';
+import '../../Profile_Screens/manage_subjects_screen.dart';
+import '../../Profile_Screens/change_email_screen.dart';
+import '../Profile_Screens/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,11 +22,51 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-void _selectedGridCard(int index) {
-  print("Selected Grid card with Index: $index");
-}
+final List<ProfileItemStatic> _itemsPersonalize = ProfileItemStatic.personalizationItems;
+  final List<ProfileItemStatic> _itemsEdit = ProfileItemStatic.editItems;
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  void _selectedGridCard(int index) {
+    print("Selected Grid card with Index: $index");
+  }
+
+  void _selectedPersonalizationCard(int index) {
+    if (index == 0) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const ManageSubjectsScreen(),
+              fullscreenDialog: false));
+    }
+    print("Selected Personalization card with Index: $index");
+  }
+
+  void _selectedEditListCard(int index) {
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChangeEmailScreen(), fullscreenDialog: true),
+      );
+    }
+     if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChangePasswordScreen(), fullscreenDialog: true),
+      );
+    }
+    print("Selected Personalization card with Index: $index");
+  }
+
+  void _logOutButtonTapped() {
+    print("Logout tapped");
+  }
+
+  void _deleteAccountButtonTapped() {
+    print("Delete tapped");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
@@ -61,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           height: double.infinity,
           child: ListView.builder(
               // controller: widget._controller,
-              itemCount: 5,
+              itemCount: 11,
               itemBuilder: (context, index) {
                 switch (index) {
                   case 0:
@@ -190,6 +237,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         leastPracticedSubject: "BIOLOGY",
                         leastPracticedSubjectColor: Colors.green,
                         leastPracticedSubjectTasksCount: 7);
+                  case 5:
+                    return Container(
+                      margin: EdgeInsets.only(top: 33, bottom: 28),
+                      child: Container(
+                        height: 1,
+                        color: theme == ThemeMode.light
+                            ? Colors.black.withOpacity(0.1)
+                            : Colors.white.withOpacity(0.1),
+                      ),
+                    );
+                  case 6:
+                    return PersonalizationList(
+                        _selectedPersonalizationCard, _itemsPersonalize);
+                  case 7:
+                    return Container(
+                      margin: EdgeInsets.only(top: 33, bottom: 28),
+                      child: Container(
+                        height: 1,
+                        color: theme == ThemeMode.light
+                            ? Colors.black.withOpacity(0.1)
+                            : Colors.white.withOpacity(0.1),
+                      ),
+                    );
+                  case 8:
+                    return EditList(_selectedEditListCard, _itemsEdit);
+                  case 9:
+                    return Container(
+                      alignment: Alignment.topCenter,
+                      width: 142,
+                      margin: const EdgeInsets.only(
+                          top: 44, bottom: 57, left: 116, right: 116),
+                      child: RoundedElevatedButton(
+                          _logOutButtonTapped,
+                          "Log Out",
+                          Constants.logOutButtonColor,
+                          Colors.black,
+                          34),
+                    );
+                  case 10:
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          height: 1,
+                          color: theme == ThemeMode.light
+                              ? Colors.black.withOpacity(0.1)
+                              : Colors.white.withOpacity(0.1),
+                        ),
+                        Container(
+                          alignment: Alignment.topCenter,
+                          // width: 142,
+                          margin: const EdgeInsets.only(top: 10),
+                          child: TextButton(
+                            style: ButtonStyle(
+                                overlayColor: MaterialStateProperty.all(
+                                    Colors.transparent),
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.transparent)),
+                            onPressed: _deleteAccountButtonTapped,
+                            child: Text(
+                              "Delete Account",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.normal,
+                                  color: Constants.overdueTextColor),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
                   default:
                 }
               }),
