@@ -69,6 +69,49 @@ class ClassTagItem {
         title: "Sun", selected: false, isAddNewCard: false, cardIndex: 6)
   ];
 
+    static List<ClassTagItem> lightDarkMode = [
+    ClassTagItem(
+        title: "Use System default", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "On", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: "Off", selected: false, isAddNewCard: false, cardIndex: 2),
+  ];
+
+  static List<ClassTagItem> settingsDyasToDisplay = [
+    ClassTagItem(
+        title: " 1 ", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: " 2 ", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: " 3 ", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: " 4 ", selected: false, isAddNewCard: false, cardIndex: 3),
+    ClassTagItem(
+        title: " 5 ", selected: false, isAddNewCard: false, cardIndex: 4),
+    ClassTagItem(
+        title: " 6 ", selected: false, isAddNewCard: false, cardIndex: 5),
+    ClassTagItem(
+        title: " 7 ", selected: false, isAddNewCard: false, cardIndex: 6)
+  ];
+
+    static List<ClassTagItem> startWeek = [
+    ClassTagItem(
+        title: " A ", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: " B ", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: " C ", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: " D ", selected: false, isAddNewCard: false, cardIndex: 3),
+    ClassTagItem(
+        title: " E ", selected: false, isAddNewCard: false, cardIndex: 4),
+    ClassTagItem(
+        title: " F", selected: false, isAddNewCard: false, cardIndex: 5),
+    ClassTagItem(
+        title: " G ", selected: false, isAddNewCard: false, cardIndex: 6)
+  ];
+
   static List<ClassTagItem> examTypes = [
     ClassTagItem(
         title: "Exam", selected: false, isAddNewCard: false, cardIndex: 0),

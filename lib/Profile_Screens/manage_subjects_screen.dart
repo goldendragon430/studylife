@@ -43,9 +43,11 @@ class _ManageSubjectsScreenState extends State<ManageSubjectsScreen> {
           elevation: 0.0,
           title: Text(
             "Manage Subjects",
-            style: theme == ThemeMode.light
-                ? Constants.lightThemeTitleTextStyle
-                : Constants.darkThemeTitleTextStyle,
+            style: TextStyle(
+                fontSize: 17,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                color: theme == ThemeMode.light ? Colors.black : Colors.white),
           ),
         ),
         body: Container(

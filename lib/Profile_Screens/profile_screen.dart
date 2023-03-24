@@ -14,6 +14,7 @@ import '../../Models/profile_datasource.dart';
 import '../../Profile_Screens/manage_subjects_screen.dart';
 import '../../Profile_Screens/change_email_screen.dart';
 import '../Profile_Screens/change_password_screen.dart';
+import './general_settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -36,6 +37,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => const ManageSubjectsScreen(),
+              fullscreenDialog: false));
+    }
+     if (index == 2) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const GeneralSettingsScreen(),
               fullscreenDialog: false));
     }
     print("Selected Personalization card with Index: $index");
@@ -84,9 +92,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           elevation: 0.0,
           title: Text(
             "Profile",
-            style: theme == ThemeMode.light
-                ? Constants.lightThemeTitleTextStyle
-                : Constants.darkThemeTitleTextStyle,
+            style: TextStyle(
+                fontSize: 17,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                color: theme == ThemeMode.light ? Colors.black : Colors.white),
           ),
           actions: [
             // Navigate to the Search Screen

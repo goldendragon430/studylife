@@ -34,9 +34,11 @@ class ChangeEmailScreen extends ConsumerWidget {
         elevation: 0.0,
         title: Text(
           'Change Email',
-          style: theme == ThemeMode.light
-              ? Constants.lightThemeTitleTextStyle
-              : Constants.darkThemeTitleTextStyle,
+          style: TextStyle(
+                fontSize: 17,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                color: theme == ThemeMode.light ? Colors.black : Colors.white),
         ),
       ),
       body: Container(

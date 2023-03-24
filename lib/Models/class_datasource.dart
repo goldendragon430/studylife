@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import '../Profile_Screens/general_settings_screen.dart';
 
 class ClassStatic {
   final String title;
@@ -49,4 +50,22 @@ class ClassSubject {
      ClassSubject(title: "French"),
      ClassSubject(title: "Biology"),
     ];
+}
+
+class RotationScheduleItem {
+  final RotationSchedule rotation;
+   bool selected;
+  final int cardIndex;
+
+  RotationScheduleItem({
+    required this.rotation,
+    required this.selected,
+    required this.cardIndex,
+  });
+
+  static List<RotationScheduleItem> rotationItems = [
+    RotationScheduleItem(rotation: RotationSchedule.fixed, selected: true, cardIndex: 0),
+    RotationScheduleItem(rotation: RotationSchedule.weekly, selected: true, cardIndex: 1),
+    RotationScheduleItem(rotation: RotationSchedule.lettered, selected: true, cardIndex: 2),
+  ];
 }
