@@ -70,7 +70,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
             RegularTextField("Module Name", (value) {
               FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, moduleNameController,
-                theme == ThemeMode.dark),
+                theme == ThemeMode.dark, autofocus: false,),
             Container(
               height: 14,
             ),
@@ -99,7 +99,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
                         RegularTextField("Room", (value) {
                           FocusScope.of(context).unfocus();
                         }, TextInputType.emailAddress, roomNameController,
-                            theme == ThemeMode.dark),
+                            theme == ThemeMode.dark, autofocus: false,),
                       ],
                     ),
                   ),
@@ -123,7 +123,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
                         RegularTextField("Building", (value) {
                           FocusScope.of(context).unfocus();
                         }, TextInputType.emailAddress, buildingNameController,
-                            theme == ThemeMode.dark),
+                            theme == ThemeMode.dark, autofocus: false,),
                       ],
                     ),
                   ),
@@ -144,7 +144,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
               RegularTextField("Online URL", (value) {
                 FocusScope.of(context).unfocus();
               }, TextInputType.emailAddress, onlineUrlController,
-                  theme == ThemeMode.dark),
+                  theme == ThemeMode.dark, autofocus: false,),
               Container(
                 height: 14,
               ),
@@ -162,7 +162,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
             RegularTextField("Teacher Name", (value) {
               FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, teacherNameController,
-                theme == ThemeMode.dark),
+                theme == ThemeMode.dark, autofocus: false,),
             Container(
               height: 14,
             ),
@@ -180,7 +180,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
             RegularTextField("Email", (value) {
               FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, teachersEmailController,
-                theme == ThemeMode.dark),
+                theme == ThemeMode.dark, autofocus: false,),
             Container(
               height: 14,
             ),

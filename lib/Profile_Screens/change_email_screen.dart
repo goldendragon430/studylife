@@ -60,7 +60,7 @@ class ChangeEmailScreen extends ConsumerWidget {
             ),
             RegularTextField("Enter Existing Email", (value) {
               FocusScope.of(context).unfocus();
-            }, TextInputType.emailAddress, emailController, theme == ThemeMode.dark),
+            }, TextInputType.emailAddress, emailController, theme == ThemeMode.dark, autofocus: false,),
              Container(
               height: 6,
             ),
@@ -76,7 +76,7 @@ class ChangeEmailScreen extends ConsumerWidget {
             ),
             RegularTextField("Enter Password", (value) {
               FocusScope.of(context).unfocus();
-            }, TextInputType.visiblePassword, passwordController, theme == ThemeMode.dark),
+            }, TextInputType.visiblePassword, passwordController, theme == ThemeMode.dark, autofocus: false,),
              Container(
               height: 6,
             ),
@@ -92,7 +92,7 @@ class ChangeEmailScreen extends ConsumerWidget {
             ),
             RegularTextField("Enter New Email", (value) {
               FocusScope.of(context).unfocus();
-            }, TextInputType.emailAddress, confirmEmailController, theme == ThemeMode.dark),
+            }, TextInputType.emailAddress, confirmEmailController, theme == ThemeMode.dark, autofocus: false,),
             Container(
               height: 20,
             ),

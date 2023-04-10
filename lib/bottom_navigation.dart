@@ -25,6 +25,7 @@ class BeamerLocations extends BeamLocation<BeamState> {
         '/started',
         '/home',
         '/activities'
+        '/login'
       ];
 
   @override

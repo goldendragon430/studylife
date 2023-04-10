@@ -8,20 +8,35 @@ import '../Utilities/constants.dart';
 import '../Widgets/rounded_elevated_button.dart';
 import '../Controllers/auth_notifier.dart';
 
-class RegisterScreen extends ConsumerWidget {
+class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});
 
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
+
   final confirmController = TextEditingController();
+
+
+  @override
+  void dispose() {
+    FocusScope.of(context).unfocus();
+    super.dispose();
+  }
 
  void _signUp() {
 
  }
 
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+     return Consumer(
+      builder: (_, WidgetRef ref, __) {
     final theme = ref.watch(themeModeProvider);
     var height = MediaQuery.of(context).padding.top;
 
@@ -87,17 +102,17 @@ class RegisterScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             RegularTextField("Your email", (value) {
-                              FocusScope.of(context).unfocus();
+                              FocusScope.of(context).nextFocus();
                             }, TextInputType.emailAddress, emailController,
-                                false),
+                                false, autofocus: true,),
                             RegularTextField("New Password", (value) {
-                              FocusScope.of(context).unfocus();
+                              FocusScope.of(context).nextFocus();
                             }, TextInputType.visiblePassword,
-                                passwordController, false),
+                                passwordController, false, autofocus: false,),
                             RegularTextField("Confirm Password", (value) {
                               FocusScope.of(context).unfocus();
                             }, TextInputType.visiblePassword, confirmController,
-                                false),
+                                false, autofocus: false,),
                             RoundedElevatedButton(
                                 () async {
                                   await ref
@@ -164,17 +179,17 @@ class RegisterScreen extends ConsumerWidget {
                         child: Column(
                           children: [
                             RegularTextField("Your email", (value) {
-                              FocusScope.of(context).unfocus();
+                              FocusScope.of(context).nextFocus();
                             }, TextInputType.emailAddress, emailController,
-                                true),
+                                true, autofocus: true,),
                             RegularTextField("New Password", (value) {
-                              FocusScope.of(context).unfocus();
+                              FocusScope.of(context).nextFocus();
                             }, TextInputType.visiblePassword,
-                                passwordController, true),
+                                passwordController, true, autofocus: false,),
                             RegularTextField("Confirm Password", (value) {
                               FocusScope.of(context).unfocus();
                             }, TextInputType.visiblePassword, confirmController,
-                                true),
+                                true, autofocus: false,),
                             RoundedElevatedButton(
                                 () async {
                                   await ref
@@ -196,5 +211,5 @@ class RegisterScreen extends ConsumerWidget {
               ],
             ),
     ));
-  }
-}
+  });
+}}

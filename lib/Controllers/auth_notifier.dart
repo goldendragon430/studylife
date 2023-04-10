@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../Models/user.model.dart';
 import '../Services/repository.dart';
 
-enum AuthStatus { loading, authenticated, unauthenticated }
+enum AuthStatus { loading, authenticated, unauthenticated, failed }
 
 class AuthState extends Equatable {
   const AuthState._(
@@ -38,23 +38,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = AuthState.unauthenticated();
   }
 
-  Future<void> loginUser(String username, String password) async {
+  Future<void> loginUser(String email, String password) async {
     state = AuthState.loading();
 
-    UserModel user = await repo.loginUser(username, password);
+    UserModel user = await repo.loginUser(email, password);
 
-          state = AuthState.authenticated(user);
-          print("stattee $state");
-
-    // if (user == UserModel.empty) {
-    //   print('NIJEEE');
-    //   state = AuthState.unauthenticated();
-    // } else {
-    //   print('AUTHOVAN');
-    //   /// do your pre-checks about the user before marking the state as
-    //   /// authenticated
-    //   state = AuthState.authenticated(user);
-    // }
+    if (user == UserModel.empty) {
+      state = const AuthState.unauthenticated();
+    } else {
+      /// do your pre-checks about the user before marking the state as
+      /// authenticated
+      state = AuthState.authenticated(user);
+    }
   }
 
   Future<void> logoutUser() async {

@@ -148,7 +148,7 @@ class _AddScoreScreenState extends State<AddScoreScreen>
                       RegularTextField("Score", (value) {
                         FocusScope.of(context).unfocus();
                       }, TextInputType.emailAddress, textController,
-                          theme == ThemeMode.dark),
+                          theme == ThemeMode.dark, autofocus: false,),
                     ],
                   ),
                 ),

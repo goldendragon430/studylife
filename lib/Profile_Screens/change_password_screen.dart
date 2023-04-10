@@ -60,7 +60,7 @@ class ChangePasswordScreen extends ConsumerWidget {
             ),
             RegularTextField("Enter Existing Password", (value) {
               FocusScope.of(context).unfocus();
-            }, TextInputType.visiblePassword, passwordController, theme == ThemeMode.dark),
+            }, TextInputType.visiblePassword, passwordController, theme == ThemeMode.dark, autofocus: false,),
              Container(
               height: 6,
             ),
@@ -76,7 +76,7 @@ class ChangePasswordScreen extends ConsumerWidget {
             ),
             RegularTextField("Enter New Password", (value) {
               FocusScope.of(context).unfocus();
-            }, TextInputType.visiblePassword, passwordController, theme == ThemeMode.dark),
+            }, TextInputType.visiblePassword, passwordController, theme == ThemeMode.dark, autofocus: false,),
              Container(
               height: 6,
             ),
@@ -92,7 +92,7 @@ class ChangePasswordScreen extends ConsumerWidget {
             ),
             RegularTextField("Confirm New Password", (value) {
               FocusScope.of(context).unfocus();
-            }, TextInputType.visiblePassword, confirmPasswordController, theme == ThemeMode.dark),
+            }, TextInputType.visiblePassword, confirmPasswordController, theme == ThemeMode.dark, autofocus: false,),
             Container(
               height: 20,
             ),

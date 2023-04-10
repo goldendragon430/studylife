@@ -14,6 +14,8 @@ import './Controllers/auth_controller.dart';
 import './Router/routes.dart';
 import './Controllers/auth_notifier.dart';
 import './Onboarding_Screens/forgot_password.dart';
+import './Widgets/custom_snack_bar.dart';
+import './Services/navigation_service.dart';
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) {
   var brightness = WidgetsBinding.instance.window.platformBrightness;
@@ -24,6 +26,8 @@ final themeModeProvider = StateProvider<ThemeMode>((ref) {
     return ThemeMode.light;
   }
 });
+
+final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 class App extends ConsumerStatefulWidget {
   App({super.key});
@@ -51,12 +55,12 @@ class AppState extends ConsumerState<App>
               return container.read(authProvider).status ==
                   AuthStatus.authenticated;
             },
-            beamToNamed: (_, __) => '/started'),
+           beamToNamed: (_, __) => '/login'),
 
         /// if the user is anything other than authenticated
         /// else send them to /home
         BeamGuard(
-            pathPatterns: ['/started'],
+            pathPatterns: ['/login'],
             check: (context, state) {
               final container =
                   ProviderScope.containerOf(context, listen: false);
@@ -68,6 +72,7 @@ class AppState extends ConsumerState<App>
       initialPath: '/started',
       locationBuilder: (routeInformation, _) =>
           BeamerLocations(routeInformation),
+          
     );
     WidgetsBinding.instance.addObserver(this);
   }
@@ -93,6 +98,8 @@ class AppState extends ConsumerState<App>
     }
   }
 
+ 
+
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeModeProvider);
@@ -104,6 +111,7 @@ class AppState extends ConsumerState<App>
     return BeamerProvider(
       routerDelegate: _routerDelegate,
       child: MaterialApp.router(
+      scaffoldMessengerKey: scaffoldMessengerKey,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             primarySwatch: Constants.kToLight, brightness: Brightness.light),

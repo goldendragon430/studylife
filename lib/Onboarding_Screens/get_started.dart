@@ -215,7 +215,7 @@ class GetStarted extends ConsumerWidget {
                           margin: const EdgeInsets.only(top: 260),
                           padding: const EdgeInsets.only(left: 25, right: 25),
                           child: Column(
-                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               RoundedElevatedButton(() => _login(context, ref),

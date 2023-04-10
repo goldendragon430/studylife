@@ -99,7 +99,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
                                 RegularTextField("Your email", (value) {
                                   FocusScope.of(context).unfocus();
                                 }, TextInputType.emailAddress, emailController,
-                                    false),
+                                    false, autofocus: true,),
                                 RoundedElevatedButton(
                                     _send,
                                     "Send Password reset link",
@@ -190,7 +190,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
                                 RegularTextField("Your email", (value) {
                                   FocusScope.of(context).unfocus();
                                 }, TextInputType.emailAddress, emailController,
-                                    true),
+                                    true, autofocus: true,),
                                 RoundedElevatedButton(
                                     _send,
                                     "Send Password reset link",

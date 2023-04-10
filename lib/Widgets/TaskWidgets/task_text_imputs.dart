@@ -49,7 +49,7 @@ class _TaskTextImputsState extends State<TaskTextImputs> {
             RegularTextField(widget.hintText, (value) {
               FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, titleController,
-                theme == ThemeMode.dark),
+                theme == ThemeMode.dark, autofocus: false,),
             Container(
               height: 14,
             ),

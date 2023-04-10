@@ -8,10 +8,12 @@ class RegularTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextEditingController? editingController;
   final bool isDarkTheme;
+  final bool autofocus;
+  final FocusNode? focusNode;
 
   const RegularTextField(this.hintText, this.submitForm, this.keyboardType,
       this.editingController, this.isDarkTheme,
-      {Key? key})
+      {Key? key, required this.autofocus, this.focusNode})
       : super(key: key);
 
   @override
@@ -23,6 +25,8 @@ class _RegularTextFieldState extends State<RegularTextField> {
   var _keyboardType;
   var _editingController;
   var _isDarkTheme;
+  var _autoFocus;
+  var _focusNode;
 
   @override
   void initState() {
@@ -31,6 +35,8 @@ class _RegularTextFieldState extends State<RegularTextField> {
     _keyboardType = widget.keyboardType;
     _editingController = widget.editingController;
     _isDarkTheme = widget.isDarkTheme;
+    _autoFocus = widget.autofocus;
+    _focusNode = widget.focusNode;
   }
 
   void submitForm() {
@@ -47,6 +53,8 @@ class _RegularTextFieldState extends State<RegularTextField> {
       height: 45,
       margin: const EdgeInsets.only(top: 4, bottom: 4),
       child: TextField(
+        autofocus: _autoFocus,
+        focusNode: _focusNode,
         textInputAction: TextInputAction.next,
         keyboardType: _keyboardType,
         cursorColor: _isDarkTheme

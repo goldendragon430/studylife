@@ -51,7 +51,7 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
             RegularTextField("Module Name", (value) {
               FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, moduleNameController,
-                theme == ThemeMode.dark),
+                theme == ThemeMode.dark, autofocus: false,),
             Container(
               height: 14,
             ),
@@ -80,7 +80,7 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
                         RegularTextField("Seat #", (value) {
                           FocusScope.of(context).unfocus();
                         }, TextInputType.emailAddress, seatNameController,
-                            theme == ThemeMode.dark),
+                            theme == ThemeMode.dark, autofocus: false,),
                       ],
                     ),
                   ),
@@ -104,7 +104,7 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
                         RegularTextField("Room", (value) {
                           FocusScope.of(context).unfocus();
                         }, TextInputType.emailAddress, roomNameController,
-                            theme == ThemeMode.dark),
+                            theme == ThemeMode.dark, autofocus: false,),
                       ],
                     ),
                   ),
@@ -125,7 +125,7 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
               RegularTextField("Online URL", (value) {
                 FocusScope.of(context).unfocus();
               }, TextInputType.emailAddress, onlineUrlController,
-                  theme == ThemeMode.dark),
+                  theme == ThemeMode.dark, autofocus: false,),
               Container(
                 height: 14,
               ),
