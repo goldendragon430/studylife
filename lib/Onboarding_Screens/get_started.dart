@@ -87,6 +87,7 @@ class GetStarted extends ConsumerWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         color: theme == ThemeMode.light
             ? Colors.white

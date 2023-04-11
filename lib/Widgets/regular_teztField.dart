@@ -10,10 +10,11 @@ class RegularTextField extends StatefulWidget {
   final bool isDarkTheme;
   final bool autofocus;
   final FocusNode? focusNode;
+  final bool? obscureText;
 
   const RegularTextField(this.hintText, this.submitForm, this.keyboardType,
       this.editingController, this.isDarkTheme,
-      {Key? key, required this.autofocus, this.focusNode})
+      {Key? key, required this.autofocus, this.focusNode, this.obscureText})
       : super(key: key);
 
   @override
@@ -27,6 +28,7 @@ class _RegularTextFieldState extends State<RegularTextField> {
   var _isDarkTheme;
   var _autoFocus;
   var _focusNode;
+  var _obscureText;
 
   @override
   void initState() {
@@ -37,6 +39,12 @@ class _RegularTextFieldState extends State<RegularTextField> {
     _isDarkTheme = widget.isDarkTheme;
     _autoFocus = widget.autofocus;
     _focusNode = widget.focusNode;
+
+    if (widget.obscureText != null) {
+      _obscureText = widget.obscureText;
+    } else {
+      _obscureText = false;
+    }
   }
 
   void submitForm() {
@@ -55,6 +63,7 @@ class _RegularTextFieldState extends State<RegularTextField> {
       child: TextField(
         autofocus: _autoFocus,
         focusNode: _focusNode,
+        obscureText: _obscureText,
         textInputAction: TextInputAction.next,
         keyboardType: _keyboardType,
         cursorColor: _isDarkTheme
@@ -64,7 +73,7 @@ class _RegularTextFieldState extends State<RegularTextField> {
           filled: true,
           fillColor:
               _isDarkTheme ? Colors.black.withOpacity(0.2) : Colors.transparent,
-              enabledBorder: OutlineInputBorder(
+          enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: _isDarkTheme
                   ? Colors.transparent
@@ -73,7 +82,7 @@ class _RegularTextFieldState extends State<RegularTextField> {
             ),
             borderRadius: BorderRadius.circular(5),
           ),
-              focusedBorder: OutlineInputBorder(
+          focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: _isDarkTheme
                   ? Colors.transparent

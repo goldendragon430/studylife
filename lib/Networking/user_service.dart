@@ -21,11 +21,13 @@ class UserService {
 
   Future<Response> signUp(String email, String password) async {
     var body = jsonEncode({
+      "first_name": "Borne",
+      "last_name": "Test",
       'email': email,
       'password': password,
     });
 
-    var response = await Api().tokenDio.post('/api/auth/signup', data: body);
+    var response = await Api().tokenDio.post('/api/auth/sign-up', data: body);
 
     return response;
   }
@@ -134,7 +136,7 @@ class UserService {
     Future<Response> resetPassword(String email) async {
     var body = jsonEncode({'email': email});
 
-    var response = await Api().dio.post('/api/user/password_forgot', data: body);
+    var response = await Api().dio.post('/api/auth/forgot-password', data: body);
 
     return response;
   }
