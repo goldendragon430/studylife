@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../Models/user.model.dart';
 import '../Services/repository.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
 
 enum AuthStatus { loading, authenticated, unauthenticated, failed }
 
@@ -25,6 +27,8 @@ class AuthState extends Equatable {
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
+    final _storage = const FlutterSecureStorage();
+
   AuthNotifier(Ref ref)
       : repo = ref.read(appRepositoryProvider),
         super(AuthState.loading()) {
@@ -35,7 +39,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
     /// this is where you can check if you have the cached token on the phone
     /// on app startup
     /// for now we assume no such caching is done
-    state = AuthState.unauthenticated();
+    /// 
+    
+    var userString = await _storage.read(key: "activeUser");
+    if (userString != null && userString.isNotEmpty) {
+
+      Map<String, dynamic> userMap = jsonDecode(userString);
+
+      var user = UserModel.fromJson(userMap);
+
+
+      state = AuthState.authenticated(user);
+    }
+    else {
+      state = const AuthState.unauthenticated();
+    }
   }
 
   Future<void> loginUser(String email, String password) async {

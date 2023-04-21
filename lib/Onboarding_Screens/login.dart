@@ -62,16 +62,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
     LoadingDialog.show(context);
 
-    await ref
-        .read(authProvider.notifier)
-        .loginUser("stoiljkovicmladen@gmail.com", "12312");
+    await ref.read(authProvider.notifier).loginUser(finalEmail, finalPassword);
 
     if (!context.mounted) return;
 
     LoadingDialog.hide(context);
 
-    // context.beamBack();
-    Beamer.of(context).update();
+    var loggedIn = ref.read(authProvider.notifier);
+
+    if (loggedIn.state.status == AuthStatus.authenticated) {
+      context.beamBack();
+      Beamer.of(context).update();
+    }
   }
 
   void showKeyboard() {
@@ -292,15 +294,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                         autofocus: false,
                                         obscureText: true,
                                       ),
-                                      RoundedElevatedButton(() => loginUser(ref),
-                                      //   await ref
-                                      //       .read(authProvider.notifier)
-                                      //       .loginUser(
-                                      //           "stoiljkovicmladen@gmail.com",
-                                      //           "123123");
-                                      //   context.beamBack();
-                                      //   Beamer.of(context).update();
-                                      // },
+                                      RoundedElevatedButton(
+                                          () => loginUser(ref),
+                                          //   await ref
+                                          //       .read(authProvider.notifier)
+                                          //       .loginUser(
+                                          //           "stoiljkovicmladen@gmail.com",
+                                          //           "123123");
+                                          //   context.beamBack();
+                                          //   Beamer.of(context).update();
+                                          // },
                                           "Log In",
                                           Constants.darkThemePrimaryColor,
                                           Colors.black,

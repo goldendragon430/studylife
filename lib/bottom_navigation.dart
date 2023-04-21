@@ -16,6 +16,7 @@ import './Onboarding_Screens/forgot_password.dart';
 import './Onboarding_Screens/signup.dart';
 import './Activities_Screens/activities_screen.dart';
 import './Profile_Screens/profile_screen.dart';
+import './Calendar_Screens/calendar_screen.dart';
 
 class BeamerLocations extends BeamLocation<BeamState> {
   BeamerLocations(RouteInformation routeInformation) : super(routeInformation);
@@ -107,11 +108,11 @@ class CalendarTabItemLocation extends BeamLocation<BeamState> {
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
-        BeamPage(
+        const BeamPage(
           key: ValueKey('calendar'),
           title: 'Tab Calendar',
           type: BeamPageType.noTransition,
-          child: HomePage(detailsPath: 'calendar/details'),
+          child: CalendarScreen(),
         ),
         //  const BeamPage(
         //       key: ValueKey('/calendar/details'),

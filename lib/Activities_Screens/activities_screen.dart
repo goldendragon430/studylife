@@ -38,9 +38,11 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             automaticallyImplyLeading: false,
             title: Text(
               "Activities",
-              style: theme == ThemeMode.light
-                  ? Constants.lightThemeTitleTextStyle
-                  : Constants.darkThemeTitleTextStyle,
+              style: TextStyle(
+                fontSize: 17,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+                color: theme == ThemeMode.light ? Colors.black : Colors.white),
             ),
             bottom: TabBar(
               indicatorWeight: 4,

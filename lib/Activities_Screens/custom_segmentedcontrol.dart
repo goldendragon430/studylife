@@ -21,7 +21,7 @@ class CustomSegmentedControl extends ConsumerWidget {
       decoration: BoxDecoration(
         color: theme == ThemeMode.light
             ? Constants.lightThemeSecondaryColor
-            : Constants.darkThemeClassExamCardBackgroundColor,
+            : Constants.darkThemeDividerColor,
         borderRadius: BorderRadius.circular(8),
       ),
       thumbDecoration: BoxDecoration(

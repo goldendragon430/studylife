@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:beamer/beamer.dart';
+import 'package:calendar_view/calendar_view.dart';
 
 import './bottom_navigation.dart';
 import './tab_item.dart';
@@ -16,6 +17,7 @@ import './Controllers/auth_notifier.dart';
 import './Onboarding_Screens/forgot_password.dart';
 import './Widgets/custom_snack_bar.dart';
 import './Services/navigation_service.dart';
+import './Models/event.dart';
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) {
   var brightness = WidgetsBinding.instance.window.platformBrightness;
@@ -26,6 +28,8 @@ final themeModeProvider = StateProvider<ThemeMode>((ref) {
     return ThemeMode.light;
   }
 });
+
+DateTime get _now => DateTime.now();
 
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -39,7 +43,6 @@ class App extends ConsumerStatefulWidget {
 class AppState extends ConsumerState<App>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   late final _routerDelegate;
-
   @override
   void initState() {
     super.initState();
@@ -55,12 +58,12 @@ class AppState extends ConsumerState<App>
               return container.read(authProvider).status ==
                   AuthStatus.authenticated;
             },
-           beamToNamed: (_, __) => '/login'),
+            beamToNamed: (_, __) => '/started'),
 
         /// if the user is anything other than authenticated
         /// else send them to /home
         BeamGuard(
-            pathPatterns: ['/login'],
+            pathPatterns: ['/started'],
             check: (context, state) {
               final container =
                   ProviderScope.containerOf(context, listen: false);
@@ -72,7 +75,6 @@ class AppState extends ConsumerState<App>
       initialPath: '/started',
       locationBuilder: (routeInformation, _) =>
           BeamerLocations(routeInformation),
-          
     );
     WidgetsBinding.instance.addObserver(this);
   }
@@ -98,8 +100,6 @@ class AppState extends ConsumerState<App>
     }
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeModeProvider);
@@ -110,20 +110,92 @@ class AppState extends ConsumerState<App>
 
     return BeamerProvider(
       routerDelegate: _routerDelegate,
-      child: MaterialApp.router(
-      scaffoldMessengerKey: scaffoldMessengerKey,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primarySwatch: Constants.kToLight, brightness: Brightness.light),
-        darkTheme: ThemeData(
-            primarySwatch: Constants.kToDark, brightness: Brightness.dark),
-        themeMode: theme,
-        routeInformationParser: BeamerParser(),
-        routerDelegate: _routerDelegate,
-        backButtonDispatcher: BeamerBackButtonDispatcher(
-          delegate: _routerDelegate,
+      child: CalendarControllerProvider<Event>(
+        controller: EventController<Event>()..addAll(_events),
+        child: MaterialApp.router(
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              primarySwatch: Constants.kToLight, brightness: Brightness.light),
+          darkTheme: ThemeData(
+              primarySwatch: Constants.kToDark, brightness: Brightness.dark),
+          themeMode: theme,
+          routeInformationParser: BeamerParser(),
+          routerDelegate: _routerDelegate,
+          backButtonDispatcher: BeamerBackButtonDispatcher(
+            delegate: _routerDelegate,
+          ),
         ),
       ),
     );
   }
 }
+
+final List<CalendarEventData<Event>> _events = [
+  CalendarEventData(
+    date: _now,
+    event: Event(title: "Joe's Birthday"),
+    title: "Project meeting",
+    description: "Today is project meeting.",
+    startTime: DateTime(_now.year, _now.month, _now.day, 18, 30),
+    endTime: DateTime(_now.year, _now.month, _now.day, 22),
+  ),
+  CalendarEventData(
+    date: _now.add(Duration(days: 1)),
+    startTime: DateTime(_now.year, _now.month, _now.day, 18),
+    endTime: DateTime(_now.year, _now.month, _now.day, 19),
+    event: Event(title: "Wedding anniversary"),
+    title: "Wedding anniversary",
+    description: "Attend uncle's wedding anniversary.",
+  ),
+  CalendarEventData(
+    date: _now,
+    startTime: DateTime(_now.year, _now.month, _now.day, 14),
+    endTime: DateTime(_now.year, _now.month, _now.day, 17),
+    event: Event(title: "Football Tournament"),
+    title: "Football Tournament",
+    description: "Go to football tournament.",
+  ),
+  CalendarEventData(
+    date: _now.add(Duration(days: 3)),
+    startTime: DateTime(_now.add(Duration(days: 3)).year,
+        _now.add(Duration(days: 3)).month, _now.add(Duration(days: 3)).day, 10),
+    endTime: DateTime(_now.add(Duration(days: 3)).year,
+        _now.add(Duration(days: 3)).month, _now.add(Duration(days: 3)).day, 14),
+    event: Event(title: "Sprint Meeting."),
+    title: "Sprint Meeting.",
+    description: "Last day of project submission for last year.",
+  ),
+  CalendarEventData(
+    date: _now.subtract(Duration(days: 2)),
+    startTime: DateTime(
+        _now.subtract(Duration(days: 2)).year,
+        _now.subtract(Duration(days: 2)).month,
+        _now.subtract(Duration(days: 2)).day,
+        14),
+    endTime: DateTime(
+        _now.subtract(Duration(days: 2)).year,
+        _now.subtract(Duration(days: 2)).month,
+        _now.subtract(Duration(days: 2)).day,
+        16),
+    event: Event(title: "Team Meeting"),
+    title: "Team Meeting",
+    description: "Team Meeting",
+  ),
+  CalendarEventData(
+    date: _now.subtract(Duration(days: 2)),
+    startTime: DateTime(
+        _now.subtract(Duration(days: 2)).year,
+        _now.subtract(Duration(days: 2)).month,
+        _now.subtract(Duration(days: 2)).day,
+        10),
+    endTime: DateTime(
+        _now.subtract(Duration(days: 2)).year,
+        _now.subtract(Duration(days: 2)).month,
+        _now.subtract(Duration(days: 2)).day,
+        12),
+    event: Event(title: "Chemistry Viva"),
+    title: "Chemistry Viva",
+    description: "Today is Joe's birthday.",
+  ),
+];

@@ -1,4 +1,3 @@
-
 import '../Models/API/access_token.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -42,18 +41,16 @@ class UserService {
     });
 
     var response = await Api().tokenDio.post('/api/auth/login', data: body);
-
     if (response.statusCode == 200) {
-      // var token = AccessToken.fromJson(response.data['token']);
-      // var user = UserModel.fromJson(response.data['user']);
 
-      // bool hasExpired = JwtDecoder.isExpired(token.toString());
+      var tokenData = JwtDecoder.decode(response.data['token']);
 
-      print("eo gA TOKEN OPA: ${response.data['token']}");
-      print("eo gA USER OPA: ${response.data['user']}");
+      var token = AccessToken.fromJson(tokenData);
+      var user = UserModel.fromJson(response.data['user']);
 
-      // await _storage.write(
-      //     key: "access_token", value: jsonEncode(token.toJson()));
+      await _storage.write(
+          key: "access_token", value: jsonEncode(token.toJson()));
+     await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
     }
 
     return response;
@@ -101,7 +98,6 @@ class UserService {
   Future<Response> updateUser(String body) async {
     var response = await Api().dio.post('/api/user', data: body);
 
-
     if (response.statusCode == 201 || response.statusCode == 200) {
       var user = UserModel.fromJson(response.data['data']);
 
@@ -133,10 +129,11 @@ class UserService {
     return response;
   }
 
-    Future<Response> resetPassword(String email) async {
+  Future<Response> resetPassword(String email) async {
     var body = jsonEncode({'email': email});
 
-    var response = await Api().dio.post('/api/auth/forgot-password', data: body);
+    var response =
+        await Api().dio.post('/api/auth/forgot-password', data: body);
 
     return response;
   }

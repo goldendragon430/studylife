@@ -8,30 +8,30 @@ import '../Widgets/custom_snack_bar.dart';
 import './navigation_service.dart';
 import 'package:flutter/material.dart';
 import '../app.dart';
-
+import 'package:beamer/beamer.dart';
 
 class AppRepository {
   Future<UserModel> loginUser(String email, String password) async {
- try {
+    try {
       var response = await UserService().login(email, password);
 
       var user = UserModel.fromJson(response.data['user']);
 
+      //final context = scaffoldMessengerKey.currentContext!;
+
       return user;
-
     } catch (error) {
-        final context = scaffoldMessengerKey.currentContext!;
+      final context = scaffoldMessengerKey.currentContext!;
       if (error is DioError) {
-        print(error.response?.data['message']);
+        print(error.response?.data['msg']);
 
-        CustomSnackBar.show(context, CustomSnackBarType.error, error.response?.data['message']);
-              return UserModel.empty;
-        
+        CustomSnackBar.show(
+            context, CustomSnackBarType.error, error.response?.data['msg']);
+        return UserModel.empty;
       } else {
-                print(error.toString());
-        print("Oops, something went wrong");
-                CustomSnackBar.show(context, CustomSnackBarType.error, "Oops, something went wrong");
-              return UserModel.empty;
+        CustomSnackBar.show(
+            context, CustomSnackBarType.error, "Oops, something went wrong");
+        return UserModel.empty;
       }
     }
 
@@ -51,4 +51,3 @@ class AppRepository {
 }
 
 final appRepositoryProvider = Provider<AppRepository>((ref) => AppRepository());
-

@@ -57,14 +57,11 @@ class Constants {
       Colors.white.withOpacity(0.15);
   static Color darkThemeTaskTypeColorColor =
       HexColor.fromHex("#72788E").withOpacity(0.7);
-  static Color lightThemeProfileImageCntainerColor = HexColor.fromHex("#F2F2F5");
+  static Color lightThemeProfileImageCntainerColor =
+      HexColor.fromHex("#F2F2F5");
   static Color darkThemeProfileImageCntainerColor = Colors.black;
-  static Color overdueTextColor =  HexColor.fromHex("#FF3B3B");
-  static Color logOutButtonColor =  HexColor.fromHex("#FFB9B9");
-
-      
-
-      
+  static Color overdueTextColor = HexColor.fromHex("#FF3B3B");
+  static Color logOutButtonColor = HexColor.fromHex("#FFB9B9");
 
   static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
@@ -387,7 +384,39 @@ class Constants {
       fontWeight: FontWeight.normal,
       color: blueButtonBackgroundColor);
 
+  static TextStyle lightThemeRegular10TextSelectedStyle = const TextStyle(
+      fontSize: 10,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
 
+  static TextStyle darkThemeRegular10TextSelectedStyle = const TextStyle(
+      fontSize: 10,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white);
 
-      
+  static TextStyle lightThemeRegular10TextSelectedStyleWithOpacity = TextStyle(
+      fontSize: 10,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.black.withOpacity(0.4));
+
+  static TextStyle darkThemeRegular10TextSelectedStyleWithOpacity = TextStyle(
+      fontSize: 10,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.normal,
+      color: Colors.white.withOpacity(0.4));
+
+  static TextStyle lightThemeRegular8TextSelectedStyle = const TextStyle(
+      fontSize: 8,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.black);
+
+  static TextStyle darkThemeRegular8TextSelectedStyle = const TextStyle(
+      fontSize: 8,
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.bold,
+      color: Colors.white);
 }
