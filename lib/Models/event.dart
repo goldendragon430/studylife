@@ -1,10 +1,15 @@
 import 'package:flutter/foundation.dart';
 
+enum EventType {
+   classEvent, examEvent, taskDueEvent, breakEvent, prepTimeEvent, eventsEvent 
+}
+
 @immutable
 class Event {
   final String title;
+  EventType? eventType;
 
-  const Event({this.title = "Title"});
+   Event({this.title = "Title", this.eventType});
 
   @override
   bool operator ==(Object other) => other is Event && title == other.title;

@@ -25,12 +25,15 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   int selectedTabIndex = 1;
   String currentMonthName = "";
-  DateTime currentSelectedDay = DateTime.now();
+  DateTime currentSelectedDate = DateTime.now();
   String currentSelectedDayStringName = "";
+  final ValueNotifier<DateTime> currentSelectedDay =
+      ValueNotifier(DateTime.now());
 
   final List<ClassStatic> _classes = ClassStatic.classes;
 
   static GlobalKey<MonthViewState> stateKey = GlobalKey<MonthViewState>();
+  final GlobalKey<DayViewState> dayStateKey = GlobalKey<DayViewState>();
 
   @override
   void initState() {
@@ -71,17 +74,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void _tappedLeftNavigationButton() {
     stateKey.currentState?.previousPage();
+
+    currentSelectedDate =
+        DateTime(currentSelectedDate.year, currentSelectedDate.month - 1, 1);
+
+    setState(() {
+      final DateFormat monthFormat = DateFormat('MMMM');
+      currentSelectedDay.value = currentSelectedDate;
+      currentMonthName = monthFormat.format(currentSelectedDay.value);
+      dayStateKey.currentState?.animateToDate(currentSelectedDate);
+    });
   }
 
   void _tappedRightNavigationButton() {
     stateKey.currentState?.nextPage();
+
+    currentSelectedDate =
+        DateTime(currentSelectedDate.year, currentSelectedDate.month + 1, 1);
+
+    setState(() {
+      final DateFormat monthFormat = DateFormat('MMMM');
+      currentSelectedDay.value = currentSelectedDate;
+      currentMonthName = monthFormat.format(currentSelectedDay.value);
+      dayStateKey.currentState?.animateToDate(currentSelectedDate);
+    });
+    //dayStateKey.currentState?.
   }
 
   void _calendarPageChanged(DateTime date, int page) {
     final DateFormat monthFormat = DateFormat('MMMM');
 
     setState(() {
-      currentSelectedDay = date;
+      currentSelectedDay.value = date;
       currentMonthName = monthFormat.format(date);
     });
   }
@@ -91,10 +115,39 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final DateFormat dayFormat = DateFormat('EEEEE, MMMM d yyyy');
 
     setState(() {
-      currentSelectedDay = date;
+      currentSelectedDay.value = date;
       currentSelectedDayStringName = dayFormat.format(date);
     });
   }
+
+  void _weekDayCalendarPageChanged(DateTime date) {
+    final DateFormat monthFormat = DateFormat('MMMM');
+
+    setState(() {
+      currentSelectedDate = date;
+      currentSelectedDay.value = date;
+      currentMonthName = monthFormat.format(date);
+      dayStateKey.currentState?.animateToDate(currentSelectedDate);
+    });
+  }
+
+  void _weekDayCalendarDaySelected(DateTime date) {
+    final DateFormat dayFormat = DateFormat('EEEEE, MMMM d yyyy');
+
+    setState(() {
+      currentSelectedDate = date;
+      currentSelectedDay.value = date;
+      dayStateKey.currentState?.animateToDate(date);
+      //currentSelectedDayStringName = dayFormat.format(date);
+    });
+  }
+
+  //   void _selectedDate(DateTime date, DateTime focusDate) {
+  //   setState(() {
+  //     dayViewStateKey.currentState?.animateToDate(date);
+  //     widget.daySelected(date, focusDate);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +235,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         : Image.asset('assets/images/ArrowLeftDarkTheme.png'),
                   ),
                   Container(
-                    width: 80,
+                    width: 60,
                   ),
                   Text(
                     currentMonthName,
@@ -207,11 +260,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             if (selectedTabIndex == 1) ...[
               Container(
-                  margin: EdgeInsets.only(top: 75), child: DayViewWidget()),
+                  margin: EdgeInsets.only(top: 75),
+                  child: DayViewWidget(
+                    state: dayStateKey,
+                    daySelected: _weekDayCalendarDaySelected,
+                    pageChanged: _weekDayCalendarPageChanged,
+                    selectedDay: currentSelectedDay.value,
+                  )),
             ],
             if (selectedTabIndex == 2) ...[
               Container(
-                  margin: EdgeInsets.only(top: 75), child: WeekViewWidget()),
+                  margin: EdgeInsets.only(top: 135), child: WeekViewWidget()),
             ],
             if (selectedTabIndex == 3) ...[
               Stack(
@@ -250,7 +309,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       state: stateKey,
                       pageChanged: _calendarPageChanged,
                       daySelected: _calendarDaySelected,
-                      currentSelectedDay: currentSelectedDay,
+                      currentSelectedDay: currentSelectedDay.value,
                     ),
                   ),
                   Container(

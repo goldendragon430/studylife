@@ -1,23 +1,333 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import './horizontal_week_calendar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app.dart';
 import '../../Models/event.dart';
+import '../../Utilities/constants.dart';
+import 'package:intl/intl.dart';
 
-class DayViewWidget extends StatelessWidget {
+class DayViewWidget extends StatefulWidget {
   final GlobalKey<DayViewState>? state;
   final double? width;
+  final Function daySelected;
+  final Function pageChanged;
+  final DateTime selectedDay;
 
   const DayViewWidget({
     Key? key,
     this.state,
     this.width,
+    required this.daySelected,
+    required this.pageChanged,
+    required this.selectedDay,
   }) : super(key: key);
 
   @override
+  State<DayViewWidget> createState() => _DayViewWidgetState();
+}
+
+class _DayViewWidgetState extends State<DayViewWidget> {
+  // static GlobalKey<DayViewState> dayViewStateKey = GlobalKey<DayViewState>();
+  // final GlobalKey weekViewStateKey = GlobalKey();
+
+  // Event tile creation
+  Container createEventTileContainer(
+      DateTime date,
+      List<CalendarEventData<Event>> events,
+      DateTime startDuration,
+      DateTime endDuration,
+      ThemeMode theme) {
+    final CalendarEventData<Event> finalEvent =
+        events.firstWhere((element) => element.startTime == startDuration);
+    final startHourString = DateFormat('HH:mm').format(startDuration);
+    final endHourString = DateFormat('HH:mm').format(endDuration);
+
+    //print("EVENTS BBB : ${finalEvent}");
+
+    if (finalEvent.event?.eventType != null) {
+      if (finalEvent.event?.eventType == EventType.prepTimeEvent) {
+        return Container(
+          margin: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+              color: Colors.red, borderRadius: BorderRadius.circular(10)),
+          child: Container(
+            margin: const EdgeInsetsDirectional.only(top: 2),
+            decoration: BoxDecoration(
+                color: theme == ThemeMode.light
+                    ? Colors.white
+                    : Constants.darkThemeSecondaryBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 2.0,
+                    spreadRadius: 1.0,
+                  ),
+                ]),
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                top: 18, right: 15, left: 15),
+                            child: Text(
+                              finalEvent.event?.title ?? "",
+                              style: const TextStyle(
+                                  overflow: TextOverflow.visible,
+                                  fontSize: 20,
+                                  fontFamily: 'BebasNeue',
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.red),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 22, right: 15),
+                          child: Text(
+                            "Prep",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.bold,
+                              color: theme == ThemeMode.light
+                                  ? Colors.black.withOpacity(0.4)
+                                  : Colors.white.withOpacity(0.4),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 15, top: 8),
+                      child: Text(
+                        "subtitle text",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.normal,
+                          color: theme == ThemeMode.light
+                              ? Colors.black.withOpacity(0.4)
+                              : Colors.white.withOpacity(0.4),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  margin: const EdgeInsets.only(left: 15, top: 8, bottom: 18),
+                  child: Text(
+                    "${startHourString} - ${endHourString}",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.bold,
+                      color: theme == ThemeMode.light
+                          ? Colors.black.withOpacity(0.4)
+                          : Colors.white.withOpacity(0.4),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          decoration: BoxDecoration(
+              color: theme == ThemeMode.light
+                  ? Colors.white
+                  : Constants.darkThemeSecondaryBackgroundColor,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 2.0,
+                  spreadRadius: 1.0,
+                ),
+              ]),
+          margin: EdgeInsets.all(4),
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin:
+                            const EdgeInsets.only(top: 22, left: 15, right: 15),
+                        height: 14,
+                        width: 14,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                      ),
+                      Flexible(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 18, right: 15),
+                          child: Text(
+                            finalEvent.event?.title ?? "",
+                            style: const TextStyle(
+                                overflow: TextOverflow.visible,
+                                fontSize: 20,
+                                fontFamily: 'BebasNeue',
+                                fontWeight: FontWeight.normal,
+                                color: Colors.red),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 15, top: 8),
+                    child: Text(
+                      "subtitle text",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.normal,
+                        color: theme == ThemeMode.light
+                            ? Colors.black.withOpacity(0.44)
+                            : Colors.white.withOpacity(0.4),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                alignment: Alignment.bottomLeft,
+                margin: const EdgeInsets.only(left: 15, top: 8, bottom: 18),
+                child: Text(
+                  "${startHourString} - ${endHourString}",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.bold,
+                    color: theme == ThemeMode.light
+                        ? Colors.black.withOpacity(0.4)
+                        : Colors.white.withOpacity(0.4),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      }
+    } else {
+      return Container();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DayView<Event>(
-      key: state,
-      width: width,
+    return Consumer(
+      builder: (_, WidgetRef ref, __) {
+        final theme = ref.watch(themeModeProvider);
+
+        return Container(
+          color: Colors.transparent,
+          margin: const EdgeInsets.only(top: 50, right: 20),
+          child: Stack(
+            children: [
+              CustomTimelineDatePicker(
+                daySelected: widget.daySelected,
+                pageChanged: widget.pageChanged, selectedDay: widget.selectedDay,
+              ),
+              Container(
+                color: Colors.transparent,
+                margin: const EdgeInsets.only(top: 130, left: 20),
+                child: DayView<Event>(
+                  verticalLineOffset: 40,
+                  backgroundColor: Colors.transparent,
+                  key: widget.state,
+                  width: widget.width,
+                  showLiveTimeLineInAllDays: false,
+                  heightPerMinute: 1.9,
+                  liveTimeIndicatorSettings: HourIndicatorSettings.none(),
+                  dayTitleBuilder: (date) {
+                    return Container();
+                  },
+                  showVerticalLine: false,
+                  hourIndicatorSettings: HourIndicatorSettings.none(),
+                  eventTileBuilder:
+                      (date, events, boundary, startDuration, endDuration) {
+                    return createEventTileContainer(
+                        date, events, startDuration, endDuration, theme);
+                  },
+                  timeLineBuilder: (date) {
+                    final hour = DateFormat('HH:mm').format(date);
+                    return SizedBox(
+                      height: 100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            hour,
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.normal,
+                                color: Constants.dayCalendarHourColor),
+                          ),
+                          Container(
+                            height: 2,
+                          ),
+                          Container(
+                            height: 2,
+                            width: 10,
+                            decoration: BoxDecoration(
+                              color: Constants.dayCalendarLineColor,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          Container(
+                            height: 6,
+                          ),
+                          Container(
+                            height: 2,
+                            width: 20,
+                            decoration: BoxDecoration(
+                              color: Constants.dayCalendarLineColor,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          Container(
+                            height: 6,
+                          ),
+                          Container(
+                            height: 2,
+                            width: 10,
+                            decoration: BoxDecoration(
+                              color: Constants.dayCalendarLineColor,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

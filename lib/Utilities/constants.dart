@@ -17,6 +17,7 @@ class Constants {
 //Colors
   static Color lightThemeBackgroundColor = Colors.white;
   static Color darkThemeBackgroundColor = HexColor.fromHex("#1E2439");
+  static Color lightThemeCalendaryDayColor = HexColor.fromHex("#1E2022");
   static Color darkThemeSecondaryBackgroundColor = HexColor.fromHex("#283153");
   static Color lightThemePrimaryColor = HexColor.fromHex('#00F6FF');
   static Color darkThemePrimaryColor = HexColor.fromHex('#00F6FF');
@@ -62,6 +63,16 @@ class Constants {
   static Color darkThemeProfileImageCntainerColor = Colors.black;
   static Color overdueTextColor = HexColor.fromHex("#FF3B3B");
   static Color logOutButtonColor = HexColor.fromHex("#FFB9B9");
+  static Color dayCalendarHourColor = HexColor.fromHex("#576E82");
+  static Color dayCalendarLineColor = HexColor.fromHex("#A9BBC9");
+  static Color weekCalendarOddDayLightBackround = HexColor.fromHex("#F0F4F5");
+  static Color weekCalendarOddDayDarkBackround = HexColor.fromHex("#161A29");
+
+  static Color weekCalendarNormalDayLightBackround = Colors.white;
+  static Color weekCalendarNormalDayDarkBackround = HexColor.fromHex("#1E2439");
+
+
+  
 
   static const MaterialColor kToLight = MaterialColor(
     0xffffffff, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
@@ -281,7 +292,7 @@ class Constants {
       fontFamily: 'Roboto',
       fontWeight: FontWeight.w500,
       color: lightThemeTextSelectionColor);
-
+      
   static TextStyle darkThemeMedium14TextStyle = const TextStyle(
       fontSize: 14,
       fontFamily: 'Roboto',
