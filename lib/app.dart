@@ -43,6 +43,7 @@ class App extends ConsumerStatefulWidget {
 class AppState extends ConsumerState<App>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   late final _routerDelegate;
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +53,16 @@ class AppState extends ConsumerState<App>
         /// else send them to /login
         BeamGuard(
             pathPatterns: ['/home'],
+            check: (context, state) {
+              final container =
+                  ProviderScope.containerOf(context, listen: false);
+              return container.read(authProvider).status ==
+                  AuthStatus.authenticated;
+            },
+            beamToNamed: (_, __) => '/started'),
+
+             BeamGuard(
+            pathPatterns: ['/profile'],
             check: (context, state) {
               final container =
                   ProviderScope.containerOf(context, listen: false);
@@ -71,6 +82,8 @@ class AppState extends ConsumerState<App>
                   AuthStatus.authenticated;
             },
             beamToNamed: (_, __) => '/home'),
+
+            
       ],
       initialPath: '/started',
       locationBuilder: (routeInformation, _) =>
@@ -103,7 +116,6 @@ class AppState extends ConsumerState<App>
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeModeProvider);
-    // final signInState = ref.watch(loginStateProvider);
 
     final signInState = ref.watch(authProvider);
     print("object ${signInState.status}");

@@ -17,18 +17,15 @@ import './Onboarding_Screens/signup.dart';
 import './Activities_Screens/activities_screen.dart';
 import './Profile_Screens/profile_screen.dart';
 import './Calendar_Screens/calendar_screen.dart';
-import './Calendar_Screens/calendar_screenV2.dart';
 
 class BeamerLocations extends BeamLocation<BeamState> {
   BeamerLocations(RouteInformation routeInformation) : super(routeInformation);
 
   @override
   List<Pattern> get pathPatterns => [
-        '/started',
-        '/home',
-        '/activities',
-        '/login',
-        '/calendar'
+        'started',
+        'home',
+        'profile'
       ];
 
   @override
@@ -135,7 +132,7 @@ class EmptyTabTabItemLocation extends BeamLocation<BeamState> {
           key: ValueKey('empty-tab'),
           title: 'Tab empty-tab',
           type: BeamPageType.noTransition,
-          child: CalendarScreenV2(),
+          child: ActivitiesScreen(),
         ),
         //  const BeamPage(
         //       key: ValueKey('/activities/details'),

@@ -9,15 +9,16 @@ import './navigation_service.dart';
 import 'package:flutter/material.dart';
 import '../app.dart';
 import 'package:beamer/beamer.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AppRepository {
+    final _storage = const FlutterSecureStorage();
+
   Future<UserModel> loginUser(String email, String password) async {
     try {
       var response = await UserService().login(email, password);
 
       var user = UserModel.fromJson(response.data['user']);
-
-      //final context = scaffoldMessengerKey.currentContext!;
 
       return user;
     } catch (error) {
@@ -47,6 +48,9 @@ class AppRepository {
 
   Future<void> logoutUser() async {
     /// on logout, delete the cache of userdata
+    /// 
+        _storage.deleteAll();
+
   }
 }
 

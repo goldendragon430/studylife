@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Widgets/ProfileWidgets/collection_widget_four_items.dart';
-import '../Utilities/constants.dart';
-import '../Extensions/extensions.dart';
+import 'package:beamer/beamer.dart';
 
 import '../../app.dart';
+import '../Controllers/auth_notifier.dart';
+import '../Utilities/constants.dart';
+import '../Extensions/extensions.dart';
 import '../Profile_Screens/profile_screen.dart';
 import '../Widgets/ProfileWidgets/edit_list.dart';
 import '../Widgets/ProfileWidgets/personalization_list.dart';
@@ -69,7 +71,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print("Selected Personalization card with Index: $index");
   }
 
-  void _logOutButtonTapped() {
+  void _logOutButtonTapped(WidgetRef ref) async {
+    await ref.read(authProvider.notifier).logoutUser();
+
+    final currentContext = scaffoldMessengerKey.currentContext!;
+
+    if (!currentContext.mounted) return;
+
+    Beamer.of(currentContext).update();
+
     print("Logout tapped");
   }
 
@@ -281,7 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       margin: const EdgeInsets.only(
                           top: 44, bottom: 57, left: 116, right: 116),
                       child: RoundedElevatedButton(
-                          _logOutButtonTapped,
+                          () => _logOutButtonTapped(ref),
                           "Log Out",
                           Constants.logOutButtonColor,
                           Colors.black,

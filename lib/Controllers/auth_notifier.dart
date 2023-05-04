@@ -72,7 +72,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> logoutUser() async {
     await repo.logoutUser();
-    state = AuthState.unauthenticated();
+    state = const AuthState.unauthenticated();
   }
 
   AppRepository repo;
