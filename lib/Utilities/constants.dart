@@ -70,6 +70,10 @@ class Constants {
 
   static Color weekCalendarNormalDayLightBackround = Colors.white;
   static Color weekCalendarNormalDayDarkBackround = HexColor.fromHex("#1E2439");
+  static Color calendarLegendClassBlueColor = HexColor.fromHex("#3224A0");
+  static Color calendarLegendExamColor = HexColor.fromHex("#E9E7F7");
+  static Color diagonalColorPainter = HexColor.fromHex("#BFC1D6");
+  static Color calendarLegendPrepTextColor = HexColor.fromHex("#C1C0D8");
 
 
   

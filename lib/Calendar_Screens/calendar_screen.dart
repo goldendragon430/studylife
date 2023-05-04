@@ -7,13 +7,13 @@ import 'package:calendar_view/calendar_view.dart';
 import '../../app.dart';
 import '../Activities_Screens/custom_segmentedcontrol.dart';
 import '../Models/event.dart';
-import '../Extensions/extensions.dart';
 import '../Widgets/CalendarWidgets/day_view_widget.dart';
 import '../Widgets/CalendarWidgets/month_view_widget.dart';
 import '../Widgets/CalendarWidgets/week_view_widget.dart';
 import '.././Models/class_datasource.dart';
 import '../Home_Screens/class_details_screen.dart';
 import '../Widgets/ClassWidgets/class_widget.dart';
+import '../Widgets/custom_centered_dialog.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -142,12 +142,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
-  //   void _selectedDate(DateTime date, DateTime focusDate) {
-  //   setState(() {
-  //     dayViewStateKey.currentState?.animateToDate(date);
-  //     widget.daySelected(date, focusDate);
-  //   });
-  // }
+  void _openLegend() {
+    showCenteredPopup(context);
+  }
+
+    showCenteredPopup(BuildContext context) {
+    showDialog(context: context, builder: (context) {
+          return CustomDialogBox();
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +161,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
         backgroundColor: theme == ThemeMode.light
             ? Constants.lightThemeBackgroundColor
             : Constants.darkThemeBackgroundColor,
+             floatingActionButton: Container(
+          padding: const EdgeInsets.only(top: 45),
+          height: 125,
+          width: 65,
+          child: FloatingActionButton(
+            heroTag: null,
+            foregroundColor: Colors.transparent,
+            backgroundColor: Colors.transparent,
+            highlightElevation: 0,
+            onPressed: _openLegend,
+            elevation: 0.0,
+            child: Image.asset('assets/images/OpenLegendButtonIcon.png'),
+          ),
+        ),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,

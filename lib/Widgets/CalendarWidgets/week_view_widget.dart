@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../app.dart';
 import '../../Models/event.dart';
 import '../../Utilities/constants.dart';
+import '../custom_painter_class.dart';
 
 class WeekViewWidget extends StatefulWidget {
   final GlobalKey<WeekViewState>? state;
@@ -18,6 +19,177 @@ class WeekViewWidget extends StatefulWidget {
 }
 
 class _WeekViewWidgetState extends State<WeekViewWidget> {
+// Event tile creation
+  Container createEventTileContainer(
+      DateTime date,
+      List<CalendarEventData<Event>> events,
+      DateTime startDuration,
+      DateTime endDuration,
+      ThemeMode theme) {
+    final CalendarEventData<Event> finalEvent =
+        events.firstWhere((element) => element.startTime == startDuration);
+
+    if (finalEvent.event?.eventType != null) {
+      switch (finalEvent.event?.eventType) {
+        case EventType.prepTimeEvent:
+          return Container(
+            decoration: BoxDecoration(
+                color: Colors.red, borderRadius: BorderRadius.circular(10)),
+            child: Container(
+              margin: const EdgeInsetsDirectional.only(top: 4),
+              decoration: BoxDecoration(
+                  color: theme == ThemeMode.light
+                      ? Colors.white
+                      : Constants.darkThemeSecondaryBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 2.0,
+                      spreadRadius: 1.0,
+                    ),
+                  ]),
+              child: Stack(
+                children: [
+                  Container(
+                    alignment: Alignment.topCenter,
+                    margin: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      "Prep",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.bold,
+                        color: theme == ThemeMode.light
+                            ? Colors.black.withOpacity(0.4)
+                            : Colors.white.withOpacity(0.4),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        case EventType.classEvent:
+          return Container(
+            decoration: BoxDecoration(
+                color: theme == ThemeMode.light
+                    ? Colors.white
+                    : Constants.darkThemeSecondaryBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 2.0,
+                    spreadRadius: 1.0,
+                  ),
+                ]),
+            child: Stack(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 5, left: 5, right: 15),
+                  height: 14,
+                  width: 14,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                ),
+              ],
+            ),
+          );
+
+        case EventType.examEvent:
+          return Container(
+            decoration: BoxDecoration(
+                color: theme == ThemeMode.light
+                    ? Colors.white
+                    : Constants.darkThemeSecondaryBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(width: 2.0, color: Colors.red),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 2.0,
+                    spreadRadius: 1.0,
+                  ),
+                ]),
+            child: Container(
+              margin: const EdgeInsets.only(top: 8),
+              alignment: Alignment.topCenter,
+              child: Text(
+                "EXAM",
+                style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red),
+              ),
+            ),
+          );
+
+        case EventType.taskDueEvent:
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            alignment: Alignment.center,
+            child: const Text(
+              "Due",
+              style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+          );
+
+        case EventType.breakEvent:
+          return Container(
+            color: Colors.transparent,
+            child: ClipRect(
+              child: Container(
+                color: Colors.transparent,
+                child: StripsWidget(
+                  color1: Constants.diagonalColorPainter,
+                  color2: theme == ThemeMode.light
+                      ? Constants.lightThemeBackgroundColor
+                      : Constants.darkThemeBackgroundColor,
+                  gap: 8,
+                  noOfStrips: 100,
+                ),
+              ),
+            ),
+          );
+
+        case EventType.eventsEvent:
+          return Container(
+            alignment: Alignment.topCenter,
+            decoration: BoxDecoration(
+              color: theme == ThemeMode.light
+                  ? Colors.white
+                  : Constants.darkThemeSecondaryBackgroundColor,
+              borderRadius: BorderRadius.circular(10),
+              // border: Border.all(color: Colors.grey),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 2.0,
+                  spreadRadius: 1.0,
+                ),
+              ],
+            ),
+            child: Image.asset('assets/images/EventBlueIcon.png'),
+          );
+        default:
+          return Container();
+      }
+    } else {
+      return Container();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
@@ -25,9 +197,14 @@ class _WeekViewWidgetState extends State<WeekViewWidget> {
 
       return WeekView<Event>(
         key: widget.state,
+        backgroundColor: Colors.transparent,
         width: widget.width,
         heightPerMinute: 1.9,
         liveTimeIndicatorSettings: HourIndicatorSettings.none(),
+        eventTileBuilder: (date, events, boundary, startDuration, endDuration) {
+          return createEventTileContainer(
+              date, events, startDuration, endDuration, theme);
+        },
         weekPageHeaderBuilder: (startDate, endDate) {
           return Container();
         },
@@ -103,19 +280,3 @@ class _WeekViewWidgetState extends State<WeekViewWidget> {
     });
   }
 }
-
-
-// class WeekViewWidget extends StatelessWidget {
-//   final GlobalKey<WeekViewState>? state;
-//   final double? width;
-
-//   const WeekViewWidget({Key? key, this.state, this.width}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return WeekView<Event>(
-//       key: state,
-//       width: width,
-//     );
-//   }
-// }

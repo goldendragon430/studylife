@@ -23,10 +23,11 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-final List<ProfileItemStatic> _itemsPersonalize = ProfileItemStatic.personalizationItems;
+class _ProfileScreenState extends State<ProfileScreen> {
+  final List<ProfileItemStatic> _itemsPersonalize =
+      ProfileItemStatic.personalizationItems;
   final List<ProfileItemStatic> _itemsEdit = ProfileItemStatic.editItems;
 
-class _ProfileScreenState extends State<ProfileScreen> {
   void _selectedGridCard(int index) {
     print("Selected Grid card with Index: $index");
   }
@@ -39,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               builder: (context) => const ManageSubjectsScreen(),
               fullscreenDialog: false));
     }
-     if (index == 2) {
+    if (index == 2) {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -57,11 +58,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             builder: (context) => ChangeEmailScreen(), fullscreenDialog: true),
       );
     }
-     if (index == 1) {
+    if (index == 1) {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ChangePasswordScreen(), fullscreenDialog: true),
+            builder: (context) => ChangePasswordScreen(),
+            fullscreenDialog: true),
       );
     }
     print("Selected Personalization card with Index: $index");

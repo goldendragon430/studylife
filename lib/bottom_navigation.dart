@@ -17,6 +17,7 @@ import './Onboarding_Screens/signup.dart';
 import './Activities_Screens/activities_screen.dart';
 import './Profile_Screens/profile_screen.dart';
 import './Calendar_Screens/calendar_screen.dart';
+import './Calendar_Screens/calendar_screenV2.dart';
 
 class BeamerLocations extends BeamLocation<BeamState> {
   BeamerLocations(RouteInformation routeInformation) : super(routeInformation);
@@ -25,8 +26,9 @@ class BeamerLocations extends BeamLocation<BeamState> {
   List<Pattern> get pathPatterns => [
         '/started',
         '/home',
-        '/activities'
-        '/login'
+        '/activities',
+        '/login',
+        '/calendar'
       ];
 
   @override
@@ -56,7 +58,7 @@ class BeamerLocations extends BeamLocation<BeamState> {
           title: 'Forgot Password',
           child: ForgotPasswordScreen(),
         ),
-      if (state.uri.pathSegments.contains('home') || state.uri.pathSegments.contains('activities') || state.uri.pathSegments.contains('profile'))
+      if (state.uri.pathSegments.contains('home') || state.uri.pathSegments.contains('activities') || state.uri.pathSegments.contains('profile') || state.uri.pathSegments.contains('calendar') )
         BeamPage(
           key: ValueKey('home'),
           title: 'Home',
@@ -122,6 +124,27 @@ class CalendarTabItemLocation extends BeamLocation<BeamState> {
       ];
 }
 
+class EmptyTabTabItemLocation extends BeamLocation<BeamState> {
+  EmptyTabTabItemLocation(super.routeInformation);
+  @override
+  List<String> get pathPatterns => ['/empty-tab/:class-details'];
+
+  @override
+  List<BeamPage> buildPages(BuildContext context, BeamState state) => [
+        const BeamPage(
+          key: ValueKey('empty-tab'),
+          title: 'Tab empty-tab',
+          type: BeamPageType.noTransition,
+          child: CalendarScreenV2(),
+        ),
+        //  const BeamPage(
+        //       key: ValueKey('/activities/details'),
+        //       title: 'Details A',
+        //       child: ClassDetailsScreen(),
+        //     ),
+      ];
+}
+
 /// Location defining the pages for the third tab
 class ActivitiesTabItemLocation extends BeamLocation<BeamState> {
   ActivitiesTabItemLocation(super.routeInformation);
@@ -152,11 +175,11 @@ class ProfileTabItemLocation extends BeamLocation<BeamState> {
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
-        BeamPage(
+        const BeamPage(
           key: ValueKey('profile'),
           title: 'Tab Profile',
           type: BeamPageType.noTransition,
-          child: const ProfileScreen(),
+          child: ProfileScreen(),
         ),
         //  const BeamPage(
         //       key: ValueKey('/profile/details'),
@@ -213,8 +236,8 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
     BeamerDelegate(
       initialPath: '/empty-tab',
       locationBuilder: (routeInformation, _) {
-        if (routeInformation.location!.contains('empty-tab')) {
-          return CalendarTabItemLocation(routeInformation);
+       if (routeInformation.location!.contains('home')) {
+          return HomeTabItemLocation(routeInformation);
         }
         return NotFound(path: routeInformation.location!);
       },
@@ -367,6 +390,7 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
           height: 125,
           width: 65,
           child: FloatingActionButton(
+            heroTag: "Create",
             foregroundColor: Colors.transparent,
             backgroundColor: Colors.transparent,
             highlightElevation: 0,
@@ -412,127 +436,3 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
     });
   }
 }
-
-// class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
-//   int _locationToTabIndex(String location) {
-//     final index =
-//         widget.tabs.indexWhere((t) => location.startsWith(t.initialLocation));
-//     // if index not found (-1), return 0
-//     return index < 0 ? 0 : index;
-//   }
-
-//   var _currentTab = TabItem.tabItems[0];
-//   int get _currentIndex => _locationToTabIndex(GoRouter.of(context).location);
-
-//    final _navigatorKeys = {
-//     TabItem.tabItems[0]: GlobalKey<NavigatorState>(),
-//     TabItem.tabItems[1]: GlobalKey<NavigatorState>(),
-//     TabItem.tabItems[2]: GlobalKey<NavigatorState>(),
-//     TabItem.tabItems[3]: GlobalKey<NavigatorState>(),
-//     TabItem.tabItems[4]: GlobalKey<NavigatorState>(),
-//   };
-
-//   void _onItemTapped(BuildContext context, int tabIndex) {
-//     // Only navigate if the tab index has changed
-//     if (tabIndex != _currentIndex) {
-//       context.go(widget.tabs[tabIndex].initialLocation);
-//     }
-//   }
-
-//    void _selectTab(TabItem tabItem) {
-//     if (tabItem == _currentTab) {
-//       // pop to first route
-//       _navigatorKeys[tabItem]!.currentState!.popUntil((route) => route.isFirst);
-//     } else {
-//       setState(() => _currentTab = tabItem);
-//     }
-//   }
-
-//     bottomSheetForSignIn(BuildContext context) {
-
-//     showModalBottomSheet(
-//         shape: const RoundedRectangleBorder(
-//           borderRadius: BorderRadius.vertical(
-//             top: Radius.circular(20),
-//           ),
-//         ),
-//         clipBehavior: Clip.antiAliasWithSaveLayer,
-//         isScrollControlled: true,
-//         context: context,
-//        // transitionAnimationController: controller,
-//         enableDrag: false,
-//         builder: (context) {
-//           return const CreateScreen();
-//         });
-//   }
-
-//   void _openCreateScreen() {
-//     bottomSheetForSignIn(context);
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: widget.child,
-//     //  body: Stack(children: <Widget>[
-//     //           _buildOffstageNavigator(TabItem.tabItems[0]),
-//     //           _buildOffstageNavigator(TabItem.tabItems[1]),
-//     //           _buildOffstageNavigator(TabItem.tabItems[2]),
-//     //           _buildOffstageNavigator(TabItem.tabItems[3]),
-//     //           _buildOffstageNavigator(TabItem.tabItems[4]),
-//     //         ]),
-//       floatingActionButton: Container(
-//         padding: const EdgeInsets.only(top: 45),
-//         height: 125,
-//         width: 65,
-//         child: FloatingActionButton(
-//           foregroundColor: Colors.transparent,
-//           backgroundColor: Colors.transparent,
-//           highlightElevation: 0,
-//           onPressed: _openCreateScreen,
-//           elevation: 0.0,
-//           child: Image.asset('assets/images/AddButtonIcon.png'),
-//         ),
-//       ),
-//       floatingActionButtonLocation:
-//                 FloatingActionButtonLocation.centerDocked,
-//       bottomNavigationBar: BottomNavigationBar(
-//         type: BottomNavigationBarType.fixed,
-//         unselectedLabelStyle: const TextStyle(
-//             height: 2.0,
-//             //color: Colors.black,
-//             fontFamily: "Roboto",
-//             fontSize: 11,
-//             fontWeight: FontWeight.w400),
-//         selectedLabelStyle: const TextStyle(
-//             height: 2.0,
-//             //  color: Colors.black,
-//             fontFamily: "Roboto",
-//             fontSize: 11,
-//             fontWeight: FontWeight.w400),
-//         selectedItemColor: widget.theme == ThemeMode.dark
-//             ? Constants.darkThemeTextSelectionColor
-//             : Constants.lightThemeTextSelectionColor,
-//         unselectedItemColor: widget.theme == ThemeMode.dark
-//             ? Constants.darkThemeUnselectedTextColor
-//             : Constants.lightThemeUnselectedTextColor,
-//         backgroundColor: widget.theme == ThemeMode.dark
-//             ? Constants.darkThemeNavigationBarColor
-//             : Colors.white,
-//         currentIndex: _currentIndex,
-//         items: widget.tabs,
-//         onTap: (index) => _onItemTapped(context, index),
-//       ),
-//     );
-//   }
-
-//     Widget _buildOffstageNavigator(TabItem tabItem) {
-//     return Offstage(
-//       offstage: _currentTab != tabItem,
-//       child: TabNavigator(
-//         navigatorKey: _navigatorKeys[tabItem],
-//         tabItem: tabItem,
-//       ),
-//     );
-//   }
-// }

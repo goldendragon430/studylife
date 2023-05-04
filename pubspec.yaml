@@ -46,8 +46,13 @@ dependencies:
   custom_sliding_segmented_control: ^1.7.4
   linear_progress_bar: "^1.1.0"
   group_list_view: ^1.1.1
-  calendar_view: ^1.0.3
+  calendar_view:
+    git: 
+      url: https://github.com/bornedigital/flutter_calendar_view_custom.git
   table_calendar: ^3.0.9
+
+
+  
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -44,16 +44,108 @@ class _DayViewWidgetState extends State<DayViewWidget> {
     final startHourString = DateFormat('HH:mm').format(startDuration);
     final endHourString = DateFormat('HH:mm').format(endDuration);
 
-    //print("EVENTS BBB : ${finalEvent}");
-
     if (finalEvent.event?.eventType != null) {
-      if (finalEvent.event?.eventType == EventType.prepTimeEvent) {
-        return Container(
-          margin: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-              color: Colors.red, borderRadius: BorderRadius.circular(10)),
-          child: Container(
-            margin: const EdgeInsetsDirectional.only(top: 2),
+      switch (finalEvent.event?.eventType) {
+        // Check event type
+        case EventType.prepTimeEvent:
+          return Container(
+            margin: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              margin: const EdgeInsetsDirectional.only(top: 2),
+              decoration: BoxDecoration(
+                  color: theme == ThemeMode.light
+                      ? Colors.white
+                      : Constants.darkThemeSecondaryBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 2.0,
+                      spreadRadius: 1.0,
+                    ),
+                  ]),
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                  top: 18, right: 15, left: 15),
+                              child: Text(
+                                finalEvent.event?.title ?? "",
+                                style: const TextStyle(
+                                    overflow: TextOverflow.visible,
+                                    fontSize: 20,
+                                    fontFamily: 'BebasNeue',
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.red),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 22, right: 15),
+                            child: Text(
+                              "Prep",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.bold,
+                                color: theme == ThemeMode.light
+                                    ? Colors.black.withOpacity(0.4)
+                                    : Colors.white.withOpacity(0.4),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(left: 15, top: 8),
+                        child: Text(
+                          "subtitle text",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.normal,
+                            color: theme == ThemeMode.light
+                                ? Colors.black.withOpacity(0.4)
+                                : Colors.white.withOpacity(0.4),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    margin: const EdgeInsets.only(left: 15, top: 8, bottom: 18),
+                    child: Text(
+                      "${startHourString} - ${endHourString}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.bold,
+                        color: theme == ThemeMode.light
+                            ? Constants.lightThemeTextSelectionColor
+                            : Colors.white,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        case EventType.classEvent:
+          return Container(
             decoration: BoxDecoration(
                 color: theme == ThemeMode.light
                     ? Colors.white
@@ -66,6 +158,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                     spreadRadius: 1.0,
                   ),
                 ]),
+            margin: EdgeInsets.all(4),
             child: Stack(
               children: [
                 Column(
@@ -73,13 +166,22 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                              top: 22, left: 15, right: 15),
+                          height: 14,
+                          width: 14,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
                         Flexible(
                           child: Container(
-                            margin: const EdgeInsets.only(
-                                top: 18, right: 15, left: 15),
+                            margin: const EdgeInsets.only(top: 18, right: 15),
                             child: Text(
                               finalEvent.event?.title ?? "",
                               style: const TextStyle(
@@ -91,20 +193,6 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                             ),
                           ),
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 22, right: 15),
-                          child: Text(
-                            "Prep",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.bold,
-                              color: theme == ThemeMode.light
-                                  ? Colors.black.withOpacity(0.4)
-                                  : Colors.white.withOpacity(0.4),
-                            ),
-                          ),
-                        )
                       ],
                     ),
                     Container(
@@ -116,7 +204,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.normal,
                           color: theme == ThemeMode.light
-                              ? Colors.black.withOpacity(0.4)
+                              ? Colors.black.withOpacity(0.44)
                               : Colors.white.withOpacity(0.4),
                         ),
                       ),
@@ -133,100 +221,139 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.bold,
                       color: theme == ThemeMode.light
-                          ? Colors.black.withOpacity(0.4)
-                          : Colors.white.withOpacity(0.4),
+                          ? Constants.lightThemeTextSelectionColor
+                          : Colors.white,
                     ),
                   ),
                 )
               ],
             ),
-          ),
-        );
-      } else {
-        return Container(
-          decoration: BoxDecoration(
-              color: theme == ThemeMode.light
-                  ? Colors.white
-                  : Constants.darkThemeSecondaryBackgroundColor,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 2.0,
-                  spreadRadius: 1.0,
-                ),
-              ]),
-          margin: EdgeInsets.all(4),
-          child: Stack(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin:
-                            const EdgeInsets.only(top: 22, left: 15, right: 15),
-                        height: 14,
-                        width: 14,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                      ),
-                      Flexible(
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 18, right: 15),
-                          child: Text(
-                            finalEvent.event?.title ?? "",
-                            style: const TextStyle(
-                                overflow: TextOverflow.visible,
-                                fontSize: 20,
-                                fontFamily: 'BebasNeue',
-                                fontWeight: FontWeight.normal,
-                                color: Colors.red),
-                          ),
-                        ),
-                      ),
-                    ],
+          );
+        case EventType.examEvent:
+          return Container(
+            margin: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+                color: theme == ThemeMode.light
+                    ? Colors.white
+                    : Constants.darkThemeSecondaryBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(width: 2.0, color: theme == ThemeMode.light
+                            ? Constants.lightThemeTextSelectionColor
+                            : Colors.white),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 2.0,
+                    spreadRadius: 1.0,
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 15, top: 8),
-                    child: Text(
-                      "subtitle text",
-                      style: TextStyle(
+                ]),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 8, left: 15),
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "EXAM",
+                    style: TextStyle(
                         fontSize: 12,
                         fontFamily: 'Roboto',
-                        fontWeight: FontWeight.normal,
+                        fontWeight: FontWeight.bold,
                         color: theme == ThemeMode.light
-                            ? Colors.black.withOpacity(0.44)
-                            : Colors.white.withOpacity(0.4),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                alignment: Alignment.bottomLeft,
-                margin: const EdgeInsets.only(left: 15, top: 8, bottom: 18),
-                child: Text(
-                  "${startHourString} - ${endHourString}",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.bold,
-                    color: theme == ThemeMode.light
-                        ? Colors.black.withOpacity(0.4)
-                        : Colors.white.withOpacity(0.4),
+                            ? Constants.lightThemeTextSelectionColor
+                            : Colors.white),
                   ),
                 ),
-              )
-            ],
-          ),
-        );
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  margin: const EdgeInsets.only(left: 15, top: 8, bottom: 18),
+                  child: Text(
+                    "${startHourString} - ${endHourString}",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.bold,
+                      color: theme == ThemeMode.light
+                          ? Constants.lightThemeTextSelectionColor
+                          : Colors.white,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        case EventType.taskDueEvent:
+          return Container();
+
+        case EventType.breakEvent:
+          return Container();
+
+        case EventType.eventsEvent:
+          return Container(
+            decoration: BoxDecoration(
+                color: theme == ThemeMode.light
+                    ? Colors.white
+                    : Constants.darkThemeSecondaryBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 2.0,
+                    spreadRadius: 1.0,
+                  ),
+                ]),
+            margin: EdgeInsets.all(4),
+            child: Stack(
+              children: [
+                Container(
+                  alignment: Alignment.topRight,
+                  margin: EdgeInsets.only(right: 15),
+                  child: Image.asset('assets/images/EventBlueIcon.png'),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        margin:
+                            const EdgeInsets.only(top: 18, right: 15, left: 15),
+                        child: Text(
+                          finalEvent.event?.title ?? "",
+                          style: TextStyle(
+                              overflow: TextOverflow.visible,
+                              fontSize: 15,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.bold,
+                              color: theme == ThemeMode.light
+                                  ? Constants.lightThemeTextSelectionColor
+                                  : Colors.white),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      margin:
+                          const EdgeInsets.only(left: 15, top: 8, bottom: 18),
+                      child: Text(
+                        "${startHourString} - ${endHourString}",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                          color: theme == ThemeMode.light
+                              ? Constants.lightThemeTextSelectionColor
+                              : Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        default:
+          return Container();
       }
     } else {
       return Container();
@@ -246,7 +373,8 @@ class _DayViewWidgetState extends State<DayViewWidget> {
             children: [
               CustomTimelineDatePicker(
                 daySelected: widget.daySelected,
-                pageChanged: widget.pageChanged, selectedDay: widget.selectedDay,
+                pageChanged: widget.pageChanged,
+                selectedDay: widget.selectedDay,
               ),
               Container(
                 color: Colors.transparent,
