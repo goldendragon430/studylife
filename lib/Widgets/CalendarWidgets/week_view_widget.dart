@@ -11,8 +11,16 @@ import '../custom_painter_class.dart';
 class WeekViewWidget extends StatefulWidget {
   final GlobalKey<WeekViewState>? state;
   final double? width;
+  final Function onPageChange;
+  final Function onEventTap;
 
-  const WeekViewWidget({Key? key, this.state, this.width}) : super(key: key);
+  const WeekViewWidget(
+      {Key? key,
+      this.state,
+      this.width,
+      required this.onPageChange,
+      required this.onEventTap})
+      : super(key: key);
 
   @override
   State<WeekViewWidget> createState() => _WeekViewWidgetState();
@@ -251,7 +259,8 @@ class _WeekViewWidgetState extends State<WeekViewWidget> {
             required heightPerMinute,
             required minuteSlotSize,
             required width}) {
-          final weekday = date.day;
+          final weekday = date.weekday;
+
           Color backgroundColor;
 
           switch (weekday) {
@@ -275,6 +284,12 @@ class _WeekViewWidgetState extends State<WeekViewWidget> {
           }
 
           return Container(color: backgroundColor);
+        },
+        onPageChange: (date, page) {
+          widget.onPageChange(date, page);
+        },
+        onEventTap: (events, date) {
+          widget.onEventTap (events, date);
         },
       );
     });

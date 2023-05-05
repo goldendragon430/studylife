@@ -25,6 +25,7 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   int selectedTabIndex = 1;
   String currentMonthName = "";
+  String currentWeekName = "";
   DateTime currentSelectedDate = DateTime.now();
   String currentSelectedDayStringName = "";
   final ValueNotifier<DateTime> currentSelectedDay =
@@ -34,11 +35,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   static GlobalKey<MonthViewState> stateKey = GlobalKey<MonthViewState>();
   final GlobalKey<DayViewState> dayStateKey = GlobalKey<DayViewState>();
+  final GlobalKey<WeekViewState> weekStateKey = GlobalKey<WeekViewState>();
 
   @override
   void initState() {
     super.initState();
     currentMonthName = _getCurrentMonthName();
+    currentWeekName = _getCurrentWeekName();
     currentSelectedDayStringName = _getCurrentDayName();
   }
 
@@ -64,6 +67,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return monthFormat.format(today);
   }
 
+  String _getCurrentWeekName() {
+    final today = currentSelectedDate;
+    final DateTime firstDayOfWeek = today.firstDayOfWeek();
+    final endofWeekDate = firstDayOfWeek.add(Duration(days: 6));
+    final DateFormat weekFormat = DateFormat('dd MMM, yyyy');
+
+    return "${firstDayOfWeek.day} - ${weekFormat.format(endofWeekDate)}";
+  }
+
   String _getCurrentDayName() {
     final today = DateTime.now();
 
@@ -73,7 +85,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _tappedLeftNavigationButton() {
-    stateKey.currentState?.previousPage();
+    if (selectedTabIndex == 1) {
+      dayStateKey.currentState?.animateToDate(currentSelectedDate);
+    }
+    if (selectedTabIndex == 2) {
+      weekStateKey.currentState?.previousPage();
+    }
+    if (selectedTabIndex == 3) {
+      stateKey.currentState?.previousPage();
+    }
 
     currentSelectedDate =
         DateTime(currentSelectedDate.year, currentSelectedDate.month - 1, 1);
@@ -81,13 +101,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
     setState(() {
       final DateFormat monthFormat = DateFormat('MMMM');
       currentSelectedDay.value = currentSelectedDate;
+      currentWeekName = _getCurrentWeekName();
       currentMonthName = monthFormat.format(currentSelectedDay.value);
-      dayStateKey.currentState?.animateToDate(currentSelectedDate);
     });
   }
 
   void _tappedRightNavigationButton() {
-    stateKey.currentState?.nextPage();
+    if (selectedTabIndex == 1) {
+      dayStateKey.currentState?.animateToDate(currentSelectedDate);
+    }
+    if (selectedTabIndex == 2) {
+      weekStateKey.currentState?.nextPage();
+    }
+    if (selectedTabIndex == 3) {
+      stateKey.currentState?.nextPage();
+    }
 
     currentSelectedDate =
         DateTime(currentSelectedDate.year, currentSelectedDate.month + 1, 1);
@@ -95,8 +123,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
     setState(() {
       final DateFormat monthFormat = DateFormat('MMMM');
       currentSelectedDay.value = currentSelectedDate;
+      currentWeekName = _getCurrentWeekName();
       currentMonthName = monthFormat.format(currentSelectedDay.value);
-      dayStateKey.currentState?.animateToDate(currentSelectedDate);
     });
     //dayStateKey.currentState?.
   }
@@ -142,12 +170,29 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
+  void _weekViewPageChanged(DateTime date, int page) {
+    final endofWeekDate = date.add(Duration(days: 6));
+    final DateFormat weekFormat = DateFormat('dd MMM, yyyy');
+
+    setState(() {
+      currentSelectedDate = date;
+      currentSelectedDay.value = date;
+      currentWeekName = "${date.day} - ${weekFormat.format(endofWeekDate)}";
+      // dayStateKey.currentState?.animateToDate(currentSelectedDate);
+    });
+  }
+
+  void _weekViewEventTapped(
+      List<CalendarEventData<Event>> events, DateTime date) {}
+
   void _openLegend() {
     showCenteredPopup(context);
   }
 
-    showCenteredPopup(BuildContext context) {
-    showDialog(context: context, builder: (context) {
+  showCenteredPopup(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
           return CustomDialogBox();
         });
   }
@@ -161,7 +206,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         backgroundColor: theme == ThemeMode.light
             ? Constants.lightThemeBackgroundColor
             : Constants.darkThemeBackgroundColor,
-             floatingActionButton: Container(
+        floatingActionButton: Container(
           padding: const EdgeInsets.only(top: 45),
           height: 125,
           width: 65,
@@ -252,16 +297,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         : Image.asset('assets/images/ArrowLeftDarkTheme.png'),
                   ),
                   Container(
-                    width: 60,
+                    width: 40,
                   ),
                   Text(
-                    currentMonthName,
+                    selectedTabIndex != 2 ? currentMonthName : currentWeekName,
                     style: theme == ThemeMode.light
                         ? Constants.lightThemeRegular14TextSelectedStyle
                         : Constants.darkThemeRegular14TextStyle,
                   ),
                   Container(
-                    width: 80,
+                    width: 40,
                   ),
                   IconButton(
                     onPressed: _tappedRightNavigationButton,
@@ -287,7 +332,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ],
             if (selectedTabIndex == 2) ...[
               Container(
-                  margin: EdgeInsets.only(top: 135), child: WeekViewWidget()),
+                  margin: EdgeInsets.only(top: 135),
+                  child: WeekViewWidget(
+                    state: weekStateKey,
+                    onPageChange: _weekViewPageChanged,
+                    onEventTap: _weekViewEventTapped,
+                  )),
             ],
             if (selectedTabIndex == 3) ...[
               Stack(
