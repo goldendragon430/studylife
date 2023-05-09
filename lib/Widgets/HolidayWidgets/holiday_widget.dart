@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Extensions/extensions.dart';
 import 'package:intl/intl.dart';
+import 'package:group_list_view/group_list_view.dart';
 
 import '../../app.dart';
 import '../../Models/holidays_datasource.dart';
 import '../../Utilities/constants.dart';
 
 class HolidayWidget extends ConsumerWidget {
-  final int cardIndex;
+  final IndexPath cardIndex;
   final bool upNext;
 
   final HolidayItem holidayItem;
@@ -22,7 +23,7 @@ class HolidayWidget extends ConsumerWidget {
       required this.cardselected});
 
   void _cardTapped() {
-    cardselected(cardIndex);
+    cardselected(cardIndex, holidayItem);
   }
 
   String _getFormattedTime(DateTime time) {

@@ -50,6 +50,7 @@ dependencies:
     git: 
       url: https://github.com/bornedigital/flutter_calendar_view_custom.git
   table_calendar: ^3.0.9
+  image_picker: ^0.8.7+4
 
 
   

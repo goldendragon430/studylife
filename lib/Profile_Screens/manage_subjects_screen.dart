@@ -6,6 +6,7 @@ import '../Utilities/constants.dart';
 import '../Models/subjects_datasource.dart';
 import '../Widgets/rounded_elevated_button.dart';
 import '../Widgets/ProfileWidgets/manage_subject_card.dart';
+import './new_subject_screen.dart';
 
 class ManageSubjectsScreen extends StatefulWidget {
   const ManageSubjectsScreen({super.key});
@@ -14,19 +15,21 @@ class ManageSubjectsScreen extends StatefulWidget {
   State<ManageSubjectsScreen> createState() => _ManageSubjectsScreenState();
 }
 
+class _ManageSubjectsScreenState extends State<ManageSubjectsScreen> {
   final List<SubjectListItem> _items = SubjectListItem.subjectsList;
 
-
-void _addSubjectTapped() {
-  print("Add Subject tapped");
-}
-
+  void _addSubjectTapped() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const AddSubjectScreen(),
+            fullscreenDialog: true));
+  }
 
   void _subjectCardSelected(int index) {
     print("Selected subject card with Index: $index");
   }
 
-class _ManageSubjectsScreenState extends State<ManageSubjectsScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
@@ -58,24 +61,30 @@ class _ManageSubjectsScreenState extends State<ManageSubjectsScreen> {
               Container(
                 height: 60,
                 margin: EdgeInsets.only(top: 8),
-                child: RoundedElevatedButton(_addSubjectTapped, "+ Add new subject",
-                    Constants.lightThemePrimaryColor, Colors.black, 50),
+                child: RoundedElevatedButton(
+                    _addSubjectTapped,
+                    "+ Add new subject",
+                    Constants.lightThemePrimaryColor,
+                    Colors.black,
+                    50),
               ),
-                 Container(
+              Container(
                 //height: double.infinity,
-                 margin: EdgeInsets.only(top: 76),
+                margin: EdgeInsets.only(top: 76),
 
                 child: ListView.builder(
                   // controller: widget._controller,
                   itemCount: _items.length,
                   itemBuilder: (context, index) {
-                    return ManageSubjectCard(subjectItem: _items[index], cardIndex: index, cardselected: _subjectCardSelected);
+                    return ManageSubjectCard(
+                        subjectItem: _items[index],
+                        cardIndex: index,
+                        cardselected: _subjectCardSelected);
                   },
                 ),
               ),
             ],
           ),
-        
         ),
       );
     });

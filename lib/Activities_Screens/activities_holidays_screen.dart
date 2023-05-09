@@ -11,6 +11,8 @@ import './custom_segmentedcontrol.dart';
 import '../Models/holidays_datasource.dart';
 import '../Widgets/HolidayWidgets/holiday_widget.dart';
 
+import './holiday_xtra_detail_screen.dart';
+
 class ActivitiesHolidaysScreen extends StatefulWidget {
   const ActivitiesHolidaysScreen({super.key});
 
@@ -24,7 +26,13 @@ class _ActivitiesHolidaysScreenState extends State<ActivitiesHolidaysScreen> {
   int selectedTabIndex = 1;
   final todaysDate = DateTime.now();
 
-  void _selectedCard(int index) {}
+  void _selectedCard(IndexPath index, HolidayItem item) {
+     Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HolidayXtraDetailScreen(item: item),
+            fullscreenDialog: true));
+  }
 
   void _selectedTabWithIndex(int index) {
     setState(() {
@@ -78,7 +86,7 @@ class _ActivitiesHolidaysScreenState extends State<ActivitiesHolidaysScreen> {
                 return HolidayWidget(
                     holidayItem: groupByDate.values.toList()[index.section]
                         [index.index],
-                    cardIndex: index.index,
+                    cardIndex: index,
                     upNext: true,
                     cardselected: _selectedCard);
               },
