@@ -19,3 +19,26 @@ class SubjectColor {
     SubjectColor(Colors.grey, selected: false),
   ];
 }
+
+class SubjectPhoto {
+  bool selected;
+  bool isLocked;
+  final String? imagePath;
+
+  SubjectPhoto(
+    this.imagePath, {
+    required this.isLocked,
+    required this.selected,
+  });
+
+  static List<SubjectPhoto> subjectPhotos = [
+    SubjectPhoto("assets/images/ClassExamBackgroundImage.png", selected: false, isLocked: false),
+    SubjectPhoto("assets/images/ClassExamBackgroundImage.png", selected: false, isLocked: true),
+    SubjectPhoto("assets/images/ClassExamBackgroundImage.png", selected: false, isLocked: true),
+    SubjectPhoto("assets/images/ClassExamBackgroundImage.png", selected: false, isLocked: false),
+    SubjectPhoto("assets/images/ClassExamBackgroundImage.png", selected: false, isLocked: false),
+    SubjectPhoto("assets/images/ClassExamBackgroundImage.png", selected: false, isLocked: false),
+    SubjectPhoto("assets/images/ClassExamBackgroundImage.png", selected: false, isLocked: false),
+    SubjectPhoto("assets/images/ClassExamBackgroundImage.png", selected: false, isLocked: false),
+  ];
+}

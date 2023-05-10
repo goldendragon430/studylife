@@ -24,10 +24,10 @@ class AppRepository {
     } catch (error) {
       final context = scaffoldMessengerKey.currentContext!;
       if (error is DioError) {
-        print(error.response?.data['msg']);
+        print(error.response?.data['message']);
 
         CustomSnackBar.show(
-            context, CustomSnackBarType.error, error.response?.data['msg']);
+            context, CustomSnackBarType.error, error.response?.data['message']);
         return UserModel.empty;
       } else {
         CustomSnackBar.show(

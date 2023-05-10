@@ -27,11 +27,11 @@ class SelectColorCard extends ConsumerWidget {
         width: 58,
         decoration: BoxDecoration(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(29),
         ),
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         child: Container(
-          height: 54,
+          height: 54, 
           width: 54,
           decoration: BoxDecoration(
             color: Colors.transparent,

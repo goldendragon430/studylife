@@ -44,6 +44,7 @@ class ManageSubjectCard extends ConsumerWidget {
                 right: 0,
                 child: Container(
                   height: 126.0,
+                  width: 160,
                   child: 
                    ClipRRect(
                       borderRadius: BorderRadius.circular(10),

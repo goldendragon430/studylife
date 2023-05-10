@@ -45,7 +45,7 @@ class ClassDetailsScreen extends ConsumerWidget {
           Container(
             height: 206,
             alignment: Alignment.topCenter,
-            child: Image.asset("assets/images//ClassExamBackgroundImage.png"),
+            child: Image.asset("assets/images/ClassExamBackgroundImage.png"),
           ),
           Container(
             height: 36,
