@@ -21,6 +21,7 @@ class ActivitiesExamsScreen extends StatefulWidget {
 }
 
 class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
+   final ScrollController scrollcontroller = ScrollController();
   final List<ClassSubject> _durations = ClassSubject.subjects;
   String selectedSubject = ClassSubject.subjects.first.title;
   final List<ExamStatic> _exams = ExamStatic.exams;
@@ -111,6 +112,7 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
             height: double.infinity,
             margin: const EdgeInsets.only(top: 186),
             child: ListView.builder(
+             // controller: scrollcontroller,
               itemBuilder: (BuildContext context, int index) {
                 return ExpandableListView(
                   period: "Earlier This Month - Mar 2022",

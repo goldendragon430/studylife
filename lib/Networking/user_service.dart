@@ -43,13 +43,15 @@ class UserService {
     var response = await Api().tokenDio.post('/api/auth/login', data: body);
     if (response.statusCode == 200) {
 
-      var tokenData = JwtDecoder.decode(response.data['token']);
+     // var tokenData = JwtDecoder.decode(response.data['token']);
+      var tokenString = response.data['token'];
+     // print("TOKEN DATA $tokenData");
 
-      var token = AccessToken.fromJson(tokenData);
+     // var token = AccessToken.fromJson(tokenData);
       var user = UserModel.fromJson(response.data['user']);
 
       await _storage.write(
-          key: "access_token", value: jsonEncode(token.toJson()));
+          key: "access_token", value: tokenString);
      await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
     }
 
@@ -67,15 +69,15 @@ class UserService {
       var accessToken = AccessToken.fromJson(userMap);
 
       var body = jsonEncode({
-        'old_refresh_token': accessToken.refreshToken,
-        'client_id': clientId,
-        'client_secret': clientSecret,
+        'refreshToken': accessToken.refreshToken,
+        // 'client_id': clientId,
+        // 'client_secret': clientSecret,
       });
-      var response = await Api().tokenDio.post('/api/auth/refresh', data: body);
+      var response = await Api().tokenDio.post('/api/auth/refresh-token', data: body);
 
       return response;
     } else {
-      var response = await Api().tokenDio.post('/api/auth/refresh');
+      var response = await Api().tokenDio.post('/api/auth/refresh-token');
 
       return response;
     }

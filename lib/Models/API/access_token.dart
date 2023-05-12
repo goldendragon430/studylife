@@ -16,7 +16,7 @@ class AccessToken {
   factory AccessToken.fromJson(Map<String, dynamic> json) {
     return AccessToken(
       id: json['id'],
-      expiryDate: json['expiryDate'],
+      expiryDate: json['exp'],
       iat: json['iat'],
       refreshToken: json['refreshToken'],
     );
@@ -25,7 +25,7 @@ class AccessToken {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['expiryDate'] = expiryDate;
+    data['exp'] = expiryDate;
     data['iat'] = iat;
     data['refreshToken'] = refreshToken;
     return data;

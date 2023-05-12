@@ -49,26 +49,31 @@ class AppInterceptors extends Interceptor {
     // Check for existing token
     if (tokenString != null && tokenString.isNotEmpty) {
       // Decode token from storage
-      Map<String, dynamic> userMap = jsonDecode(tokenString);
 
-      accessToken = AccessToken.fromJson(userMap);
+       var tokenData = JwtDecoder.decode(tokenString);
 
-      bool hasExpired = JwtDecoder.isExpired(accessToken.toString());
+     // Map<String, dynamic> userMap = jsonDecode(tokenString);
+
+      accessToken = AccessToken.fromJson(tokenData);
+
+      bool hasExpired = JwtDecoder.isExpired(tokenString);
 
       if (hasExpired) {
         dio.interceptors.requestLock.lock();
 
         await UserService().refreshToken().then((response) async {
+
+          var tokenString = response.data;
           accessToken = AccessToken.fromJson(response.data);
           // Save New Token
           await _storage.write(
-              key: "access_token", value: jsonEncode(accessToken.toJson()));
+              key: "access_token", value: tokenString);
         }).catchError((error, stackTrace) {
           handler.reject(error, true);
         }).whenComplete(() => dio.interceptors.requestLock.unlock());
-        options.headers['Authorization'] = 'Bearer ${accessToken.toString()}';
+        options.headers['Authorization'] = 'Bearer ${tokenString}';
       } else {
-        options.headers['Authorization'] = 'Bearer ${accessToken.toString()}';
+        options.headers['Authorization'] = 'Bearer ${tokenString}';
       }
     }
 
