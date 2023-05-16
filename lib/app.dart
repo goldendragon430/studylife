@@ -18,6 +18,9 @@ import './Onboarding_Screens/forgot_password.dart';
 import './Widgets/custom_snack_bar.dart';
 import './Services/navigation_service.dart';
 import './Models/event.dart';
+import '../Models/API/result.dart';
+
+import './Networking/sync_controller.dart';
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) {
   var brightness = WidgetsBinding.instance.window.platformBrightness;
@@ -61,7 +64,7 @@ class AppState extends ConsumerState<App>
             },
             beamToNamed: (_, __) => '/started'),
 
-             BeamGuard(
+        BeamGuard(
             pathPatterns: ['/profile'],
             check: (context, state) {
               final container =
@@ -82,15 +85,17 @@ class AppState extends ConsumerState<App>
                   AuthStatus.authenticated;
             },
             beamToNamed: (_, __) => '/home'),
-
-            
       ],
       initialPath: '/started',
       locationBuilder: (routeInformation, _) =>
           BeamerLocations(routeInformation),
     );
     WidgetsBinding.instance.addObserver(this);
+
+   
   }
+
+ 
 
   @override
   void dispose() {
@@ -168,7 +173,7 @@ final List<CalendarEventData<Event>> _events = [
     title: "Football Tournament",
     description: "Go to football tournament.",
   ),
-    CalendarEventData(
+  CalendarEventData(
     date: _now,
     startTime: DateTime(_now.year, _now.month, _now.day, 03),
     endTime: DateTime(_now.year, _now.month, _now.day, 05),
@@ -176,7 +181,7 @@ final List<CalendarEventData<Event>> _events = [
     title: "Football2 Tournament",
     description: "Go to football2 tournament.",
   ),
-     CalendarEventData(
+  CalendarEventData(
     date: _now,
     startTime: DateTime(_now.year, _now.month, _now.day, 07),
     endTime: DateTime(_now.year, _now.month, _now.day, 08, 30),

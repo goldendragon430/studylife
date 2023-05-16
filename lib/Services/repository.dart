@@ -27,11 +27,11 @@ class AppRepository {
         print(error.response?.data['message']);
 
         CustomSnackBar.show(
-            context, CustomSnackBarType.error, error.response?.data['message']);
+            context, CustomSnackBarType.error, error.response?.data['message'], false);
         return UserModel.empty;
       } else {
         CustomSnackBar.show(
-            context, CustomSnackBarType.error, "Oops, something went wrong");
+            context, CustomSnackBarType.error, "Oops, something went wrong", false);
         return UserModel.empty;
       }
     }

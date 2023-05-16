@@ -40,19 +40,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
         finalPassword.isEmpty ||
         finalConfirmPassword.isEmpty) {
       CustomSnackBar.show(
-          context, CustomSnackBarType.error, "Please fill in all fields.");
+          context, CustomSnackBarType.error, "Please fill in all fields.", false);
       return;
     }
 
     if (!finalEmail.isValidEmail) {
       CustomSnackBar.show(context, CustomSnackBarType.error,
-          "Please enter valid email address.");
+          "Please enter valid email address.", false);
       return;
     }
 
     if (finalPassword != finalConfirmPassword) {
       CustomSnackBar.show(context, CustomSnackBarType.error,
-          "Password and Confirm passwrod fields don't match.");
+          "Password and Confirm passwrod fields don't match.", false);
       return;
     }
 
@@ -65,18 +65,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       LoadingDialog.hide(context);
       CustomSnackBar.show(
-          context, CustomSnackBarType.success, response.data['message']);
+          context, CustomSnackBarType.success, response.data['message'], false);
 
       context.beamBack();
     } catch (error) {
       if (error is DioError) {
         LoadingDialog.hide(context);
         CustomSnackBar.show(
-            context, CustomSnackBarType.error, error.response?.data['msg']);
+            context, CustomSnackBarType.error, error.response?.data['msg'], false);
       } else {
         LoadingDialog.hide(context);
         CustomSnackBar.show(
-            context, CustomSnackBarType.error, "Oops, something went wrong");
+            context, CustomSnackBarType.error, "Oops, something went wrong", false);
       }
     }
   }

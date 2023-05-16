@@ -30,6 +30,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ProfileItemStatic.personalizationItems;
   final List<ProfileItemStatic> _itemsEdit = ProfileItemStatic.editItems;
 
+  @override
+    void initState() {
+      super.initState();
+    print("PROFILE AAAA");
+   
+
+  }
+
   void _selectedGridCard(int index) {
     print("Selected Grid card with Index: $index");
   }

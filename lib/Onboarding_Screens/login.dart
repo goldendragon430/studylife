@@ -50,13 +50,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (finalEmail.isEmpty || finalPassword.isEmpty) {
       CustomSnackBar.show(
-          context, CustomSnackBarType.error, "Please fill in all fields.");
+          context, CustomSnackBarType.error, "Please fill in all fields.", false);
       return;
     }
 
     if (!finalEmail.isValidEmail) {
       CustomSnackBar.show(context, CustomSnackBarType.error,
-          "Please enter valid email address.");
+          "Please enter valid email address.", false);
       return;
     }
 

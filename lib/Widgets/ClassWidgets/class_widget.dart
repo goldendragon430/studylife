@@ -5,13 +5,15 @@ import 'package:intl/intl.dart';
 
 import '../../app.dart';
 import '../../Models/class_datasource.dart';
+import '../../Models/API/classmodel.dart';
 import '../../Utilities/constants.dart';
+import '../../Extensions/extensions.dart';
 
 class ClassWidget extends ConsumerWidget {
   final int cardIndex;
   final bool upNext;
 
-  final ClassStatic classItem;
+  final ClassModel classItem;
   final Function cardselected;
 
   const ClassWidget(
@@ -66,16 +68,18 @@ class ClassWidget extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      classItem.title.toUpperCase(),
+                      classItem.subject?.subjectName ?? "".toUpperCase(),
                       style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'BebasNeue',
                           fontWeight: FontWeight.normal,
-                          color: classItem.subjectColor),
+                          color: classItem.subject?.colorHex != null
+                              ? HexColor.fromHex(classItem.subject!.colorHex!)
+                              : Colors.red),
                     ),
                     Expanded(
                       child: Text(
-                        classItem.description,
+                        classItem.module ?? "",
                         maxLines: 4,
                         style: theme == ThemeMode.light
                             ? Constants.socialLoginLightButtonTextStyle
@@ -83,7 +87,8 @@ class ClassWidget extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      '${_getFormattedTime(classItem.dateFrom)} - ${_getFormattedTime(classItem.dateTo)}',
+                      // '${_getFormattedTime(classItem.startDate)} - ${_getFormattedTime(classItem.dateTo)}',
+                      "11:00 - 12:00",
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
                           : Constants.darkTHemeClassDateTextStyle,
@@ -94,9 +99,15 @@ class ClassWidget extends ConsumerWidget {
               Positioned(
                 right: 0,
                 child: Container(
-                  child: Image.asset(
-                    classItem.subjectImage,
-                  ),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10), // Image border
+                      child: SizedBox.fromSize(
+                        child: Image.network(
+                          classItem.subject?.imageUrl ?? "",
+                          height: 114,
+                          width: 98,
+                        ),
+                      )),
                 ),
               ),
               Positioned(
@@ -121,7 +132,7 @@ class ClassWidget extends ConsumerWidget {
                   ),
                 ),
               ),
-              if (classItem.upNext) ...[
+              if (classItem.subject != null) ...[
                 // Up Next banner
                 Align(
                   alignment: AlignmentDirectional.topEnd,
@@ -148,7 +159,7 @@ class ClassWidget extends ConsumerWidget {
                   ),
                 )
               ],
-              if (classItem.tasksDue != 0) ...[
+              if (classItem.subject != null) ...[
                 // Add Tasks Due banner
                 Align(
                   alignment: AlignmentDirectional.bottomEnd,
@@ -164,7 +175,8 @@ class ClassWidget extends ConsumerWidget {
                     padding: const EdgeInsets.only(
                         left: 6, right: 6, top: 6, bottom: 6),
                     child: Text(
-                      "${classItem.tasksDue} Task Due",
+                      "Task Due",
+                      //"${classItem.tasksDue} Task Due",
                       style: Constants.taskDueBannerTextStyle,
                     ),
                   ),

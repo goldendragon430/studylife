@@ -17,6 +17,7 @@ import './Onboarding_Screens/signup.dart';
 import './Activities_Screens/activities_screen.dart';
 import './Profile_Screens/profile_screen.dart';
 import './Calendar_Screens/calendar_screen.dart';
+import './Home_Screens/empty_screen.dart';
 
 class BeamerLocations extends BeamLocation<BeamState> {
   BeamerLocations(RouteInformation routeInformation) : super(routeInformation);
@@ -24,7 +25,6 @@ class BeamerLocations extends BeamLocation<BeamState> {
   @override
   List<Pattern> get pathPatterns => [
         'started',
-        'home',
         'profile'
       ];
 
@@ -56,9 +56,9 @@ class BeamerLocations extends BeamLocation<BeamState> {
           child: ForgotPasswordScreen(),
         ),
       if (state.uri.pathSegments.contains('home') || state.uri.pathSegments.contains('activities') || state.uri.pathSegments.contains('profile') || state.uri.pathSegments.contains('calendar') )
-        BeamPage(
-          key: ValueKey('home'),
-          title: 'Home',
+        const BeamPage(
+          key: ValueKey('home2'),
+          title: 'Home2',
           child: ScaffoldWithBottomNavBar(),
         ),
       // if (state.uri.pathSegments.contains('activities'))
@@ -86,7 +86,7 @@ class HomeTabItemLocation extends BeamLocation<BeamState> {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) => [
         BeamPage(
-          key: ValueKey('home'),
+          key: const ValueKey('home'),
           title: 'Tab Home',
           type: BeamPageType.noTransition,
           child: HomePage(detailsPath: 'home/details'),
@@ -132,7 +132,7 @@ class EmptyTabTabItemLocation extends BeamLocation<BeamState> {
           key: ValueKey('empty-tab'),
           title: 'Tab empty-tab',
           type: BeamPageType.noTransition,
-          child: ActivitiesScreen(),
+          child: EmptyScreen(),
         ),
         //  const BeamPage(
         //       key: ValueKey('/activities/details'),
@@ -233,8 +233,8 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
     BeamerDelegate(
       initialPath: '/empty-tab',
       locationBuilder: (routeInformation, _) {
-       if (routeInformation.location!.contains('home')) {
-          return HomeTabItemLocation(routeInformation);
+       if (routeInformation.location!.contains('asd')) {
+          return EmptyTabTabItemLocation(routeInformation);
         }
         return NotFound(path: routeInformation.location!);
       },

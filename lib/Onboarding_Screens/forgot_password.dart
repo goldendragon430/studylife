@@ -32,13 +32,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     if (finalEmail.isEmpty) {
       CustomSnackBar.show(
-          context, CustomSnackBarType.error, "Please enter email address.");
+          context, CustomSnackBarType.error, "Please enter email address.", false);
       return;
     }
 
     if (!finalEmail.isValidEmail) {
       CustomSnackBar.show(context, CustomSnackBarType.error,
-          "Please enter valid email address.");
+          "Please enter valid email address.", false);
       return;
     }
 
@@ -51,17 +51,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
       LoadingDialog.hide(context);
       CustomSnackBar.show(
-          context, CustomSnackBarType.success, response.data['message']);
+          context, CustomSnackBarType.success, response.data['message'], false);
 
     } catch (error) {
       if (error is DioError) {
         LoadingDialog.hide(context);
         CustomSnackBar.show(
-            context, CustomSnackBarType.error, error.response?.data['msg']);
+            context, CustomSnackBarType.error, error.response?.data['msg'], false);
       } else {
         LoadingDialog.hide(context);
         CustomSnackBar.show(
-            context, CustomSnackBarType.error, "Oops, something went wrong");
+            context, CustomSnackBarType.error, "Oops, something went wrong", false);
       }
     }
   }

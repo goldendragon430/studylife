@@ -12,7 +12,7 @@ enum CustomSnackBarType {
 class CustomSnackBar {
   CustomSnackBar._();
 
-  static show(BuildContext context, CustomSnackBarType type, String message) {
+  static show(BuildContext context, CustomSnackBarType type, String message, bool isHome) {
     // SnackBar text and icon color
     final Color textColor =
         type == CustomSnackBarType.success ? Colors.black : Colors.white;
@@ -34,9 +34,15 @@ class CustomSnackBar {
     );
 
     // SnackBar position
+    int distanceFromTop = 100;
+
+    if (isHome) {
+      distanceFromTop = 200;
+    }
+
     final margin = EdgeInsets.only(
       bottom: (MediaQuery.of(context).size.height -
-          80 -
+          distanceFromTop -
           MediaQuery.of(context).viewPadding.top),
       right: 16,
       left: 16,

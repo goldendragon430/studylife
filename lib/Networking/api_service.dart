@@ -7,7 +7,7 @@ import './user_service.dart';
 
 class Api {
   final dio = createDio();
-  final tokenDio = Dio(BaseOptions(baseUrl: "http://admin.mystudylife.borne.io"));
+  final tokenDio = Dio(BaseOptions(baseUrl: "https://admin.mystudylife.borne.io"));
 
   Api._internal();
 
@@ -17,7 +17,7 @@ class Api {
 
   static Dio createDio() {
     var dio = Dio(BaseOptions(
-      baseUrl: "http://admin.mystudylife.borne.io",
+      baseUrl: "https://admin.mystudylife.borne.io",
       receiveTimeout: 30000, // 15 seconds
       connectTimeout: 30000,
       sendTimeout: 30000,

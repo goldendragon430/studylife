@@ -386,21 +386,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             ? Constants.lightThemeSubtitleTextStyle
                             : Constants.darkThemeTaskDueDescriptionTextStyle),
                   ),
-                  Container(
-                    alignment: Alignment.topCenter,
-                    height: double.infinity,
-                    margin: const EdgeInsets.only(top: 450),
-                    child: ListView.builder(
-                        // controller: widget._controller,
-                        itemCount: _classes.length,
-                        itemBuilder: (context, index) {
-                          return ClassWidget(
-                              classItem: _classes[index],
-                              cardIndex: index,
-                              upNext: true,
-                              cardselected: _selectedCard);
-                        }),
-                  ),
+                  // Container(
+                  //   alignment: Alignment.topCenter,
+                  //   height: double.infinity,
+                  //   margin: const EdgeInsets.only(top: 450),
+                  //   child: ListView.builder(
+                  //       // controller: widget._controller,
+                  //       itemCount: _classes.length,
+                  //       itemBuilder: (context, index) {
+                  //         return ClassWidget(
+                  //             classItem: _classes[index],
+                  //             cardIndex: index,
+                  //             upNext: true,
+                  //             cardselected: _selectedCard);
+                  //       }),
+                  // ),
                 ],
               ),
             ],

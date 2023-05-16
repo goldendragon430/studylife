@@ -42,4 +42,16 @@ class Subject {
         createdAt: json['created_at'],
         updatedAt: json['updated_at']);
   }
+
+   Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['userId'] = userId;
+    data['subject'] = subjectName;
+    data['color'] = colorHex;
+    data['imageUrl'] = imageUrl;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    return data;
+  }
 }
