@@ -13,6 +13,11 @@ import './class_days.dart';
 import '.././rounded_elevated_button.dart';
 import '../switch_row_widget.dart';
 import './select_dates.dart';
+import 'dart:convert';
+
+import '../../Models/Services/storage_item.dart';
+import '../../Models/Services/storage_service.dart';
+import '../../Models/API/subject.dart';
 
 class CreateClass extends StatefulWidget {
   const CreateClass({super.key});
@@ -23,12 +28,45 @@ class CreateClass extends StatefulWidget {
 
 class _CreateClassState extends State<CreateClass> {
   final ScrollController scrollcontroller = ScrollController();
+  final StorageService _storageService = StorageService();
+  static List<Subject> _subjects = [];
 
   bool isClassInPerson = true;
   bool addStartEndDates = false;
 
-  void _subjectSelected(ClassTagItem subject) {
-    print("Selected subject: ${subject.title}");
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      getSubjects();
+    });
+  }
+
+  void getSubjects() async {
+    var subjectsData = await _storageService.readSecureData("user_subjects");
+
+    List<dynamic> decodedData = jsonDecode(subjectsData ?? "");
+
+    setState(() {
+      _subjects = List<Subject>.from(
+        decodedData.map((x) => Subject.fromJson(x as Map<String, dynamic>)),
+      );
+    });
+  }
+
+  void _subjectSelected(Subject subject) {
+    for (var savedSubject in _subjects) {
+      if (savedSubject.id == subject.id) {
+        savedSubject.selected = true;
+      }
+    }
+    print("Selected subject: ${subject.subjectName}");
+  }
+
+  void _textInputAdded(String text, TextFieldType type) {
+    print("Text $text");
+        print("Type $type");
+
   }
 
   void _subjectModeSelected(ClassTagItem mode) {
@@ -73,7 +111,7 @@ class _CreateClassState extends State<CreateClass> {
   void _saveClass() {}
 
   void _cancel() {
-   // Navigator.pop(context);
+    // Navigator.pop(context);
   }
 
   @override
@@ -103,7 +141,7 @@ class _CreateClassState extends State<CreateClass> {
                     if (index == 0) ...[
                       // Select Subject
                       SelectSubject(
-                        subjectSelected: _subjectSelected,
+                        subjectSelected: _subjectSelected, subjects: _subjects, tagtype: TagType.subjects,
                       )
                     ],
                     Container(
@@ -118,7 +156,7 @@ class _CreateClassState extends State<CreateClass> {
                     if (index == 2) ...[
                       // Add Text Descriptions
                       ClassTextImputs(
-                        subjectSelected: _subjectModeSelected,
+                        textInputAdded: _textInputAdded,
                         isClassInPerson: isClassInPerson,
                       )
                     ],

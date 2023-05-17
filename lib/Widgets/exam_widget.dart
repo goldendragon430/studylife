@@ -6,17 +6,18 @@ import 'package:intl/intl.dart';
 import '../app.dart';
 import '../Utilities/constants.dart';
 import '../Models/exam_datasource.dart';
+import '../Models/API/exam.dart';
 
 class ExamWidget extends ConsumerWidget {
   final int cardIndex;
   final bool upNext;
 
-  final ExamStatic classItem;
+  final Exam examItem;
   final Function cardselected;
 
   const ExamWidget(
       {super.key,
-      required this.classItem,
+      required this.examItem,
       required this.cardIndex,
       required this.upNext,
       required this.cardselected});
@@ -66,16 +67,18 @@ class ExamWidget extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      classItem.title.toUpperCase(),
+                      examItem.subject?.subjectName ?? "" .toUpperCase(),
                       style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'BebasNeue',
                           fontWeight: FontWeight.normal,
-                          color: classItem.subjectColor),
+                          color: examItem.subject?.colorHex != null
+                              ? HexColor.fromHex(examItem.subject!.colorHex!)
+                              : Colors.red),
                     ),
                     Expanded(
                       child: Text(
-                        classItem.description,
+                        examItem.module ?? "",
                         maxLines: 4,
                         style: theme == ThemeMode.light
                             ? Constants.socialLoginLightButtonTextStyle
@@ -83,13 +86,13 @@ class ExamWidget extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      '${_getFormattedTime(classItem.dateFrom)}',
+                      '${examItem.getExamStartFormattedDate()}',
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
                           : Constants.darkTHemeClassDateTextStyle,
                     ),
                       Text(
-                      '${classItem.duration.abs().inMinutes} Minutes - ${classItem.examType}',
+                      '${(examItem.duration ?? 1 * 60)} Minutes - ${examItem.type}',
                       style: theme == ThemeMode.light
                           ? Constants.socialLoginLightButtonTextStyle
                           : Constants.socialLoginDarkButtonTextStyle,
@@ -97,12 +100,22 @@ class ExamWidget extends ConsumerWidget {
                   ],
                 ),
               ),
-               Positioned(
+             Positioned(
                 right: 0,
+                bottom: 0,
+                top: 0,
                 child: Container(
-                  child: Image.asset(
-                    classItem.subjectImage,
-                  ),
+                  margin: EdgeInsets.all(0),
+                  height: 142,
+                  width: 143,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10), // Image border
+                      child: Image.network(
+                          fit: BoxFit.fill,
+                          examItem.subject?.imageUrl ?? "",
+                          height: 142,
+                          width: 143,
+                        ),),
                 ),
               ),
               Positioned(

@@ -1,4 +1,5 @@
 import './subject.dart';
+import 'package:intl/intl.dart';
 
 class Exam {
   int? id;
@@ -35,6 +36,20 @@ class Exam {
       this.createdAt,
       this.updatedAt,
       this.subject});
+
+  // Calculated
+
+  String getExamStartFormattedDate() {
+    DateTime? createdAtDate = DateTime.tryParse(startDate ?? "");
+
+    if (createdAtDate != null) {
+      String formattedDate =
+          DateFormat('EEE, dd MMM').format(createdAtDate);
+      return formattedDate;
+    } else {
+      return "";
+    }
+  }
 
   Exam.fromJson(Map<String, dynamic> json) {
     id = json['id'];

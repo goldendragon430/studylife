@@ -12,8 +12,7 @@ import './search_page.dart';
 import '../Extensions/extensions.dart';
 import '../Widgets/home_tab_bar_card.dart';
 import '../Models/home_tab_items.dart';
-import '../Models/class_datasource.dart';
-import '../Models/exam_datasource.dart';
+import '../Widgets/loaderIndicator.dart';
 import '../Widgets/exam_widget.dart';
 import '../Widgets/quotes_widget.dart';
 import './class_details_screen.dart';
@@ -27,6 +26,8 @@ import '../Networking/sync_controller.dart';
 import '../Models/Services/storage_service.dart';
 import '../Models/Services/storage_item.dart';
 import '../Models/API/classmodel.dart';
+import '../Models/API/exam.dart';
+import '../Models/API/task.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
@@ -73,10 +74,15 @@ class _HomePageState extends State<HomePage> {
   DateTime now = DateTime.now();
   final List<HomeTabItem> _homeTabItemsDataSource = HomeTabItem.tabItems;
   // final List<ClassStatic> _classes = ClassStatic.classes;
-  final List<ExamStatic> _exams = ExamStatic.exams;
+  //final List<ExamStatic> _exams = ExamStatic.exams;
   final StorageService _storageService = StorageService();
 
   List<ClassModel> _classes = [];
+  List<Exam> _exams = [];
+  List<Task> _tasks = [];
+  int classesCount = 0;
+  int examsCount = 0;
+  int tasksCount = 0;
 
   int selectedTabIndex = 0;
   final SyncController _syncController = SyncController();
@@ -90,7 +96,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void syncData() async {
+        LoadingDialog.show(context);
+
     Result response = await _syncController.syncAll();
+
+    if (!context.mounted) return;
+
+    LoadingDialog.hide(context);
+
     if (response is ErrorState) {
       ErrorState error = response as ErrorState;
 
@@ -98,29 +111,44 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (response is SuccessState) {
-      var subjectsData = await _storageService.readSecureData("user_subjects");
+    
 
-      List<dynamic> decodedData = jsonDecode(subjectsData ?? "");
-
-      List<Subject> dataDecodedList = List<Subject>.from(
-        decodedData.map((x) => Subject.fromJson(x as Map<String, dynamic>)),
-      );
-      // print("ASDADADS ${dataDecodedList}");
-
-      // // var _classes = SyncController.classes;
-
-      // for (var subject in dataDecodedList) {
-      //   print("SUBJECtS ${subject.subjectName}");
-      // }
+      // Get Classes from storage
       var classesData = await _storageService.readSecureData("user_classes");
 
       List<dynamic> decodedDataClasses = jsonDecode(classesData ?? "");
+
+      // Get Exams from storage
+      var examsData = await _storageService.readSecureData("user_exams");
+
+      List<dynamic> decodedDataExams = jsonDecode(examsData ?? "");
+
+      // Get Tasks from storage
+      var tasksData = await _storageService.readSecureData("user_exams");
+
+      List<dynamic> decodedDataTasks = jsonDecode(tasksData ?? "");
 
       setState(() {
         _classes = List<ClassModel>.from(
           decodedDataClasses
               .map((x) => ClassModel.fromJson(x as Map<String, dynamic>)),
         );
+                _homeTabItemsDataSource[0].badgeNumber = _classes.length;
+
+       // classesCount = _classes.length;
+
+        _exams = List<Exam>.from(
+          decodedDataExams.map((x) => Exam.fromJson(x as Map<String, dynamic>)),
+        );
+        _homeTabItemsDataSource[1].badgeNumber = _exams.length;
+       // examsCount = _exams.length;
+
+        _tasks = List<Task>.from(
+          decodedDataTasks.map((x) => Task.fromJson(x as Map<String, dynamic>)),
+        );
+                        _homeTabItemsDataSource[2].badgeNumber = _tasks.length;
+
+       // tasksCount = _tasks.length;
       });
     }
   }
@@ -320,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                         delegate: SliverChildBuilderDelegate(
                             (BuildContext context, int index) {
                           return ExamWidget(
-                              classItem: _exams[index],
+                              examItem: _exams[index],
                               cardIndex: index,
                               upNext: true,
                               cardselected: _selectedExamCard);

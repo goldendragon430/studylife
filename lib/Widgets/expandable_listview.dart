@@ -121,27 +121,27 @@ class _ExpandableListViewState extends State<ExpandableListView> {
               Container(
                 height: 20,
               ),
-              ExpandableContainer(
-                  expanded: expandFlag,
-                  child: ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      if (widget.exams != null) {
-                        return ExamWidget(
-                            classItem: widget.exams![index],
-                            cardIndex: index,
-                            upNext: true,
-                            cardselected: _selectedExamCard);
-                      } else {
-                        return TaskWidget(
-                            taskItem: widget.tasks![index],
-                            cardIndex: index,
-                            upNext: true,
-                            cardselected: _selectedTaskCard);
-                        ;
-                      }
-                    },
-                    itemCount: widget.exams != null ? widget.exams!.length : widget.tasks!.length,
-                  ))
+              // ExpandableContainer(
+              //     expanded: expandFlag,
+              //     child: ListView.builder(
+              //       itemBuilder: (BuildContext context, int index) {
+              //         if (widget.exams != null) {
+              //           return ExamWidget(
+              //               classItem: widget.exams![index],
+              //               cardIndex: index,
+              //               upNext: true,
+              //               cardselected: _selectedExamCard);
+              //         } else {
+              //           return TaskWidget(
+              //               taskItem: widget.tasks![index],
+              //               cardIndex: index,
+              //               upNext: true,
+              //               cardselected: _selectedTaskCard);
+              //           ;
+              //         }
+              //       },
+              //       itemCount: widget.exams != null ? widget.exams!.length : widget.tasks!.length,
+              //     ))
             ],
           ),
         );

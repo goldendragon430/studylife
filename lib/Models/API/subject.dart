@@ -8,6 +8,7 @@ class Subject {
   String? imageUrl;
   String? createdAt;
   String? updatedAt;
+  bool? selected = false;
 
   // Calculated
 
@@ -30,7 +31,8 @@ class Subject {
       this.colorHex,
       this.imageUrl,  
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.selected});
 
   factory Subject.fromJson(Map<String, dynamic> json) {
     return Subject(

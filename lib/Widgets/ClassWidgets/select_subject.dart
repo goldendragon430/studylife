@@ -7,30 +7,42 @@ import '../../Extensions/extensions.dart';
 import '../../app.dart';
 import '../tag_card.dart';
 import '../../Models/subjects_datasource.dart';
+import '../../Models/API/subject.dart';
+
+enum TagType { subjects, exams, tasks, addNew }
 
 class SelectSubject extends StatefulWidget {
   final Function subjectSelected;
-  SelectSubject({super.key, required this.subjectSelected});
+  final List<Subject> subjects;
+  final TagType tagtype;
+  const SelectSubject(
+      {super.key,
+      required this.subjectSelected,
+      required this.subjects,
+      required this.tagtype});
 
   @override
   State<SelectSubject> createState() => _SelectSubjectState();
 }
 
 class _SelectSubjectState extends State<SelectSubject> {
-  final List<ClassTagItem> _subjects = ClassTagItem.subjects;
+  // final List<ClassTagItem> _subjects = ClassTagItem.subjects;
 
   int selectedTabIndex = 0;
 
   void _selectTab(int index) {
     setState(() {
       selectedTabIndex = index;
-      for (var item in _subjects) {
-        item.selected = false;
-      }
+      if (widget.tagtype == TagType.subjects) {
+        // Subjects
+        for (var item in widget.subjects) {
+          item.selected = false;
+        }
 
-      _subjects[index].selected = true;
-      widget.subjectSelected(_subjects[index]);
-      print("CARD SELECTED $index");
+        widget.subjects[index].selected = true;
+        widget.subjectSelected(widget.subjects[index]);
+        print("CARD SELECTED $index");
+      }
     });
   }
 
@@ -50,7 +62,9 @@ class _SelectSubjectState extends State<SelectSubject> {
           children: [
             Text(
               'Select subject*',
-              style: theme == ThemeMode.light ? Constants.lightThemeSubtitleTextStyle : Constants.darkThemeSubtitleTextStyle,
+              style: theme == ThemeMode.light
+                  ? Constants.lightThemeSubtitleTextStyle
+                  : Constants.darkThemeSubtitleTextStyle,
               textAlign: TextAlign.left,
             ),
             Container(
@@ -59,13 +73,13 @@ class _SelectSubjectState extends State<SelectSubject> {
             Wrap(
               direction: Axis.horizontal,
               alignment: WrapAlignment.start,
-              children: _subjects
+              children: widget.subjects
                   .mapIndexed((e, i) => TagCard(
-                        title: e.title,
-                        selected: e.selected,
-                        cardIndex: e.cardIndex,
+                        title: e.subjectName ?? "",
+                        selected: e.selected ?? false,
+                        cardIndex: i,
                         cardselected: _selectTab,
-                        isAddNewCard: e.isAddNewCard,
+                        isAddNewCard: false,
                       ))
                   .toList(),
             ),

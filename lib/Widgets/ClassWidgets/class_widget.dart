@@ -98,20 +98,27 @@ class ClassWidget extends ConsumerWidget {
               ),
               Positioned(
                 right: 0,
+                bottom: 0,
+                top: 0,
                 child: Container(
+                  margin: EdgeInsets.all(0),
+                  height: 114,
+                  width: 143,
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10), // Image border
-                      child: SizedBox.fromSize(
-                        child: Image.network(
-                          classItem.subject?.imageUrl ?? "",
-                          height: 114,
-                          width: 98,
-                        ),
-                      )),
+                    borderRadius: BorderRadius.circular(10), // Image border
+                    child: Image.network(
+                      fit: BoxFit.fill,
+                      classItem.subject?.imageUrl ?? "",
+                      height: 114,
+                      width: 143,
+                    ),
+                  ),
                 ),
               ),
               Positioned(
                 right: 45,
+                bottom: 0,
+                top: 0,
                 child: Container(
                   height: 114.0,
                   width: 98,

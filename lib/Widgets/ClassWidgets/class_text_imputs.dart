@@ -7,12 +7,16 @@ import '../regular_teztField.dart';
 import '../../app.dart';
 import '../../Models/subjects_datasource.dart';
 
+enum TextFieldType {
+  moduleName, roomName, buildingName, teacherName, onlineURL, techerEmail
+}
+
 class ClassTextImputs extends StatefulWidget {
-  final Function subjectSelected;
+  final Function textInputAdded;
   final bool isClassInPerson;
   const ClassTextImputs(
       {super.key,
-      required this.subjectSelected,
+      required this.textInputAdded,
       required this.isClassInPerson});
 
   @override
@@ -31,17 +35,8 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
 
   int selectedTabIndex = 0;
 
-  void _selectTab(int index) {
-    setState(() {
-      selectedTabIndex = index;
-      for (var item in _subjects) {
-        item.selected = false;
-      }
-
-      _subjects[index].selected = true;
-      widget.subjectSelected(_subjects[index]);
-      print("CARD SELECTED $index");
-    });
+  void _submitForm(String text, TextFieldType type) {
+         widget.textInputAdded(text, type);
   }
 
   @override
@@ -68,7 +63,8 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
               height: 6,
             ),
             RegularTextField("Module Name", (value) {
-              FocusScope.of(context).unfocus();
+              _submitForm(moduleNameController.text, TextFieldType.moduleName);
+              FocusScope.of(context).nextFocus();
             }, TextInputType.emailAddress, moduleNameController,
                 theme == ThemeMode.dark, autofocus: false,),
             Container(
@@ -97,7 +93,9 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
                           height: 6,
                         ),
                         RegularTextField("Room", (value) {
-                          FocusScope.of(context).unfocus();
+                        _submitForm(roomNameController.text, TextFieldType.roomName);
+
+                          FocusScope.of(context).nextFocus();
                         }, TextInputType.emailAddress, roomNameController,
                             theme == ThemeMode.dark, autofocus: false,),
                       ],
@@ -121,12 +119,15 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
                           height: 6,
                         ),
                         RegularTextField("Building", (value) {
-                          FocusScope.of(context).unfocus();
+                        _submitForm(buildingNameController.text, TextFieldType.buildingName);
+
+                          FocusScope.of(context).nextFocus();
                         }, TextInputType.emailAddress, buildingNameController,
                             theme == ThemeMode.dark, autofocus: false,),
                       ],
                     ),
                   ),
+                  
                 ],
               ),
             ],
@@ -142,7 +143,8 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
                 height: 6,
               ),
               RegularTextField("Online URL", (value) {
-                FocusScope.of(context).unfocus();
+                _submitForm(onlineUrlController.text, TextFieldType.onlineURL);
+                FocusScope.of(context).nextFocus();
               }, TextInputType.emailAddress, onlineUrlController,
                   theme == ThemeMode.dark, autofocus: false,),
               Container(
@@ -160,8 +162,9 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
               height: 6,
             ),
             RegularTextField("Teacher Name", (value) {
-              FocusScope.of(context).unfocus();
-            }, TextInputType.emailAddress, teacherNameController,
+              FocusScope.of(context).nextFocus();
+             _submitForm(teacherNameController.text, TextFieldType.teacherName);
+            }, TextInputType.name, teacherNameController,
                 theme == ThemeMode.dark, autofocus: false,),
             Container(
               height: 14,
@@ -177,10 +180,13 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
             Container(
               height: 6,
             ),
-            RegularTextField("Email", (value) {
-              FocusScope.of(context).unfocus();
-            }, TextInputType.emailAddress, teachersEmailController,
-                theme == ThemeMode.dark, autofocus: false,),
+            Container(
+              child: RegularTextField("Teacher Email", (value) {
+                _submitForm(teachersEmailController.text, TextFieldType.techerEmail);
+                FocusScope.of(context).unfocus();
+              }, TextInputType.emailAddress, teachersEmailController,
+                  theme == ThemeMode.dark, autofocus: false,),
+            ),
             Container(
               height: 14,
             ),
