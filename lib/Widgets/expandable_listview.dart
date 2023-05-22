@@ -10,6 +10,7 @@ import '../Models/exam_datasource.dart';
 import '../Home_Screens/exam_details_screen.dart';
 import '../Models/task_datasource.dart';
 import '../Widgets/TaskWidgets/task_widget.dart';
+import '../Models/API/exam.dart';
 
 class ExpandableListView extends StatefulWidget {
   final String period;
@@ -36,7 +37,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const ExamDetailsScreen(),
+            builder: (context) =>  ExamDetailsScreen(examItem: Exam(),),
             fullscreenDialog: true));
   }
 

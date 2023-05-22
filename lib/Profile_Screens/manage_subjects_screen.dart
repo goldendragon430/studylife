@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:convert';
 
 import '../../app.dart';
 import '../Utilities/constants.dart';
@@ -7,6 +8,8 @@ import '../Models/subjects_datasource.dart';
 import '../Widgets/rounded_elevated_button.dart';
 import '../Widgets/ProfileWidgets/manage_subject_card.dart';
 import './new_subject_screen.dart';
+import '../Models/Services/storage_service.dart';
+import '../Models/API/subject.dart';
 
 class ManageSubjectsScreen extends StatefulWidget {
   const ManageSubjectsScreen({super.key});
@@ -17,6 +20,30 @@ class ManageSubjectsScreen extends StatefulWidget {
 
 class _ManageSubjectsScreenState extends State<ManageSubjectsScreen> {
   final List<SubjectListItem> _items = SubjectListItem.subjectsList;
+  final StorageService _storageService = StorageService();
+  List<Subject> _subjects = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, () {
+      getSubjects();
+    });
+  }
+
+  void getSubjects() async {
+    var subjectsData = await _storageService.readSecureData("user_subjects");
+
+    List<dynamic> decodedDataSubjects = jsonDecode(subjectsData ?? "");
+
+    setState(() {
+      _subjects = List<Subject>.from(
+        decodedDataSubjects
+            .map((x) => Subject.fromJson(x as Map<String, dynamic>)),
+      );
+    });
+  }
 
   void _addSubjectTapped() {
     Navigator.push(
@@ -74,10 +101,10 @@ class _ManageSubjectsScreenState extends State<ManageSubjectsScreen> {
 
                 child: ListView.builder(
                   // controller: widget._controller,
-                  itemCount: _items.length,
+                  itemCount: _subjects.length,
                   itemBuilder: (context, index) {
                     return ManageSubjectCard(
-                        subjectItem: _items[index],
+                        subjectItem: _subjects[index],
                         cardIndex: index,
                         cardselected: _subjectCardSelected);
                   },

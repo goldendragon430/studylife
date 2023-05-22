@@ -139,55 +139,59 @@ class ClassWidget extends ConsumerWidget {
                   ),
                 ),
               ),
-              if (classItem.subject != null) ...[
-                // Up Next banner
-                Align(
-                  alignment: AlignmentDirectional.topEnd,
-                  child: Container(
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: theme == ThemeMode.light
-                          ? Constants.lightThemeUpNextBannerBackgroundColor
-                          : Constants.darkThemeUpNextBannerBackgroundColor,
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0)),
+              if (classItem.upNext != null) ...[
+                if (classItem.upNext == true) ...[
+                  // Up Next banner
+                  Align(
+                    alignment: AlignmentDirectional.topEnd,
+                    child: Container(
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: theme == ThemeMode.light
+                            ? Constants.lightThemeUpNextBannerBackgroundColor
+                            : Constants.darkThemeUpNextBannerBackgroundColor,
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10.0),
+                            bottomLeft: Radius.circular(10.0)),
+                      ),
+                      width: 83,
+                      alignment: Alignment.center,
+                      padding:
+                          EdgeInsets.only(left: 6, right: 6, top: 6, bottom: 6),
+                      child: Text(
+                        "Up Next",
+                        style: theme == ThemeMode.light
+                            ? Constants.lightThemeUpNextBannerTextStyle
+                            : Constants.darkThemeUpNextBannerTextStyle,
+                      ),
                     ),
-                    width: 83,
-                    alignment: Alignment.center,
-                    padding:
-                        EdgeInsets.only(left: 6, right: 6, top: 6, bottom: 6),
-                    child: Text(
-                      "Up Next",
-                      style: theme == ThemeMode.light
-                          ? Constants.lightThemeUpNextBannerTextStyle
-                          : Constants.darkThemeUpNextBannerTextStyle,
-                    ),
-                  ),
-                )
+                  )
+                ],
               ],
-              if (classItem.subject != null) ...[
-                // Add Tasks Due banner
-                Align(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  child: Container(
-                    margin: EdgeInsets.only(right: 8, bottom: 8),
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: Constants.taskDueBannerColor,
-                      borderRadius: BorderRadius.circular(3.0),
+              if (classItem.tasks != null) ...[
+                if (classItem.tasks!.isNotEmpty) ...[
+                  // Add Tasks Due banner
+                  Align(
+                    alignment: AlignmentDirectional.bottomEnd,
+                    child: Container(
+                      margin: EdgeInsets.only(right: 8, bottom: 8),
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: Constants.taskDueBannerColor,
+                        borderRadius: BorderRadius.circular(3.0),
+                      ),
+                      width: 83,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.only(
+                          left: 6, right: 6, top: 6, bottom: 6),
+                      child: Text(
+                        "Task Due",
+                        //"${classItem.tasksDue} Task Due",
+                        style: Constants.taskDueBannerTextStyle,
+                      ),
                     ),
-                    width: 83,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.only(
-                        left: 6, right: 6, top: 6, bottom: 6),
-                    child: Text(
-                      "Task Due",
-                      //"${classItem.tasksDue} Task Due",
-                      style: Constants.taskDueBannerTextStyle,
-                    ),
-                  ),
-                )
+                  )
+                ],
               ],
             ],
           ),

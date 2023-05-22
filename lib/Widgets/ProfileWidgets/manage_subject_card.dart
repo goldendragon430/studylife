@@ -6,11 +6,12 @@ import 'package:intl/intl.dart';
 import '../../app.dart';
 import '../../Models/subjects_datasource.dart';
 import '../../Utilities/constants.dart';
+import '../../Models/API/subject.dart';
 
 class ManageSubjectCard extends ConsumerWidget {
   final int cardIndex;
 
-  final SubjectListItem subjectItem;
+  final Subject subjectItem;
   final Function cardselected;
 
   const ManageSubjectCard(
@@ -42,25 +43,27 @@ class ManageSubjectCard extends ConsumerWidget {
             children: [
               Positioned(
                 right: 0,
+                bottom: 0,
                 child: Container(
+                   margin: const EdgeInsets.all(0),
                   height: 126.0,
                   width: 160,
                   child: 
                    ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: FittedBox(
-                        fit: BoxFit.fill,
-                        // clipBehavior: Clip.hardEdge,
-                        child: Image.asset(
-                          subjectItem.subjectImage,
-                        ),
-                      ),
+                      child: Image.network(
+                      fit: BoxFit.fill,
+                      subjectItem.imageUrl ?? "",
+                      height: 126,
+                      width: 160,
+                    ),
                     ),
                 ),
                 
               ),
               Positioned(
-                right: 60,
+                right: 62,
+                bottom: 0,
                 child: Container(
                   height: 126.0,
                   width: 98,
@@ -90,12 +93,14 @@ class ManageSubjectCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      subjectItem.title.toUpperCase(),
+                      subjectItem.subjectName ?? "".toUpperCase(),
                       style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'BebasNeue',
                           fontWeight: FontWeight.normal,
-                          color: subjectItem.subjectColor),
+                          color: subjectItem.colorHex != null
+                              ? HexColor.fromHex(subjectItem.colorHex!)
+                              : Colors.red),
                     ),
                     Container(
                       //  margin: EdgeInsets.only(top: 10),

@@ -12,6 +12,7 @@ import '../Models/exam_datasource.dart';
 import '../Home_Screens/exam_details_screen.dart';
 import './custom_segmentedcontrol.dart';
 import '../Widgets/expandable_listview.dart';
+import '../Models/API/exam.dart';
 
 class ActivitiesExamsScreen extends StatefulWidget {
   const ActivitiesExamsScreen({super.key});
@@ -37,7 +38,7 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const ExamDetailsScreen(),
+            builder: (context) => ExamDetailsScreen(examItem: Exam(),),
             fullscreenDialog: true));
   }
 

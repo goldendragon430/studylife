@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 
-class AppInterceptors extends Interceptor {
+class AppInterceptors extends QueuedInterceptorsWrapper {
   final Dio dio;
 
   AppInterceptors(this.dio);

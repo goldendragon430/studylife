@@ -9,16 +9,18 @@ import '../Widgets/icon_label_details_row.dart';
 import '../Models/tasks_due_dataSource.dart';
 import '../Widgets/task_due_card.dart';
 import '../Widgets/custom_alert.dart';
+import '../Models/API/classmodel.dart';
 
 class ClassDetailsScreen extends ConsumerWidget {
-  const ClassDetailsScreen({super.key});
+  final ClassModel classItem;
+  const ClassDetailsScreen(this.classItem, {super.key});
 
   void _editButtonPressed(BuildContext context) {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => const CustomAlertView(),
-      //       fullscreenDialog: true));
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => const CustomAlertView(),
+    //       fullscreenDialog: true));
   }
 
   void _closeButtonPressed(context) {
@@ -44,30 +46,36 @@ class ClassDetailsScreen extends ConsumerWidget {
         children: [
           Container(
             height: 206,
+            width: double.infinity,
             alignment: Alignment.topCenter,
-            child: Image.asset("assets/images/ClassExamBackgroundImage.png"),
+            child: Image.network(
+              classItem.subject?.imageUrl ?? "",
+              fit: BoxFit.fill,
+              height: 206,
+              width: double.infinity,
+            ),
           ),
           Container(
             height: 36,
             width: 75,
             margin: const EdgeInsets.only(left: 20, top: 50),
             child: ElevatedButton(
-                style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(0.0),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    )),
-                    minimumSize:
-                        MaterialStateProperty.all(const Size((75), 45)),
-                    backgroundColor: MaterialStateProperty.all(Colors.black),
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
-                    textStyle: MaterialStateProperty.all(const TextStyle(
-                        fontFamily: "Roboto",
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-                onPressed: () => _editButtonPressed(context),
-                child: Text("Edit")),
+              style: ButtonStyle(
+                  elevation: MaterialStateProperty.all(0.0),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  )),
+                  minimumSize: MaterialStateProperty.all(const Size((75), 45)),
+                  backgroundColor: MaterialStateProperty.all(Colors.black),
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  textStyle: MaterialStateProperty.all(const TextStyle(
+                      fontFamily: "Roboto",
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white))),
+              onPressed: () => _editButtonPressed(context),
+              child: const Text("Edit"),
+            ),
           ),
           Positioned(
             right: -10,
@@ -75,7 +83,6 @@ class ClassDetailsScreen extends ConsumerWidget {
             child: MaterialButton(
               splashColor: Colors.transparent,
               elevation: 0.0,
-              // ),
               onPressed: () => _closeButtonPressed(context),
               child: Container(
                 height: 36,
@@ -87,8 +94,10 @@ class ClassDetailsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          ClassExamDetailsInfoCard(Colors.red, "Class", "Chemistry",
-              "Redox Reactions", DateTime.now(), DateTime.now()),
+          ClassExamDetailsInfoCard(classItem.subject?.colorHex != null
+                              ? HexColor.fromHex(classItem.subject!.colorHex!)
+                              : Colors.red, "Class", classItem.subject?.subjectName ?? "",
+              classItem.module ?? "", classItem.startDate, classItem.startTime),
           Container(
             margin: const EdgeInsets.only(left: 20, top: 349),
             child: Column(
@@ -98,19 +107,19 @@ class ClassDetailsScreen extends ConsumerWidget {
                 IconLabelDetailsRow(
                     Image.asset("assets/images/LocationPinGrey.png"),
                     "Where",
-                    "Room 5, Block D"),
+                    '${classItem.room ?? ""}, ${classItem.building ?? ""}'),
                 Container(
                   height: 8,
                 ),
                 IconLabelDetailsRow(
                     Image.asset("assets/images/ProfessorIconGrey.png"),
                     "Professor",
-                    "Mark Anderson"),
+                    classItem.teacher ?? ""),
                 Container(
                   height: 58,
                 ),
                 Text(
-                  'Tasks due for Chemistry',
+                  'Tasks due for ${classItem.subject?.subjectName}',
                   style: theme == ThemeMode.light
                       ? Constants.lightThemeRegular14TextSelectedStyle
                       : Constants.darkThemeRegular14TextStyle,
@@ -118,20 +127,21 @@ class ClassDetailsScreen extends ConsumerWidget {
               ],
             ),
           ),
-            Container(
-                  alignment: Alignment.topCenter,
-                  height: double.infinity,
-                  margin: const EdgeInsets.only(top: 483),
-                  child: ListView.builder(
-                     // controller: widget._controller,
-                      itemCount: _tasksDue.length,
-                      itemBuilder: (context, index) {
-                        return TaskDueCardForClassOrExam(
-                            index,
-                            _tasksDue[index],
-                            _selectTaskDue,);
-                      }),
-                ),
+          Container(
+            alignment: Alignment.topCenter,
+            height: double.infinity,
+            margin: const EdgeInsets.only(top: 483),
+            child: ListView.builder(
+                // controller: widget._controller,
+                itemCount: classItem.tasks?.length,
+                itemBuilder: (context, index) {
+                  return TaskDueCardForClassOrExam(
+                    index,
+                    _tasksDue[index],
+                    _selectTaskDue,
+                  );
+                }),
+          ),
         ],
       ),
     );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:dio/dio.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_study_life_flutter/Models/API/subject.dart';
 import '../Utilities/constants.dart';
 import '../Extensions/extensions.dart';
 import '../Widgets/rounded_elevated_button.dart';
@@ -11,6 +13,9 @@ import '../Widgets/regular_teztField.dart';
 import '../Models/subjectColors_dataosource.dart';
 import '../Widgets/ProfileWidgets/select_color_card.dart';
 import '../Widgets/ProfileWidgets/select_classphoto_card.dart';
+import '../Widgets/loaderIndicator.dart';
+import '../Widgets/custom_snack_bar.dart';
+import '../Networking/subject_service.dart';
 
 class AddSubjectScreen extends StatefulWidget {
   const AddSubjectScreen({super.key});
@@ -27,6 +32,7 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
 
   List<SubjectColor> subjectColors = SubjectColor.subjectColors;
   List<SubjectPhoto> subjectPhotos = SubjectPhoto.subjectPhotos;
+  SubjectColor? selectedColor;
 
   void _selectedColor(int index) {
     setState(() {
@@ -37,6 +43,7 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
       var color = subjectColors[index];
       color.selected = !color.selected;
       subjectColors[index] = color;
+      selectedColor = color;
     });
   }
 
@@ -60,7 +67,7 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return Container(
+          return SizedBox(
               height: 150,
               child: Column(children: <Widget>[
                 ListTile(
@@ -68,15 +75,15 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
                       Navigator.pop(context);
                       _getFromCamera();
                     },
-                    leading: Icon(Icons.photo_camera),
-                    title: Text("Take a picture from camera")),
+                    leading: const Icon(Icons.photo_camera),
+                    title: const Text("Take a picture from camera")),
                 ListTile(
                     onTap: () {
                       Navigator.pop(context);
                       _showPhotoLibrary();
                     },
-                    leading: Icon(Icons.photo_library),
-                    title: Text("Choose from photo library"))
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text("Choose from photo library"))
               ]));
         });
   }
@@ -86,7 +93,7 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
 
     setState(() {
       _path = file?.path;
-      print(file!.path);
+      print("ASDADADADADADADAD $_path");
     });
   }
 
@@ -106,7 +113,59 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
     // }
   }
 
-  void _saveSubject() {}
+  void _saveSubject() async {
+    String finalSubjectName = subjectNameController.text;
+
+    if (finalSubjectName.isEmpty) {
+      CustomSnackBar.show(
+          context, CustomSnackBarType.error, "Please add subject name.", true);
+      return;
+    }
+
+    if (selectedColor == null) {
+      CustomSnackBar.show(context, CustomSnackBarType.error,
+          "Please select subject color.", true);
+      return;
+    }
+
+    if (_path == null) {
+      CustomSnackBar.show(context, CustomSnackBarType.error,
+          "Please select, or upload subject image", true);
+      return;
+    }
+
+    Subject newSubject = Subject();
+    newSubject.subjectName = finalSubjectName;
+    newSubject.colorHex = selectedColor!.itemColor.toHex();
+    newSubject.imageUrl = _path;
+
+
+
+    LoadingDialog.show(context);
+
+    try {
+      var response = await SubjectService().createSubject(newSubject);
+
+      if (!context.mounted) return;
+
+      LoadingDialog.hide(context);
+      CustomSnackBar.show(
+          context, CustomSnackBarType.success, response.data['message'], false);
+    } catch (error) {
+      //print("ADSDADSADAD ${error.toString()}");
+      if (error is DioError) {
+              print("ADSDADSADAD ${error.response?.data.toString()}");
+
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            error.response?.data['msg'], false);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Oops, something went wrong", false);
+      }
+    }
+  }
 
   void _cancel() {
     Navigator.pop(context);
@@ -117,188 +176,194 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
 
-      return Scaffold(
-          backgroundColor: theme == ThemeMode.light
-              ? Constants.lightThemeBackgroundColor
-              : Constants.darkThemeBackgroundColor,
-          extendBodyBehindAppBar: false,
-          appBar: AppBar(
-            foregroundColor:
-                theme == ThemeMode.light ? Colors.black : Colors.white,
-            shadowColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            title: Text(
-              "New Subject",
-              style: TextStyle(
-                  fontSize: 17,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w500,
-                  color:
-                      theme == ThemeMode.light ? Colors.black : Colors.white),
+      return GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+            backgroundColor: theme == ThemeMode.light
+                ? Constants.lightThemeBackgroundColor
+                : Constants.darkThemeBackgroundColor,
+            extendBodyBehindAppBar: false,
+            appBar: AppBar(
+              foregroundColor:
+                  theme == ThemeMode.light ? Colors.black : Colors.white,
+              shadowColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+              title: Text(
+                "New Subject",
+                style: TextStyle(
+                    fontSize: 17,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w500,
+                    color:
+                        theme == ThemeMode.light ? Colors.black : Colors.white),
+              ),
             ),
-          ),
-          body: Container(
-              color: theme == ThemeMode.light
-                  ? Constants.lightThemeClassExamDetailsBackgroundColor
-                  : Constants.darkThemeBackgroundColor,
-              width: double.infinity,
-              height: double.infinity,
-              child: ListView.builder(
-                  controller: scrollcontroller,
-                  padding: const EdgeInsets.only(top: 26, left: 20, right: 20),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        if (index == 0) ...[
-                          Text(
-                            'Subject Name',
-                            style: theme == ThemeMode.light
-                                ? Constants.lightThemeSubtitleTextStyle
-                                : Constants.darkThemeSubtitleTextStyle,
-                            textAlign: TextAlign.left,
-                          ),
-                          Container(
-                            height: 6,
-                          ),
-                          RegularTextField(
-                            "Subject Name",
-                            (value) {
-                              FocusScope.of(context).unfocus();
-                            },
-                            TextInputType.name,
-                            subjectNameController,
-                            theme == ThemeMode.dark,
-                            autofocus: false,
-                          ),
-                          Container(
-                            height: 26,
-                          ),
-                        ],
-                        if (index == 1) ...[
-                          Text(
-                            'Color',
-                            style: theme == ThemeMode.light
-                                ? Constants.lightThemeSubtitleTextStyle
-                                : Constants.darkThemeSubtitleTextStyle,
-                            textAlign: TextAlign.left,
-                          ),
-                          Container(
-                            height: 6,
-                          ),
-                          SizedBox(
-                            height: 56,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: subjectColors.length,
-                                itemBuilder: (BuildContext content, int index) {
-                                  return SelectColorCard(
-                                      subjectColors[index].itemColor,
-                                      subjectColors[index].selected,
-                                      index,
-                                      _selectedColor);
-                                }),
-                          ),
-                          Container(
-                            height: 22,
-                          ),
-                        ],
-                        if (index == 2) ...[
-                          Text(
-                            'Photo',
-                            style: theme == ThemeMode.light
-                                ? Constants.lightThemeSubtitleTextStyle
-                                : Constants.darkThemeSubtitleTextStyle,
-                            textAlign: TextAlign.left,
-                          ),
-                          Container(
-                            height: 6,
-                          ),
-                          SizedBox(
-                            height: 102,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: subjectPhotos.length,
-                              itemBuilder: (BuildContext content, int index) {
-                                return SelectSubjectPhotoCard(
-                                    subjectPhotos[index],
-                                    index,
-                                    _selectedImage);
-                              },
+            body: Container(
+                color: theme == ThemeMode.light
+                    ? Constants.lightThemeClassExamDetailsBackgroundColor
+                    : Constants.darkThemeBackgroundColor,
+                width: double.infinity,
+                height: double.infinity,
+                child: ListView.builder(
+                    controller: scrollcontroller,
+                    padding:
+                        const EdgeInsets.only(top: 26, left: 20, right: 20),
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          if (index == 0) ...[
+                            Text(
+                              'Subject Name',
+                              style: theme == ThemeMode.light
+                                  ? Constants.lightThemeSubtitleTextStyle
+                                  : Constants.darkThemeSubtitleTextStyle,
+                              textAlign: TextAlign.left,
                             ),
-                          ),
-                          Container(
-                            height: 10,
-                          ),
-                        ],
-                        if (index == 3) ...[
-                          Container(
-                            height: 34,
-                            alignment: Alignment.topLeft,
-                            child: ElevatedButton(
-                              onPressed: () => _uploadPhotoTappedx(context),
-                              style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(0.0),
-                                  shape: MaterialStateProperty.all(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                  )),
-                                  minimumSize: MaterialStateProperty.all(
-                                      const Size(142, 34)),
-                                  backgroundColor: theme == ThemeMode.light
-                                      ? MaterialStateProperty.all(
-                                          Constants.lightThemePrimaryColor)
-                                      : MaterialStateProperty.all(
-                                          Constants.darkThemePrimaryColor),
-                                  foregroundColor:
-                                      MaterialStateProperty.all(Colors.black),
-                                  textStyle: MaterialStateProperty.all(
-                                      const TextStyle(
-                                          fontFamily: "Roboto",
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black))),
-                              child: const Text(
-                                '+ Upload Photo',
+                            Container(
+                              height: 6,
+                            ),
+                            RegularTextField(
+                              "Subject Name",
+                              (value) {
+                                // FocusScope.of(context).unfocus();
+                              },
+                              TextInputType.name,
+                              subjectNameController,
+                              theme == ThemeMode.dark,
+                              autofocus: false,
+                            ),
+                            Container(
+                              height: 26,
+                            ),
+                          ],
+                          if (index == 1) ...[
+                            Text(
+                              'Color',
+                              style: theme == ThemeMode.light
+                                  ? Constants.lightThemeSubtitleTextStyle
+                                  : Constants.darkThemeSubtitleTextStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            Container(
+                              height: 6,
+                            ),
+                            SizedBox(
+                              height: 56,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: subjectColors.length,
+                                  itemBuilder:
+                                      (BuildContext content, int index) {
+                                    return SelectColorCard(
+                                        subjectColors[index].itemColor,
+                                        subjectColors[index].selected,
+                                        index,
+                                        _selectedColor);
+                                  }),
+                            ),
+                            Container(
+                              height: 22,
+                            ),
+                          ],
+                          if (index == 2) ...[
+                            Text(
+                              'Photo',
+                              style: theme == ThemeMode.light
+                                  ? Constants.lightThemeSubtitleTextStyle
+                                  : Constants.darkThemeSubtitleTextStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            Container(
+                              height: 6,
+                            ),
+                            SizedBox(
+                              height: 102,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: subjectPhotos.length,
+                                itemBuilder: (BuildContext content, int index) {
+                                  return SelectSubjectPhotoCard(
+                                      subjectPhotos[index],
+                                      index,
+                                      _selectedImage);
+                                },
                               ),
                             ),
-                          ),
-                          Container(
-                            height: 100,
-                          ),
-                        ],
-                        if (index == 4) ...[
-                          Container(
-                            alignment: Alignment.bottomCenter,
-                            margin: const EdgeInsets.only(bottom: 84, top: 30),
-                            width: double.infinity,
-                            // margin: const EdgeInsets.only(top: 260),
-                            padding:
-                                const EdgeInsets.only(left: 106, right: 106),
-                            child: Column(
-                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                RoundedElevatedButton(
-                                    _saveSubject,
-                                    "Save Subject",
-                                    Constants.lightThemePrimaryColor,
-                                    Colors.black,
-                                    45),
-                                RoundedElevatedButton(
-                                    _cancel,
-                                    "Cancel",
-                                    Constants.blueButtonBackgroundColor,
-                                    Colors.white,
-                                    45)
-                              ],
+                            Container(
+                              height: 10,
                             ),
-                          ),
-                        ]
-                      ],
-                    );
-                  })));
+                          ],
+                          if (index == 3) ...[
+                            Container(
+                              height: 34,
+                              alignment: Alignment.topLeft,
+                              child: ElevatedButton(
+                                onPressed: () => _uploadPhotoTappedx(context),
+                                style: ButtonStyle(
+                                    elevation: MaterialStateProperty.all(0.0),
+                                    shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    )),
+                                    minimumSize: MaterialStateProperty.all(
+                                        const Size(142, 34)),
+                                    backgroundColor: theme == ThemeMode.light
+                                        ? MaterialStateProperty.all(
+                                            Constants.lightThemePrimaryColor)
+                                        : MaterialStateProperty.all(
+                                            Constants.darkThemePrimaryColor),
+                                    foregroundColor:
+                                        MaterialStateProperty.all(Colors.black),
+                                    textStyle: MaterialStateProperty.all(
+                                        const TextStyle(
+                                            fontFamily: "Roboto",
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black))),
+                                child: const Text(
+                                  '+ Upload Photo',
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 100,
+                            ),
+                          ],
+                          if (index == 4) ...[
+                            Container(
+                              alignment: Alignment.bottomCenter,
+                              margin:
+                                  const EdgeInsets.only(bottom: 84, top: 30),
+                              width: double.infinity,
+                              // margin: const EdgeInsets.only(top: 260),
+                              padding:
+                                  const EdgeInsets.only(left: 106, right: 106),
+                              child: Column(
+                                // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  RoundedElevatedButton(
+                                      _saveSubject,
+                                      "Save Subject",
+                                      Constants.lightThemePrimaryColor,
+                                      Colors.black,
+                                      45),
+                                  RoundedElevatedButton(
+                                      _cancel,
+                                      "Cancel",
+                                      Constants.blueButtonBackgroundColor,
+                                      Colors.white,
+                                      45)
+                                ],
+                              ),
+                            ),
+                          ]
+                        ],
+                      );
+                    }))),
+      );
 
 //             Stack(
 //               children: [

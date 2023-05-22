@@ -41,7 +41,7 @@ class _SelectTimesState extends State<SelectTimes> {
   }
 
   void _tappedOnTimeTo(ThemeMode theme, bool isDateFrom) {
-        _showDatePicker(theme, isDateFrom);
+    _showDatePicker(theme, isDateFrom);
   }
 
   void _showiOSDateSelectionDialog(Widget child) {
@@ -116,12 +116,7 @@ class _SelectTimesState extends State<SelectTimes> {
       setState(() {
         pickedTimeFrom = picked;
         print(picked.format(context)); //output 10:51 PM
-        DateTime parsedTime =
-            DateFormat.jm().parse(picked.format(context).toString());
-        //converting to DateTime so that we can further format on different pattern.
-        print(parsedTime); //output 1970-01-01 22:53:00.000
-        String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
-        print(formattedTime);
+        widget.timeSelected(picked, isDateFrom);
       });
     }
   }
@@ -137,10 +132,12 @@ class _SelectTimesState extends State<SelectTimes> {
               setState(() {
                 if (isDateFrom) {
                   pickedTimeFrom = minutesToTimeOfDay(changeTimer);
+                  widget.timeSelected(pickedTimeFrom, isDateFrom);
                   timeFromController.text = pickedTimeFrom.format(context);
                 } else {
                   pickedTimeTo = minutesToTimeOfDay(changeTimer);
                   timeToController.text = pickedTimeTo.format(context);
+                  widget.timeSelected(pickedTimeTo, isDateFrom);
                 }
               });
             },
@@ -216,8 +213,9 @@ class _SelectTimesState extends State<SelectTimes> {
                       ),
                       DateTimeSelectionTextField(
                         timeToController.text,
-                        Platform.isAndroid ? _showAndroidDateSelectionDialog :
-                        _showDatePicker,
+                        Platform.isAndroid
+                            ? _showAndroidDateSelectionDialog
+                            : _showDatePicker,
                         // Platform.isAndroid
                         //     ? _showAndroidDateSelectionDialog
                         //     : () => _showiOSDateSelectionDialog(

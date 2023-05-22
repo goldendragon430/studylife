@@ -103,6 +103,7 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
       setState(() {
         date = picked;
         dateController.text = DateFormat('EEE, d MMM, yyyy').format(picked);
+         widget.dateSelected(picked);
       });
     }
   }
@@ -116,6 +117,7 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
             use24hFormat: true,
             onDateTimeChanged: (DateTime newDate) {
               setState(() {
+                 widget.dateSelected(newDate);
                 date = newDate;
                 dateController.text =
                     DateFormat('EEE, d MMM, yyyy').format(newDate);
@@ -180,13 +182,14 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
-        print(picked.format(context)); //output 10:51 PM
-        DateTime parsedTime =
-            DateFormat.jm().parse(picked.format(context).toString());
-        //converting to DateTime so that we can further format on different pattern.
-        print(parsedTime); //output 1970-01-01 22:53:00.000
-        String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
-        print(formattedTime);
+        widget.timeSelected(picked);
+        // print(picked.format(context)); //output 10:51 PM
+        // DateTime parsedTime =
+        //     DateFormat.jm().parse(picked.format(context).toString());
+        // //converting to DateTime so that we can further format on different pattern.
+        // print(parsedTime); //output 1970-01-01 22:53:00.000
+        // String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
+        // print(formattedTime);
       });
     }
   }
@@ -201,6 +204,7 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
             onTimerDurationChanged: (Duration changeTimer) {
               setState(() {
                 pickedTimeFrom = minutesToTimeOfDay(changeTimer);
+                widget.timeSelected(pickedTimeFrom);
                 timeController.text = pickedTimeFrom.format(context);
               });
             },
@@ -322,7 +326,11 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
                   child: DropdownButton(
                     value: selectedDuration,
                     onChanged: (String? newValue) =>
-                        setState(() => selectedDuration = newValue ?? ""),
+                    setState(() {
+                      widget.durationSelected(newValue);
+                      selectedDuration = newValue ?? "";
+                    }),
+                       // setState(() => selectedDuration = newValue ?? ""),
                     items: _durations
                         .map<DropdownMenuItem<String>>(
                             (ExamDuration durationItem) =>

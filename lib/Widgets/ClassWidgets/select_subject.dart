@@ -26,7 +26,6 @@ class SelectSubject extends StatefulWidget {
 }
 
 class _SelectSubjectState extends State<SelectSubject> {
-  // final List<ClassTagItem> _subjects = ClassTagItem.subjects;
 
   int selectedTabIndex = 0;
 
@@ -41,7 +40,6 @@ class _SelectSubjectState extends State<SelectSubject> {
 
         widget.subjects[index].selected = true;
         widget.subjectSelected(widget.subjects[index]);
-        print("CARD SELECTED $index");
       }
     });
   }

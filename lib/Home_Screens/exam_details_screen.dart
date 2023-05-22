@@ -10,9 +10,11 @@ import '../Models/tasks_due_dataSource.dart';
 import '../Widgets/task_due_card.dart';
 import '../Widgets/custom_alert.dart';
 import './add_exam_score.dart';
+import '../Models/API/exam.dart';
 
 class ExamDetailsScreen extends StatefulWidget {
-  const ExamDetailsScreen({super.key});
+  final Exam examItem;
+  const ExamDetailsScreen({super.key, required this.examItem});
 
   @override
   State<ExamDetailsScreen> createState() => _ExamDetailsScreenState();
@@ -71,10 +73,16 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
       height: double.infinity,
       child: Stack(
         children: [
-          Container(
+           Container(
             height: 206,
+            width: double.infinity,
             alignment: Alignment.topCenter,
-            child: Image.asset("assets/images/ClassExamBackgroundImage.png"),
+            child: Image.network(
+              widget.examItem.subject?.imageUrl ?? "",
+              fit: BoxFit.fill,
+              height: 206,
+              width: double.infinity,
+            ),
           ),
           Container(
             height: 36,
@@ -141,8 +149,10 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
               ),
             ),
           ),
-          ClassExamDetailsInfoCard(Colors.blue, "Exam", "Physics",
-              "Redox Reactions", DateTime.now(), DateTime.now()),
+          ClassExamDetailsInfoCard(widget.examItem.subject?.colorHex != null
+                              ? HexColor.fromHex(widget.examItem.subject!.colorHex!)
+                              :Colors.blue, "Exam", widget.examItem.subject?.subjectName ?? "",
+              widget.examItem.module ?? "", widget.examItem.startDate, widget.examItem.startTime),
           Container(
             margin: const EdgeInsets.only(left: 20, top: 349),
             child: Column(
@@ -155,21 +165,21 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
                 IconLabelDetailsRow(
                     Image.asset("assets/images/DurationIconGrey.png"),
                     "Duration",
-                    "90 Minutes"),
+                    "${widget.examItem.duration} Minutes"),
                 Container(
                   height: 8,
                 ),
                 IconLabelDetailsRow(
                     Image.asset("assets/images/SeatIconGrey.png"),
                     "Seat",
-                    "21"),
+                    widget.examItem.seat ?? ""),
                 Container(
                   height: 8,
                 ),
                 IconLabelDetailsRow(
                     Image.asset("assets/images/LocationPinGrey.png"),
                     "Where",
-                    "Room 5, Block D"),
+                    "${widget.examItem.room}"),
                 Container(
                   height: 30,
                 ),

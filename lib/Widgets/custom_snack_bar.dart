@@ -34,10 +34,10 @@ class CustomSnackBar {
     );
 
     // SnackBar position
-    int distanceFromTop = 100;
+    int distanceFromTop = 150;
 
     if (isHome) {
-      distanceFromTop = 200;
+      distanceFromTop = 230;
     }
 
     final margin = EdgeInsets.only(

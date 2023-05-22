@@ -13,6 +13,7 @@ import '../Models/API/subject.dart';
 import '.././Models/class_datasource.dart';
 import '../Home_Screens/class_details_screen.dart';
 import '../Widgets/ClassWidgets/class_widget.dart';
+import '../Models/API/classmodel.dart';
 
 class ActivitiesClassesScreen extends StatefulWidget {
   const ActivitiesClassesScreen({super.key});
@@ -82,7 +83,7 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const ClassDetailsScreen(),
+            builder: (context) => ClassDetailsScreen(ClassModel()),
             fullscreenDialog: true));
   }
 

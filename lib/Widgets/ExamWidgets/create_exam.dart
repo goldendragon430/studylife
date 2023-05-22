@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
@@ -15,8 +17,13 @@ import '../ClassWidgets/select_exam_type.dart';
 import 'exam_text_imputs.dart';
 import 'exam_datetime_duration.dart';
 
+import '../../Models/Services/storage_service.dart';
+import '../../Models/API/subject.dart';
+import '../../Models/API/exam.dart';
+
 class CreateExam extends StatefulWidget {
-  const CreateExam({super.key});
+  final Function saveExam;
+  const CreateExam({super.key, required this.saveExam});
 
   @override
   State<CreateExam> createState() => _CreateExamState();
@@ -24,32 +31,78 @@ class CreateExam extends StatefulWidget {
 
 class _CreateExamState extends State<CreateExam> {
   final ScrollController scrollcontroller = ScrollController();
+  final StorageService _storageService = StorageService();
+  static List<Subject> _subjects = [];
+  late Exam newExam = Exam();
 
   bool isExamInPerson = true;
   bool resitOn = false;
 
-  void _subjectSelected(ClassTagItem subject) {
-    print("Selected subject: ${subject.title}");
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      getSubjects();
+    });
   }
 
-  void _subjectModeSelected(ClassTagItem mode) {
-    print("Selected mode: ${mode.title}");
+  void getSubjects() async {
+    var subjectsData = await _storageService.readSecureData("user_subjects");
 
+    List<dynamic> decodedData = jsonDecode(subjectsData ?? "");
+
+    setState(() {
+      _subjects = List<Subject>.from(
+        decodedData.map((x) => Subject.fromJson(x as Map<String, dynamic>)),
+      );
+    });
+  }
+
+  void _subjectSelected(Subject subject) {
+    for (var savedSubject in _subjects) {
+      savedSubject.selected = false;
+      if (savedSubject.id == subject.id) {
+        savedSubject.selected = true;
+        newExam.subject = savedSubject;
+      }
+    }
+    print("Selected subject: ${subject.subjectName}");
+  }
+
+  void _examModeSelected(ClassTagItem mode) {
     setState(() {
       if (mode.title == "In Person") {
         isExamInPerson = true;
+        newExam.mode = "in-person";
       } else {
         isExamInPerson = false;
+        newExam.mode = "online";
       }
     });
   }
 
-  void _TextInputAdded(String input) {
-    print("Selected subject: ${input}");
+  void _textInputAdded(String text, TextFieldType type) {
+    print(text);
+    switch (type) {
+      case TextFieldType.moduleName:
+        newExam.module = text;
+        break;
+      case TextFieldType.seatName:
+        newExam.seat = text;
+        break;
+      case TextFieldType.roomName:
+        newExam.room = text;
+        break;
+      case TextFieldType.onlineURL:
+        newExam.onlineUrl = text;
+        break;
+      default:
+    }
   }
 
   void _examTypeSelected(ClassTagItem type) {
-    print("Selected repetitionMode: ${type.title}");
+    newExam.type = type.title.toLowerCase();
+    // print("Selected repetitionMode: ${type.title}");
   }
 
   void _switchChangedState(bool isOn) {
@@ -59,16 +112,42 @@ class _CreateExamState extends State<CreateExam> {
     });
   }
 
-  void _dateOfExamSelected(DateTime date) {}
+  void _dateOfExamSelected(
+    DateTime date,
+  ) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    newExam.startDate = formattedDate;
+  }
 
-  void _timeOfExamSelected(TimeOfDay time) {}
+  void _timeOfExamSelected(
+    TimeOfDay time,
+  ) {
+    final localizations = MaterialLocalizations.of(context);
+    final formattedTimeOfDay =
+        localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
 
-  void _durationOfExamSelected(Duration duration) {}
+    newExam.startTime = formattedTimeOfDay;
+  }
 
-  void _saveClass() {}
+  void _classDaysSelected(List<ClassTagItem> days) {
+    print("Selected repetitionMode: ${days}");
+    List<String> daysList = [];
+    for (var dayItem in days) {
+      daysList.add(dayItem.title.toLowerCase());
+    }
+  }
+
+  void _durationOfExamSelected(String duration) {
+    int intValue = int.parse(duration.replaceAll(RegExp('[^0-9]'), ''));
+    newExam.duration = intValue;
+  }
+
+  void _saveExam() {
+    widget.saveExam(newExam);
+  }
 
   void _cancel() {
-   // Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override
@@ -96,10 +175,12 @@ class _CreateExamState extends State<CreateExam> {
                 return Column(
                   children: [
                     if (index == 0) ...[
-                      // Select Subject
-                      // SelectSubject(
-                      //   subjectSelected: _subjectSelected,
-                      // )
+                      //Select Subject
+                      SelectSubject(
+                        subjectSelected: _subjectSelected,
+                        subjects: _subjects,
+                        tagtype: TagType.subjects,
+                      )
                     ],
                     Container(
                       height: 14,
@@ -117,13 +198,13 @@ class _CreateExamState extends State<CreateExam> {
                     if (index == 3) ...[
                       // Select Mode
                       SelectClassMode(
-                        subjectSelected: _subjectModeSelected,
+                        subjectSelected: _examModeSelected,
                       )
                     ],
                     if (index == 4) ...[
                       // Add Text Descriptions
                       ExamTextImputs(
-                        subjectSelected: _subjectModeSelected,
+                        textInputAdded: _textInputAdded,
                         isExamInPerson: isExamInPerson,
                       )
                     ],
@@ -149,7 +230,7 @@ class _CreateExamState extends State<CreateExam> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             RoundedElevatedButton(
-                                _saveClass,
+                                _saveExam,
                                 "Save Exam",
                                 Constants.lightThemePrimaryColor,
                                 Colors.black,

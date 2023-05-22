@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../Utilities/constants.dart';
 import '../Extensions/extensions.dart';
+import '../Models/API/classmodel.dart';
 
 import '../../app.dart';
 
@@ -12,8 +13,8 @@ class ClassExamDetailsInfoCard extends ConsumerWidget {
   final String type;
   final String subjectName;
   final String subjectOrExamTheme;
-  final DateTime dateFrom;
-  final DateTime dateTo;
+  final String? dateFrom;
+  final String? dateTo;
   const ClassExamDetailsInfoCard(this.mainGradientColor, this.type,
       this.subjectName, this.subjectOrExamTheme, this.dateFrom, this.dateTo,
       {super.key});
@@ -102,7 +103,8 @@ class ClassExamDetailsInfoCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      dateFrom.getFormattedDate(dateFrom),
+                      "".getFormattedDateClass(dateFrom ?? ""),
+                      //dateFrom.getFormattedDate(dateFrom),
                       style: theme == ThemeMode.light
                           ? Constants.lightThemeDetailsDateStyle
                           : Constants.darkThemeDetailsDateStyle,
@@ -115,7 +117,7 @@ class ClassExamDetailsInfoCard extends ConsumerWidget {
                           : Colors.white.withOpacity(0.2),
                     ),
                     Text(
-                      dateFrom.getFormattedHoursFromDate(dateTo),
+                      "".getFormattedTimeClass(dateTo ?? "", context),
                       style: theme == ThemeMode.light
                           ? Constants.lightThemeDetailsDateStyle
                           : Constants.darkThemeDetailsDateStyle,

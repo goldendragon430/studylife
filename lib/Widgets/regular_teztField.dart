@@ -112,8 +112,9 @@ class _RegularTextFieldState extends State<RegularTextField> {
             : Constants.roboto15LightThemeTextStyle,
         controller: _editingController,
         onEditingComplete: () => submitForm(),
-        // onSubmitted: (value) => submitForm(),
-        //onChanged: (value) => submitForm(),
+        onSubmitted: (value) => submitForm(),
+        onChanged: (value) => submitForm(),
+      
       ),
     );
   }

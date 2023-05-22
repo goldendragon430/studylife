@@ -13,7 +13,11 @@ import '../datetime_selection_textfield.dart';
 
 class SelectDates extends StatefulWidget {
   final Function dateSelected;
-  const SelectDates({super.key, required this.dateSelected});
+  final bool shouldDisableEndDate;
+  const SelectDates(
+      {super.key,
+      required this.dateSelected,
+      required this.shouldDisableEndDate});
 
   @override
   State<SelectDates> createState() => _SelectDatesState();
@@ -41,7 +45,10 @@ class _SelectDatesState extends State<SelectDates> {
   }
 
   void _tappedOnDateTo(ThemeMode theme, bool isDateFrom) {
-    _showDatePicker(theme, isDateFrom);
+    // if (!widget.shouldDisableEndDate) {
+    //   print("ADSDASADSA ${widget.shouldDisableEndDate}");
+    //   _showDatePicker(theme, isDateFrom);
+    // }
   }
 
   void _showiOSDateSelectionDialog(Widget child) {
@@ -62,7 +69,9 @@ class _SelectDatesState extends State<SelectDates> {
   }
 
   void _showAndroidDateSelectionDialog(ThemeMode theme, bool isDateFrom) {
-    _showAndroidDatePicker(context, theme == ThemeMode.light, isDateFrom);
+    if (!widget.shouldDisableEndDate && isDateFrom) {
+      _showAndroidDatePicker(context, theme == ThemeMode.light, isDateFrom);
+    }
   }
 
   Future<void> _showAndroidDatePicker(
@@ -107,29 +116,35 @@ class _SelectDatesState extends State<SelectDates> {
                 DateFormat('EEE, d MMM, yyyy').format(picked)
             : dateToController.text =
                 DateFormat('EEE, d MMM, yyyy').format(picked);
+        widget.dateSelected(picked, isDateFrom);
       });
     }
   }
 
   void _showDatePicker(ThemeMode theme, bool isDateFrom) {
-    Platform.isAndroid
-        ? _showAndroidDateSelectionDialog
-        : _showiOSDateSelectionDialog(CupertinoDatePicker(
+    if (!widget.shouldDisableEndDate ||
+        widget.shouldDisableEndDate && isDateFrom) {
+      Platform.isAndroid
+          ? _showAndroidDateSelectionDialog
+          : _showiOSDateSelectionDialog(CupertinoDatePicker(
               initialDateTime: DateTime.now(),
               mode: CupertinoDatePickerMode.date,
               use24hFormat: true,
               onDateTimeChanged: (DateTime newDate) {
                 setState(() {
                   if (isDateFrom) {
+                    widget.dateSelected(newDate, true);
                     dateFromController.text =
                         DateFormat('EEE, d MMM, yyyy').format(newDate);
                   } else {
+                    widget.dateSelected(newDate, false);
                     dateToController.text =
                         DateFormat('EEE, d MMM, yyyy').format(newDate);
                   }
                 });
               },
             ));
+    }
   }
 
   @override
@@ -157,7 +172,7 @@ class _SelectDatesState extends State<SelectDates> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Start Time*',
+                        'Start Date*',
                         style: theme == ThemeMode.light
                             ? Constants.lightThemeSubtitleTextStyle
                             : Constants.darkThemeSubtitleTextStyle,
@@ -200,7 +215,7 @@ class _SelectDatesState extends State<SelectDates> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'End Time',
+                        'End Date',
                         style: theme == ThemeMode.light
                             ? Constants.lightThemeSubtitleTextStyle
                             : Constants.darkThemeSubtitleTextStyle,
@@ -211,10 +226,11 @@ class _SelectDatesState extends State<SelectDates> {
                       ),
                       DateTimeSelectionTextField(
                         dateToController.text,
-                         Platform.isAndroid
+                        Platform.isAndroid
                             ? _showAndroidDateSelectionDialog
                             : _showDatePicker,
-                        textController: dateToController, isDateFrom: false,
+                        textController: dateToController,
+                        isDateFrom: false,
                       )
                     ],
                   ),

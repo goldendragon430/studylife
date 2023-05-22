@@ -4,12 +4,13 @@ import '../../Utilities/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../regular_teztField.dart';
 import '../../app.dart';
+import '../ClassWidgets/class_text_imputs.dart';
 
 class ExamTextImputs extends StatefulWidget {
-  final Function subjectSelected;
+  final Function textInputAdded;
   final bool isExamInPerson;
   const ExamTextImputs(
-      {super.key, required this.subjectSelected, required this.isExamInPerson});
+      {super.key, required this.textInputAdded, required this.isExamInPerson});
 
   @override
   State<ExamTextImputs> createState() => _ExamTextImputsState();
@@ -23,7 +24,9 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
 
   int selectedTabIndex = 0;
 
-  void _selectTab(int index) {}
+   void _submitForm(String text, TextFieldType type) {
+         widget.textInputAdded(text, type);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +52,8 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
               height: 6,
             ),
             RegularTextField("Module Name", (value) {
-              FocusScope.of(context).unfocus();
+               _submitForm(moduleNameController.text, TextFieldType.moduleName);
+             // FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, moduleNameController,
                 theme == ThemeMode.dark, autofocus: false,),
             Container(
@@ -78,7 +82,8 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
                           height: 6,
                         ),
                         RegularTextField("Seat #", (value) {
-                          FocusScope.of(context).unfocus();
+                         // FocusScope.of(context).unfocus();
+                         _submitForm(seatNameController.text, TextFieldType.seatName);
                         }, TextInputType.emailAddress, seatNameController,
                             theme == ThemeMode.dark, autofocus: false,),
                       ],
@@ -102,7 +107,8 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
                           height: 6,
                         ),
                         RegularTextField("Room", (value) {
-                          FocusScope.of(context).unfocus();
+                         // FocusScope.of(context).unfocus();
+                        _submitForm(roomNameController.text, TextFieldType.roomName);
                         }, TextInputType.emailAddress, roomNameController,
                             theme == ThemeMode.dark, autofocus: false,),
                       ],
@@ -123,7 +129,8 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
                 height: 6,
               ),
               RegularTextField("Online URL", (value) {
-                FocusScope.of(context).unfocus();
+               // FocusScope.of(context).unfocus();
+              _submitForm(onlineUrlController.text, TextFieldType.onlineURL);
               }, TextInputType.emailAddress, onlineUrlController,
                   theme == ThemeMode.dark, autofocus: false,),
               Container(

@@ -4,7 +4,8 @@ import '../Utilities/enumerations.dart';
 
 extension ValidationString on String {
   bool get isValidEmail {
-    final emailRegExp = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    final emailRegExp = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     return emailRegExp.hasMatch(this);
   }
 
@@ -301,6 +302,27 @@ extension ColorExtension on Color {
 
 extension StringExt on String {
   String get capitalized => toBeginningOfSentenceCase(this) ?? "";
+
+  String getFormattedDateClass(String? date) {
+    DateTime? createdAtDate = DateTime.tryParse(date ?? "");
+
+    if (createdAtDate != null) {
+      String formattedDate = DateFormat('EEE, dd MMMM').format(createdAtDate);
+      return formattedDate;
+    } else {
+      return "";
+    }
+  }
+
+  String getFormattedTimeClass(String date, BuildContext context) {
+    TimeOfDay startTime = TimeOfDay(
+        hour: int.parse(date.split(":")[0]),
+        minute: int.parse(date.split(":")[1]));
+    final localizations = MaterialLocalizations.of(context);
+    final formattedTimeOfDay =
+        localizations.formatTimeOfDay(startTime, alwaysUse24HourFormat: true);
+    return formattedTimeOfDay;
+  }
 }
 
 extension ViewNameExt on CalendarView {

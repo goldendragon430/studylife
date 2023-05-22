@@ -21,7 +21,6 @@ class TagCard extends StatelessWidget {
       required this.isAddNewCard});
 
   void _cardTapped() {
-    print("fdsfsfsfsf");
     cardselected(cardIndex);
   }
 

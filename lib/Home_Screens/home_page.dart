@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:my_study_life_flutter/Models/API/subject.dart';
 import 'package:my_study_life_flutter/Widgets/ClassWidgets/class_widget.dart';
 import 'dart:convert';
 import 'dart:math' as math;
@@ -21,13 +19,12 @@ import './exam_details_screen.dart';
 
 import '../Models/API/result.dart';
 import '../Widgets/custom_snack_bar.dart';
-import '../Services/navigation_service.dart';
 import '../Networking/sync_controller.dart';
 import '../Models/Services/storage_service.dart';
-import '../Models/Services/storage_item.dart';
 import '../Models/API/classmodel.dart';
 import '../Models/API/exam.dart';
 import '../Models/API/task.dart';
+import '../Models/user.model.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
@@ -76,7 +73,7 @@ class _HomePageState extends State<HomePage> {
   // final List<ClassStatic> _classes = ClassStatic.classes;
   //final List<ExamStatic> _exams = ExamStatic.exams;
   final StorageService _storageService = StorageService();
-
+  String userName = "User";
   List<ClassModel> _classes = [];
   List<Exam> _exams = [];
   List<Task> _tasks = [];
@@ -91,12 +88,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
+      _getUserName();
       syncData();
     });
   }
 
   void syncData() async {
-        LoadingDialog.show(context);
+    LoadingDialog.show(context);
 
     Result response = await _syncController.syncAll();
 
@@ -111,8 +109,6 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (response is SuccessState) {
-    
-
       // Get Classes from storage
       var classesData = await _storageService.readSecureData("user_classes");
 
@@ -133,22 +129,19 @@ class _HomePageState extends State<HomePage> {
           decodedDataClasses
               .map((x) => ClassModel.fromJson(x as Map<String, dynamic>)),
         );
-                _homeTabItemsDataSource[0].badgeNumber = _classes.length;
 
-       // classesCount = _classes.length;
+        _homeTabItemsDataSource[0].badgeNumber = _classes.length;
 
         _exams = List<Exam>.from(
           decodedDataExams.map((x) => Exam.fromJson(x as Map<String, dynamic>)),
         );
-        _homeTabItemsDataSource[1].badgeNumber = _exams.length;
-       // examsCount = _exams.length;
 
+        _homeTabItemsDataSource[1].badgeNumber = _exams.length;
         _tasks = List<Task>.from(
           decodedDataTasks.map((x) => Task.fromJson(x as Map<String, dynamic>)),
         );
-                        _homeTabItemsDataSource[2].badgeNumber = _tasks.length;
 
-       // tasksCount = _tasks.length;
+        _homeTabItemsDataSource[2].badgeNumber = _tasks.length;
       });
     }
   }
@@ -170,6 +163,18 @@ class _HomePageState extends State<HomePage> {
     return greeting;
   }
 
+  void _getUserName() async {
+    var userString = await _storageService.readSecureData("activeUser");
+    if (userString != null && userString.isNotEmpty) {
+      Map<String, dynamic> userMap = jsonDecode(userString);
+
+      var user = UserModel.fromJson(userMap);
+      setState(() {
+        userName = user.firstName;
+      });
+    }
+  }
+
   void _selectTab(int index) {
     setState(() {
       selectedTabIndex = index;
@@ -178,7 +183,6 @@ class _HomePageState extends State<HomePage> {
       }
 
       _homeTabItemsDataSource[index].selected = true;
-      print("CARD SELECTED $index");
     });
   }
 
@@ -192,7 +196,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const ClassDetailsScreen(),
+            builder: (context) => ClassDetailsScreen(_classes[index]),
             fullscreenDialog: true));
   }
 
@@ -200,7 +204,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const ExamDetailsScreen(),
+            builder: (context) => ExamDetailsScreen(examItem: _exams[index]),
             fullscreenDialog: true));
   }
 
@@ -250,6 +254,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
+      final sync = ref.watch(syncControllerProvider);
 
       return ScaffoldMessenger(
         child: Scaffold(
@@ -276,96 +281,105 @@ class _HomePageState extends State<HomePage> {
             body: SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: CustomScrollView(
-                //controller: widget.controller,
-                slivers: <Widget>[
-                  SliverFixedExtentList(
-                    itemExtent: 123.0,
-                    delegate: SliverChildListDelegate(
-                      [
-                        Container(
-                          height: 103,
-                          child: Stack(
-                            children: [
-                              Container(
-                                // Greeting message
-                                height: 19,
-                                alignment: Alignment.topCenter,
-                                margin: const EdgeInsets.only(top: 5),
-                                child: Text(
-                                  _getGreetingMessage(),
-                                  style: theme == ThemeMode.light
-                                      ? Constants.lightThemeGreetingMessageStyle
-                                      : Constants.darkThemeGreetingMessageStyle,
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  return syncData();
+                },
+                edgeOffset: 100,
+                child: CustomScrollView(
+                  //controller: widget.controller,
+                  slivers: <Widget>[
+                    SliverFixedExtentList(
+                      itemExtent: 123.0,
+                      delegate: SliverChildListDelegate(
+                        [
+                          Container(
+                            height: 103,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  // Greeting message
+                                  height: 19,
+                                  alignment: Alignment.topCenter,
+                                  margin: const EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    _getGreetingMessage(),
+                                    style: theme == ThemeMode.light
+                                        ? Constants
+                                            .lightThemeGreetingMessageStyle
+                                        : Constants
+                                            .darkThemeGreetingMessageStyle,
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                // User Name
-                                height: 42,
-                                alignment: Alignment.topCenter,
-                                margin: const EdgeInsets.only(top: 27),
-                                child: Text(
-                                  'UserName',
-                                  style: theme == ThemeMode.light
-                                      ? Constants.lightThemeTitleTextStyle
-                                      : Constants.darkThemeTitleTextStyle,
+                                Container(
+                                  // User Name
+                                  height: 42,
+                                  alignment: Alignment.topCenter,
+                                  margin: const EdgeInsets.only(top: 27),
+                                  child: Text(
+                                    userName,
+                                    style: theme == ThemeMode.light
+                                        ? Constants.lightThemeTitleTextStyle
+                                        : Constants.darkThemeTitleTextStyle,
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                // Today's date
-                                height: 42,
-                                alignment: Alignment.topCenter,
-                                margin: const EdgeInsets.only(top: 72),
-                                child: Text(
-                                  now.getFormattedDate(now),
-                                  style: theme == ThemeMode.light
-                                      ? Constants.lightThemeTodayDateTextStyle
-                                      : Constants.darkThemeTodayDateTextStyle,
+                                Container(
+                                  // Today's date
+                                  height: 42,
+                                  alignment: Alignment.topCenter,
+                                  margin: const EdgeInsets.only(top: 72),
+                                  child: Text(
+                                    now.getFormattedDate(now),
+                                    style: theme == ThemeMode.light
+                                        ? Constants.lightThemeTodayDateTextStyle
+                                        : Constants.darkThemeTodayDateTextStyle,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  makeHeader(theme),
-                  if (selectedTabIndex == 0) ...[
-                    SliverFixedExtentList(
-                        itemExtent: 130,
-                        delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return ClassWidget(
-                              classItem: _classes[index],
-                              cardIndex: index,
-                              upNext: true,
-                              cardselected: _selectedCard);
-                        }, childCount: _classes.length)),
+                    makeHeader(theme),
+                    if (selectedTabIndex == 0) ...[
+                      SliverFixedExtentList(
+                          itemExtent: 130,
+                          delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                            return ClassWidget(
+                                classItem: _classes[index],
+                                cardIndex: index,
+                                upNext: true,
+                                cardselected: _selectedCard);
+                          }, childCount: _classes.length)),
+                    ],
+                    if (selectedTabIndex == 1) ...[
+                      SliverFixedExtentList(
+                          itemExtent: 145,
+                          delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                            return ExamWidget(
+                                examItem: _exams[index],
+                                cardIndex: index,
+                                upNext: true,
+                                cardselected: _selectedExamCard);
+                          }, childCount: _exams.length)),
+                    ],
+                    if (selectedTabIndex == 2) ...[
+                      SliverFixedExtentList(
+                          itemExtent: 145,
+                          delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                            return QuotesWidget(
+                                quote:
+                                    "Wake up determined, Go to bed Satisfied",
+                                cardIndex: index,
+                                cardselected: _selectedCard);
+                          }, childCount: 1)),
+                    ],
                   ],
-                  if (selectedTabIndex == 1) ...[
-                    SliverFixedExtentList(
-                        itemExtent: 145,
-                        delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return ExamWidget(
-                              examItem: _exams[index],
-                              cardIndex: index,
-                              upNext: true,
-                              cardselected: _selectedExamCard);
-                        }, childCount: _exams.length)),
-                  ],
-                  if (selectedTabIndex == 2) ...[
-                    SliverFixedExtentList(
-                        itemExtent: 145,
-                        delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return QuotesWidget(
-                              quote: "Wake up determined, Go to bed Satisfied",
-                              cardIndex: index,
-                              cardselected: _selectedCard);
-                        }, childCount: 1)),
-                  ],
-                ],
+                ),
               ),
               // child: Stack(
               //   children: [

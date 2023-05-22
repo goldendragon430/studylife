@@ -42,7 +42,7 @@ class ClassTagItem {
 
   static List<ClassTagItem> repetitionModes = [
     ClassTagItem(
-        title: "Once", selected: false, isAddNewCard: false, cardIndex: 0),
+        title: "Once", selected: true, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
         title: "Repeating", selected: false, isAddNewCard: false, cardIndex: 1),
     ClassTagItem(

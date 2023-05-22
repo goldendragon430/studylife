@@ -8,7 +8,7 @@ import '../../app.dart';
 import '../../Models/subjects_datasource.dart';
 
 enum TextFieldType {
-  moduleName, roomName, buildingName, teacherName, onlineURL, techerEmail
+  moduleName, roomName, buildingName, teacherName, onlineURL, techerEmail, seatName, 
 }
 
 class ClassTextImputs extends StatefulWidget {
@@ -30,8 +30,6 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
   final teacherNameController = TextEditingController();
   final onlineUrlController = TextEditingController();
   final teachersEmailController = TextEditingController();
-
-  final List<ClassTagItem> _subjects = ClassTagItem.subjectModes;
 
   int selectedTabIndex = 0;
 
@@ -64,7 +62,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
             ),
             RegularTextField("Module Name", (value) {
               _submitForm(moduleNameController.text, TextFieldType.moduleName);
-              FocusScope.of(context).nextFocus();
+             // FocusScope.of(context).nextFocus();
             }, TextInputType.emailAddress, moduleNameController,
                 theme == ThemeMode.dark, autofocus: false,),
             Container(
@@ -95,7 +93,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
                         RegularTextField("Room", (value) {
                         _submitForm(roomNameController.text, TextFieldType.roomName);
 
-                          FocusScope.of(context).nextFocus();
+                         // FocusScope.of(context).nextFocus();
                         }, TextInputType.emailAddress, roomNameController,
                             theme == ThemeMode.dark, autofocus: false,),
                       ],
@@ -121,7 +119,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
                         RegularTextField("Building", (value) {
                         _submitForm(buildingNameController.text, TextFieldType.buildingName);
 
-                          FocusScope.of(context).nextFocus();
+                         // FocusScope.of(context).nextFocus();
                         }, TextInputType.emailAddress, buildingNameController,
                             theme == ThemeMode.dark, autofocus: false,),
                       ],
@@ -144,7 +142,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
               ),
               RegularTextField("Online URL", (value) {
                 _submitForm(onlineUrlController.text, TextFieldType.onlineURL);
-                FocusScope.of(context).nextFocus();
+                // FocusScope.of(context).nextFocus();
               }, TextInputType.emailAddress, onlineUrlController,
                   theme == ThemeMode.dark, autofocus: false,),
               Container(
@@ -162,7 +160,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
               height: 6,
             ),
             RegularTextField("Teacher Name", (value) {
-              FocusScope.of(context).nextFocus();
+              // FocusScope.of(context).nextFocus();
              _submitForm(teacherNameController.text, TextFieldType.teacherName);
             }, TextInputType.name, teacherNameController,
                 theme == ThemeMode.dark, autofocus: false,),
@@ -183,7 +181,7 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
             Container(
               child: RegularTextField("Teacher Email", (value) {
                 _submitForm(teachersEmailController.text, TextFieldType.techerEmail);
-                FocusScope.of(context).unfocus();
+                // FocusScope.of(context).unfocus();
               }, TextInputType.emailAddress, teachersEmailController,
                   theme == ThemeMode.dark, autofocus: false,),
             ),

@@ -14,6 +14,7 @@ import '.././Models/class_datasource.dart';
 import '../Home_Screens/class_details_screen.dart';
 import '../Widgets/ClassWidgets/class_widget.dart';
 import '../Widgets/custom_centered_dialog.dart';
+import '../Models/API/classmodel.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -49,7 +50,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const ClassDetailsScreen(),
+            builder: (context) => ClassDetailsScreen(ClassModel()),
             fullscreenDialog: true));
   }
 

@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import './subject.dart';
+import './task.dart';
 
 class ClassModel {
   int? id;
@@ -20,11 +21,13 @@ class ClassModel {
   String? createdAt;
   String? updatedAt;
   Subject? subject;
+  List<Task>? tasks;
+  bool? upNext;
 
   // Calculated
 
-  String getFormattedDate() {
-    DateTime? createdAtDate = DateTime.tryParse(createdAt ?? "");
+  String getFormattedDate(String? date) {
+    DateTime? createdAtDate = DateTime.tryParse(date ?? "");
 
     if (createdAtDate != null) {
       String formattedDate =
@@ -40,22 +43,37 @@ class ClassModel {
       this.userId,
       this.module,
       this.mode,
-      this.room, 
-      this.building,  
-      this.onlineUrl,  
-      this.teacher,  
-      this.teachersEmail,  
-      this.occurs,  
-      this.days,  
-      this.startDate,  
-      this.endDate,  
-      this.startTime,  
+      this.room,
+      this.building,
+      this.onlineUrl,
+      this.teacher,
+      this.teachersEmail,
+      this.occurs,
+      this.days,
+      this.startDate,
+      this.endDate,
+      this.startTime,
       this.endTime,
       this.subject,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.tasks,
+      this.upNext});
 
   factory ClassModel.fromJson(Map<String, dynamic> json) {
+    List<String> dayStrings = [];
+
+    if (json['days'] != null) {
+      List<dynamic> rawDays = json['days'];
+      dayStrings = rawDays.map(
+        (item) {
+          return item as String;
+        },
+      ).toList();
+    }
+
+    final tasksList = json['tasks'] as List;
+    List<Task> tasksFinal = tasksList.map((i) => Task.fromJson(i)).toList();
 
     return ClassModel(
         id: json['id'],
@@ -68,14 +86,17 @@ class ClassModel {
         teacher: json['teacher'],
         teachersEmail: json['teachersEmail'],
         occurs: json['occurs'],
-        subject: json['subject'] != null ? Subject.fromJson(json['subject']) : null,
-       // days: json['days'],
+        subject:
+            json['subject'] != null ? Subject.fromJson(json['subject']) : null,
+        days: dayStrings,
         startDate: json['startDate'],
         endDate: json['endDate'],
         startTime: json['startTime'],
         endTime: json['endTime'],
         createdAt: json['created_at'],
-        updatedAt: json['updated_at']);
+        updatedAt: json['updated_at'],
+        tasks: tasksFinal,
+        upNext: json['upNext']);
   }
 
   Map<String, dynamic> toJson() {
@@ -87,6 +108,7 @@ class ClassModel {
     data['room'] = room;
     data['building'] = building;
     data['onlineUrl'] = onlineUrl;
+    data['days'] = days;
     data['teacher'] = teacher;
     data['teachersEmail'] = teachersEmail;
     data['occurs'] = occurs;
@@ -96,9 +118,13 @@ class ClassModel {
     data['endTime'] = endTime;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
-     if (subject != null) {
+     if (tasks != null) {
+        data['tasks'] = tasks;
+    }
+    if (subject != null) {
       data['subject'] = subject!.toJson();
     }
+    data['upNext'] = upNext;
     return data;
   }
 }

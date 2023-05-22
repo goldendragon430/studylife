@@ -3,6 +3,7 @@ import '../Models/Services/storage_service.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Services
 import '../Networking/subject_service.dart';
@@ -30,7 +31,7 @@ class SyncController {
     // ErrorState error = ErrorState("Opps");
     Result finalResult = Result.loading("Loading");
     await Future.wait(
-        [_getSubjects(), _getHomeData()]).then((v) {
+        [_getSubjects(), _getHomeData(), _getExams()]).then((v) {
 
       finalResult = Result.success("Success");
 
@@ -69,9 +70,9 @@ class SyncController {
       _storageService
           .writeSecureData(StorageItem("user_tasks", jsonEncode(exams)));
 
-      // for (var subject in subjects) {
-      //   print("SUBJECtS ${subject.subjectName}");
-      // }
+      for (var classItem in classes) {
+        print("classes ${classItem.building}");
+      }
     } catch (error) {
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);
@@ -133,7 +134,7 @@ class SyncController {
           .writeSecureData(StorageItem("user_exams", jsonEncode(exams)));
 
       for (var examItem in exams) {
-        print("EXAMS ${examItem.subject?.subjectName}");
+        print("EXAMS ${examItem.module}");
       }
     } catch (error) {
       if (error is DioError) {
@@ -165,3 +166,7 @@ class SyncController {
     }
   }
 }
+
+final syncControllerProvider = StateProvider<SyncController>((ref) => SyncController());
+
+

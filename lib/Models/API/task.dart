@@ -40,6 +40,17 @@ class Task {
       this.exam});
 
   Task.fromJson(Map<String, dynamic> json) {
+    List<String> dayStrings = [];
+
+    if (json['days'] != null) {
+      List<dynamic> rawDays = json['days'];
+      dayStrings = rawDays.map(
+        (item) {
+          return item as String;
+        },
+      ).toList();
+    }
+
     id = json['id'];
     userId = json['userId'];
     subjectId = json['subjectId'];
@@ -50,7 +61,7 @@ class Task {
     progress = json['progress'];
     category = json['category'];
     occurs = json['occurs'];
-    days = json['days'].cast<String>();
+    days = dayStrings;
     dueDate = json['dueDate'];
     completedAt = json['completedAt'];
     createdAt = json['createdAt'];

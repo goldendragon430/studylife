@@ -15,6 +15,7 @@ import '../Widgets/expandable_listview.dart';
 import '../Activities_Screens/tasks_current.dart';
 import '../Activities_Screens/tasks_past.dart';
 import '../Activities_Screens/tasks_overdue.dart';
+import '../Models/API/exam.dart';
 
 class ActivitiesTasksScreen extends StatefulWidget {
   const ActivitiesTasksScreen({super.key});
@@ -33,7 +34,7 @@ class _ActivitiesTasksScreenState extends State<ActivitiesTasksScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const ExamDetailsScreen(),
+            builder: (context) => ExamDetailsScreen(examItem: Exam(),),
             fullscreenDialog: true));
   }
 

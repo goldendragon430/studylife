@@ -44,7 +44,7 @@ class _CreateHolidayState extends State<CreateHoliday> {
                     HolidayTextImputs(formsFilled: _textInputAdded, hintText: 'Holoiday Name', labelTitle: 'Name*',)
                   ],
                   if (index == 1) ...[
-                    SelectDates(dateSelected: _selectedDates),
+                    SelectDates(dateSelected: _selectedDates, shouldDisableEndDate: false,),
                   ],
                   if (index == 2) ...[
                     AddPhotoWidget()
