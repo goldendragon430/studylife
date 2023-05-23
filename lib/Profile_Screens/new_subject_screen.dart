@@ -93,7 +93,6 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
 
     setState(() {
       _path = file?.path;
-      print("ASDADADADADADADAD $_path");
     });
   }
 

@@ -50,11 +50,11 @@ class TasksOverdueList extends ConsumerWidget {
                     ),
                   ),
                 ],
-                TaskWidget(
-                    taskItem: _tasks[index],
-                    cardIndex: index,
-                    upNext: true,
-                    cardselected: _selectedCard),
+                // TaskWidget(
+                //     taskItem: _tasks[index],
+                //     cardIndex: index,
+                //     upNext: true,
+                //     cardselected: _selectedCard),
               ],
             );
           }),

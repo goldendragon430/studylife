@@ -16,6 +16,9 @@ import '../Widgets/quotes_widget.dart';
 import './class_details_screen.dart';
 import '../login_state.dart';
 import './exam_details_screen.dart';
+import '../Widgets/TaskWidgets/task_widget.dart';
+import '../Home_Screens/exam_details_screen.dart';
+import '../Activities_Screens/task_detail_screen.dart';
 
 import '../Models/API/result.dart';
 import '../Widgets/custom_snack_bar.dart';
@@ -120,7 +123,7 @@ class _HomePageState extends State<HomePage> {
       List<dynamic> decodedDataExams = jsonDecode(examsData ?? "");
 
       // Get Tasks from storage
-      var tasksData = await _storageService.readSecureData("user_exams");
+      var tasksData = await _storageService.readSecureData("user_tasks");
 
       List<dynamic> decodedDataTasks = jsonDecode(tasksData ?? "");
 
@@ -137,6 +140,7 @@ class _HomePageState extends State<HomePage> {
         );
 
         _homeTabItemsDataSource[1].badgeNumber = _exams.length;
+
         _tasks = List<Task>.from(
           decodedDataTasks.map((x) => Task.fromJson(x as Map<String, dynamic>)),
         );
@@ -205,6 +209,14 @@ class _HomePageState extends State<HomePage> {
         context,
         MaterialPageRoute(
             builder: (context) => ExamDetailsScreen(examItem: _exams[index]),
+            fullscreenDialog: true));
+  }
+
+  void _selectedTaskCard(int index) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TaskDetailsScreen(_tasks[index]),
             fullscreenDialog: true));
   }
 
@@ -371,12 +383,17 @@ class _HomePageState extends State<HomePage> {
                           itemExtent: 145,
                           delegate: SliverChildBuilderDelegate(
                               (BuildContext context, int index) {
-                            return QuotesWidget(
-                                quote:
-                                    "Wake up determined, Go to bed Satisfied",
+                            return TaskWidget(
+                                taskItem: _tasks[index],
                                 cardIndex: index,
-                                cardselected: _selectedCard);
-                          }, childCount: 1)),
+                                upNext: false,
+                                cardselected: _selectedTaskCard);
+                            // return QuotesWidget(
+                            //     quote:
+                            //         "Wake up determined, Go to bed Satisfied",
+                            //     cardIndex: index,
+                            //     cardselected: _selectedCard);
+                          }, childCount: _tasks.length)),
                     ],
                   ],
                 ),

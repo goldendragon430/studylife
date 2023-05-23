@@ -155,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Your email",
                                       (value) {
-                                        FocusScope.of(context).nextFocus();
+                                       // FocusScope.of(context).nextFocus();
                                       },
                                       TextInputType.emailAddress,
                                       emailController,
@@ -165,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "New Password",
                                       (value) {
-                                        FocusScope.of(context).nextFocus();
+                                      //  FocusScope.of(context).nextFocus();
                                       },
                                       TextInputType.visiblePassword,
                                       passwordController,
@@ -176,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Confirm Password",
                                       (value) {
-                                        FocusScope.of(context).unfocus();
+                                       // FocusScope.of(context).unfocus();
                                       },
                                       TextInputType.visiblePassword,
                                       confirmController,
@@ -247,7 +247,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Your email",
                                       (value) {
-                                        FocusScope.of(context).nextFocus();
+                                       // FocusScope.of(context).nextFocus();
                                       },
                                       TextInputType.emailAddress,
                                       emailController,
@@ -257,7 +257,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "New Password",
                                       (value) {
-                                        FocusScope.of(context).nextFocus();
+                                       // FocusScope.of(context).nextFocus();
                                       },
                                       TextInputType.visiblePassword,
                                       passwordController,
@@ -268,7 +268,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Confirm Password",
                                       (value) {
-                                        FocusScope.of(context).unfocus();
+                                      //  FocusScope.of(context).unfocus();
                                       },
                                       TextInputType.visiblePassword,
                                       confirmController,

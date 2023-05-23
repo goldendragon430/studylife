@@ -1,19 +1,85 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app.dart';
 import '../../Utilities/constants.dart';
 import './rounded_elevated_button.dart';
+import '../../Widgets/custom_snack_bar.dart';
 
 class AddPhotoWidget extends StatefulWidget {
-  const AddPhotoWidget({super.key});
+  final Function photoAdded;
+  const AddPhotoWidget({super.key, required this.photoAdded});
 
   @override
   State<AddPhotoWidget> createState() => _AddPhotoWidgetState();
 }
 
 class _AddPhotoWidgetState extends State<AddPhotoWidget> {
-  void _uploadPhoto() {}
+  final ImagePicker _picker = ImagePicker();
+  String? _path = null;
+
+  void _uploadPhoto(context) {
+    _showOptions(context);
+  }
+
+  void _showOptions(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return SizedBox(
+              height: 150,
+              child: Column(children: <Widget>[
+                ListTile(
+                    onTap: () {
+                      Navigator.pop(context);
+                      _getFromCamera();
+                    },
+                    leading: const Icon(Icons.photo_camera),
+                    title: const Text("Take a picture from camera")),
+                ListTile(
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showPhotoLibrary();
+                    },
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text("Choose from photo library"))
+              ]));
+        });
+  }
+
+  void _showPhotoLibrary() async {
+    final file = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _path = file?.path;
+      widget.photoAdded(_path);
+    });
+  }
+
+  _getFromCamera() async {
+    final file = await _picker.pickImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+
+    setState(() {
+      _path = file?.path;
+      widget.photoAdded(_path);
+      print(file!.path);
+    });
+    // if (file != null) {
+    //     File imageFile = File(pickedFile.path);
+    // }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _path = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,35 +108,96 @@ class _AddPhotoWidgetState extends State<AddPhotoWidget> {
                   height: 14,
                 ),
                 Container(
-                  height: 100,
-                  width: 100,
-                  child: MaterialButton(
-                    padding: EdgeInsets.all(2.0),
-                    splashColor: Colors.transparent,
-                    elevation: 0.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: theme == ThemeMode.light
-                            ? const DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/AddPhotoBackgroundImage.png'),
-                                fit: BoxFit.cover)
-                            : const DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/AddPhotoBackgroundImageDarkTheme.png'),
-                                fit: BoxFit.cover),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: (_path == null)
+                              ? theme == ThemeMode.light
+                                  ? Image.asset(
+                                      'assets/images/AddPhotoBackgroundImage.png',
+                                      fit: BoxFit.cover)
+                                  : Image.asset(
+                                      'assets/images/AddPhotoBackgroundImageDarkTheme.png',
+                                      fit: BoxFit.cover)
+                              : Image.file(
+                                  File(_path!),
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
                       ),
-                      // child: Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: Text("SIGN OUT"),
-                      // ),
-                    ),
-                    // ),
-                    onPressed: () {
-                      print('Tapped');
-                    },
+                      if (_path != null) ...[
+                        Positioned(
+                          right: -30,
+                          top: -10,
+                          child: MaterialButton(
+                            splashColor: Colors.transparent,
+                            elevation: 0.0,
+                            // ),
+                            onPressed: () => _removeImage(),
+                            child: Container(
+                              height: 28,
+                              width: 28,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/CloseButtonX.png'),
+                                    fit: BoxFit.fill),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
+                // Container(
+                //   height: 100,
+                //   width: 100,
+                //   decoration: BoxDecoration(
+                //       image: (_path == null)
+                //           ? theme == ThemeMode.light
+                //               ? const DecorationImage(
+                //                   image: AssetImage(
+                //                       'assets/images/AddPhotoBackgroundImage.png'),
+                //                   fit: BoxFit.cover)
+                //               : const DecorationImage(
+                //                   image: AssetImage(
+                //                       'assets/images/AddPhotoBackgroundImageDarkTheme.png'),
+                //                   fit: BoxFit.cover)
+                //           : DecorationImage(
+                //               image: Image.file(File(_path!)).image,
+                //               fit: BoxFit.cover)),
+                //   // child: MaterialButton(
+                //   //   padding: EdgeInsets.all(2.0),
+                //   //   splashColor: Colors.transparent,
+                //   //   elevation: 0.0,
+                //   //   child: Container(
+                //   //     decoration: BoxDecoration(
+                //   //       image: theme == ThemeMode.light
+                //   //           ? const DecorationImage(
+                //   //               image: AssetImage(
+                //   //                   'assets/images/AddPhotoBackgroundImage.png'),
+                //   //               fit: BoxFit.cover)
+                //   //           : const DecorationImage(
+                //   //               image: AssetImage(
+                //   //                   'assets/images/AddPhotoBackgroundImageDarkTheme.png'),
+                //   //               fit: BoxFit.cover),
+                //   //     ),
+                //   //     // child: Padding(
+                //   //     //   padding: const EdgeInsets.all(8.0),
+                //   //     //   child: Text("SIGN OUT"),
+                //   //     // ),
+                //   //   ),
+                //   //   // ),
+                //   //   onPressed: () {
+                //   //     print('Tapped');
+                //   //   },
+                //   // ),
+                // ),
               ],
             ),
             Container(
@@ -98,8 +225,14 @@ class _AddPhotoWidgetState extends State<AddPhotoWidget> {
                 Container(
                   width: 144,
                   height: 44,
-                  child: RoundedElevatedButton(_uploadPhoto, "+ Upload Photo",
-                      theme == ThemeMode.light ? Constants.lightThemePrimaryColor : Constants.lightThemePrimaryColor, Colors.black, 34),
+                  child: RoundedElevatedButton(
+                      () => _showOptions(context),
+                      "+ Upload Photo",
+                      theme == ThemeMode.light
+                          ? Constants.lightThemePrimaryColor
+                          : Constants.lightThemePrimaryColor,
+                      Colors.black,
+                      34),
                 ),
               ],
             ),

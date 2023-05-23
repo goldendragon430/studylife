@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
 import './holiday_text_imputs.dart';
 import '../ClassWidgets/select_dates.dart';
 import '../add_photo_widget.dart';
+import '../../Models/API/holiday.dart';
+import '../../Widgets/custom_snack_bar.dart';
+import '.././rounded_elevated_button.dart';
 
 class CreateHoliday extends StatefulWidget {
-  const CreateHoliday({super.key});
+  final Function saveHoliday;
+  const CreateHoliday({super.key, required this.saveHoliday});
 
   @override
   State<CreateHoliday> createState() => _CreateHolidayState();
@@ -17,12 +23,31 @@ class CreateHoliday extends StatefulWidget {
 class _CreateHolidayState extends State<CreateHoliday> {
   final ScrollController scrollcontroller = ScrollController();
 
+  late Holiday newHoliday = Holiday();
+
   void _textInputAdded(String input) {
-    print("Selected subject: ${input}");
+    newHoliday.title = input;
   }
 
-  void _selectedDates(DateTime timtimeFromeTo, DateTime timeTo) {
-    //print("Selected repetitionMode: ${repetition.title}");
+  void _selectedDates(DateTime pickedDate, bool isDateFrom) {
+   String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+    if (isDateFrom) {
+      newHoliday.startDate = formattedDate;
+    } else {
+      newHoliday.endDate = formattedDate;
+    }
+  }
+
+  void _photoAdded(String path) {
+    newHoliday.imageUrl = path;
+  }
+
+   void _saveHoliday() {
+    widget.saveHoliday(newHoliday);
+  }
+
+  void _cancel() {
+     Navigator.pop(context);
   }
 
   @override
@@ -36,19 +61,62 @@ class _CreateHolidayState extends State<CreateHoliday> {
         child: ListView.builder(
             controller: scrollcontroller,
             padding: const EdgeInsets.only(top: 30),
-            itemCount: 3,
+            itemCount: 4,
             itemBuilder: (context, index) {
               return Column(
                 children: [
                   if (index == 0) ...[
-                    HolidayTextImputs(formsFilled: _textInputAdded, hintText: 'Holoiday Name', labelTitle: 'Name*',)
+                    HolidayTextImputs(
+                      formsFilled: _textInputAdded,
+                      hintText: 'Holoiday Name',
+                      labelTitle: 'Name*',
+                    )
                   ],
                   if (index == 1) ...[
-                    SelectDates(dateSelected: _selectedDates, shouldDisableEndDate: false,),
+                    SelectDates(
+                      dateSelected: _selectedDates,
+                      shouldDisableEndDate: false,
+                    ),
                   ],
                   if (index == 2) ...[
-                    AddPhotoWidget()
+                    AddPhotoWidget(
+                      photoAdded: _photoAdded,
+                    )
                   ],
+                   if (index == 3) ...[
+                          // Save/Cancel buttons
+                          Container(
+                            height: 68,
+                          ),
+                          Container(
+                            alignment: Alignment.topCenter,
+                            width: double.infinity,
+                            // margin: const EdgeInsets.only(top: 260),
+                            padding:
+                                const EdgeInsets.only(left: 106, right: 106),
+                            child: Column(
+                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                RoundedElevatedButton(
+                                    _saveHoliday,
+                                    "Save Holiday",
+                                    Constants.lightThemePrimaryColor,
+                                    Colors.black,
+                                    45),
+                                RoundedElevatedButton(
+                                    _cancel,
+                                    "Cancel",
+                                    Constants.blueButtonBackgroundColor,
+                                    Colors.white,
+                                    45)
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: 88,
+                          ),
+                        ],
                 ],
               );
             }),

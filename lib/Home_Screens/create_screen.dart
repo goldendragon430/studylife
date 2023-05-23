@@ -19,6 +19,8 @@ import '../Models/API/exam.dart';
 import '../../Networking/class_service.dart';
 import '../Home_Screens/home_page.dart';
 import '../../Networking/exam_service.dart';
+import '../Networking/holiday_Service.dart';
+import '../Models/API/holiday.dart';
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({super.key});
@@ -132,7 +134,6 @@ class _CreateScreenState extends State<CreateScreen>
     //     print(examItem.seat);
     //     print(examItem.duration);
 
-
     if (examItem.mode == "in-person") {
       if (examItem.subject == null ||
           examItem.mode == null ||
@@ -143,7 +144,6 @@ class _CreateScreenState extends State<CreateScreen>
           examItem.type == null ||
           examItem.seat == null ||
           examItem.duration == null) {
-
         CustomSnackBar.show(contextMain, CustomSnackBarType.error,
             "Please fill in all fields.", true);
         return;
@@ -167,6 +167,52 @@ class _CreateScreenState extends State<CreateScreen>
 
     try {
       var response = await ExamService().createExam(examItem);
+
+      if (!contextMain.mounted) return;
+
+      LoadingDialog.hide(context);
+      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+          response.data['message'], true);
+      Navigator.pop(context);
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
+      }
+    }
+  }
+
+  void _saveHoliday(Holiday holidayItem) async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+
+    // print(examItem.subject);
+    // print(examItem.mode);
+    // print(examItem.module);
+    // print(examItem.room);
+    // print(examItem.startTime);
+    // print(examItem.startDate);
+    //     print(examItem.type);
+    //     print(examItem.seat);
+    //     print(examItem.duration);
+
+    if (holidayItem.title == null ||
+        holidayItem.imageUrl == null ||
+        holidayItem.startDate == null ||
+        holidayItem.endDate == null) {
+      CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+          "Please fill in all fields.", true);
+      return;
+    }
+
+    LoadingDialog.show(context);
+
+    try {
+      var response = await HolidayService().createHoliday(holidayItem);
 
       if (!contextMain.mounted) return;
 
@@ -250,7 +296,7 @@ class _CreateScreenState extends State<CreateScreen>
                       )),
                       Tab(
                           child: Text(
-                        "Extra",
+                        "Xtra",
                         style: theme == ThemeMode.light
                             ? Constants.lightThemeTabBarTextStyle
                             : Constants.darkThemeTabBarTextStyle,
@@ -271,7 +317,7 @@ class _CreateScreenState extends State<CreateScreen>
                       saveExam: _saveExam,
                     ),
                     CreateTask(),
-                    CreateHoliday(),
+                    CreateHoliday(saveHoliday: _saveHoliday,),
                     CreateExtra(),
                   ],
                 ),

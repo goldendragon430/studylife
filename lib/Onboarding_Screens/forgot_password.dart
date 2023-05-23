@@ -153,7 +153,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     RegularTextField(
                                       "Your email",
                                       (value) {
-                                        FocusScope.of(context).unfocus();
+                                       // FocusScope.of(context).unfocus();
                                       },
                                       TextInputType.emailAddress,
                                       emailController,
@@ -253,7 +253,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     RegularTextField(
                                       "Your email",
                                       (value) {
-                                        FocusScope.of(context).unfocus();
+                                       // FocusScope.of(context).unfocus();
                                       },
                                       TextInputType.emailAddress,
                                       emailController,

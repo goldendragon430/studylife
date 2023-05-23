@@ -46,7 +46,8 @@ class _HolidayTextImputsState extends State<HolidayTextImputs> {
               height: 6,
             ),
             RegularTextField(widget.hintText, (value) {
-              FocusScope.of(context).unfocus();
+              widget.formsFilled(titleController.text);
+             // FocusScope.of(context).unfocus();
             }, TextInputType.emailAddress, titleController,
                 theme == ThemeMode.dark, autofocus: false,),
             Container(

@@ -215,7 +215,7 @@ class _SelectDatesState extends State<SelectDates> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'End Date',
+                        'End Date*',
                         style: theme == ThemeMode.light
                             ? Constants.lightThemeSubtitleTextStyle
                             : Constants.darkThemeSubtitleTextStyle,

@@ -133,7 +133,7 @@ class _CreateExtraState extends State<CreateExtra> {
                         timeSelected: _selectedTimes,
                       )
                     ],
-                    if (index == 5) ...[AddPhotoWidget()],
+                    if (index == 5) ...[AddPhotoWidget(photoAdded: () => {},)],
                     // if (index == 5) ...[
                     //   // Select Subject
                     //   SelectTaskRepeatOptions(

@@ -8,12 +8,13 @@ import '../../app.dart';
 import '../../Models/class_datasource.dart';
 import '../../Utilities/constants.dart';
 import '../../Models/task_datasource.dart';
+import '../../Models/API/task.dart';
 
 class TaskWidget extends ConsumerWidget {
   final int cardIndex;
   final bool upNext;
 
-  final TaskItem taskItem;
+  final Task taskItem;
   final Function cardselected;
 
   const TaskWidget(
@@ -40,7 +41,18 @@ class TaskWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    double percentageProgress = (taskItem.progress / 10) * 100;
+    double percentageProgress = (taskItem.progress ?? 0 / 10) * 100;
+    DateTime? dueDate = DateTime.tryParse(taskItem.dueDate ?? "");
+    bool duePassed = false;
+    int daysPassed = 0;
+    if (dueDate != null) {
+          print("PROGRESSS AAA ${taskItem.progress}");
+      var localDate = dueDate.toLocal();
+      if (localDate.isAfter(DateTime.now())) {
+        duePassed = true;
+        daysPassed = localDate.daysBetween(dueDate, DateTime.now());
+      }
+    }
 
     return Card(
       margin: const EdgeInsets.only(top: 6, bottom: 6, right: 20, left: 20),
@@ -63,21 +75,23 @@ class TaskWidget extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      taskItem.title,
+                      taskItem.details ?? "",
                       style: theme == ThemeMode.light
                           ? Constants.lightThemeUpNextBannerTextStyle
                           : Constants.darkThemeUpNextBannerTextStyle,
                     ),
                     Text(
-                      taskItem.subject,
+                      taskItem.subject?.subjectName ?? "",
                       style: TextStyle(
                           fontSize: 20,
                           fontFamily: 'BebasNeue',
                           fontWeight: FontWeight.normal,
-                          color: taskItem.subjectColor),
+                          color: taskItem.subject?.colorHex != null
+                              ? HexColor.fromHex(taskItem.subject!.colorHex!)
+                              : Colors.red),
                     ),
                     Text(
-                      taskItem.type,
+                      taskItem.type ?? "",
                       style: theme == ThemeMode.light
                           ? Constants.lightThemeTaskSubjectStyle
                           : Constants.darkThemeTaskSubjectStyle,
@@ -112,7 +126,7 @@ class TaskWidget extends ConsumerWidget {
                               maxSteps: 10,
                               progressType:
                                   LinearProgressBar.progressTypeLinear,
-                              currentStep: taskItem.progress,
+                              currentStep: taskItem.progress ?? 0,
                               progressColor: Constants.lightThemePrimaryColor,
                               backgroundColor: Colors.black.withOpacity(0.1),
                               minHeight: 6,
@@ -124,21 +138,42 @@ class TaskWidget extends ConsumerWidget {
                   ],
                 ),
               ),
+              // Positioned(
+              //   right: 0,
+              //   child: Container(
+              //     height: 141,
+              //     width: 143,
+              //     child: FittedBox(
+              //       fit: BoxFit.fill,
+              //       child: Image.asset(
+              //         taskItem.subjectImage,
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Positioned(
                 right: 0,
+                bottom: 0,
+                top: 0,
                 child: Container(
+                  margin: EdgeInsets.all(0),
                   height: 141,
                   width: 143,
-                  child: FittedBox(
-                    fit: BoxFit.fill,
-                    child: Image.asset(
-                      taskItem.subjectImage,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10), // Image border
+                    child: Image.network(
+                      fit: BoxFit.fill,
+                      taskItem.subject?.imageUrl ?? "",
+                      height: 114,
+                      width: 143,
                     ),
                   ),
                 ),
               ),
               Positioned(
                 right: 45,
+                bottom: 0,
+                top: 0,
                 child: Container(
                   height: 141.0,
                   width: 98,
@@ -159,12 +194,34 @@ class TaskWidget extends ConsumerWidget {
                   ),
                 ),
               ),
+              // Positioned(
+              //   right: 45,
+              //   child: Container(
+              //     height: 141.0,
+              //     width: 98,
+              //     decoration: BoxDecoration(
+              //       color: Colors.white,
+              //       gradient: LinearGradient(
+              //         begin: FractionalOffset.centerRight,
+              //         end: FractionalOffset.centerLeft,
+              //         colors: theme == ThemeMode.light
+              //             ? [Colors.white.withOpacity(0.0), Colors.white]
+              //             : [
+              //                 Constants.darkThemeSecondaryBackgroundColor
+              //                     .withOpacity(0.0),
+              //                 Constants.darkThemeSecondaryBackgroundColor
+              //               ],
+              //         stops: const [0.0, 1.0],
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Align(
                 alignment: AlignmentDirectional.topEnd,
                 child: Container(
                   height: 30,
                   decoration: BoxDecoration(
-                    color: taskItem.overdueDays != null
+                    color: duePassed
                         ? Constants.darkThemeSecondaryBackgroundColor
                         : Colors.white,
                     borderRadius: const BorderRadius.only(
@@ -177,12 +234,16 @@ class TaskWidget extends ConsumerWidget {
                   padding:
                       EdgeInsets.only(left: 6, right: 6, top: 6, bottom: 6),
                   child: Text(
-                    taskItem.overdueDays != null ? "${taskItem.overdueDays} days" : _getFormattedTime(taskItem.date),
-                    style: taskItem.overdueDays != null ? TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.bold,
-                          color: Constants.taskDueBannerColor) : Constants.lightThemeUpNextBannerTextStyle,
+                    duePassed
+                        ? "${daysPassed} days"
+                        : _getFormattedTime(dueDate ?? DateTime.now()),
+                    style: duePassed
+                        ? TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.bold,
+                            color: Constants.taskDueBannerColor)
+                        : Constants.lightThemeUpNextBannerTextStyle,
                   ),
                 ),
               )

@@ -8,6 +8,7 @@ import 'package:group_list_view/group_list_view.dart';
 import '../Models/task_datasource.dart';
 import '../Extensions/extensions.dart';
 import '../Widgets/TaskWidgets/task_widget.dart';
+import '../Models/API/task.dart';
 
 class TasksCurrentList extends ConsumerWidget {
   TasksCurrentList({super.key});
@@ -36,7 +37,7 @@ class TasksCurrentList extends ConsumerWidget {
         },
         itemBuilder: (BuildContext context, IndexPath index) {
           return TaskWidget(
-              taskItem: groupByDate.values.toList()[index.section][index.index],
+              taskItem: Task(),
               cardIndex: index.index,
               upNext: true,
               cardselected: _selectedCard);

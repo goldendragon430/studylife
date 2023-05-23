@@ -162,18 +162,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                       RegularTextField(
                                         "Your email",
                                         (value) {
-                                          FocusScope.of(context).nextFocus();
+                                          print(value);
+                                         // FocusScope.of(context).nextFocus();
                                         },
                                         TextInputType.emailAddress,
                                         emailController,
                                         false,
                                         autofocus: true,
-                                        focusNode: focusNode,
+                                        //focusNode: focusNode,
                                       ),
                                       RegularTextField(
                                         "Password",
                                         (value) {
-                                          FocusScope.of(context).unfocus();
+                                         // FocusScope.of(context).unfocus();
                                         },
                                         TextInputType.visiblePassword,
                                         passwordController,
@@ -275,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       RegularTextField(
                                         "Your email",
                                         (value) {
-                                          FocusScope.of(context).nextFocus();
+                                         // FocusScope.of(context).nextFocus();
                                         },
                                         TextInputType.emailAddress,
                                         emailController,
@@ -286,7 +287,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       RegularTextField(
                                         "Password",
                                         (value) {
-                                          FocusScope.of(context).unfocus();
+                                         // FocusScope.of(context).unfocus();
                                         },
                                         TextInputType.visiblePassword,
                                         passwordController,

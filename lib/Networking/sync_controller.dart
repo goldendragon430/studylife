@@ -68,10 +68,10 @@ class SyncController {
       final taskList = (homeDataResponse.data['tasks']) as List;
       tasks = taskList.map((i) => Task.fromJson(i)).toList();
       _storageService
-          .writeSecureData(StorageItem("user_tasks", jsonEncode(exams)));
+          .writeSecureData(StorageItem("user_tasks", jsonEncode(tasks)));
 
-      for (var classItem in classes) {
-        print("classes ${classItem.building}");
+      for (var classItem in tasks) {
+        print("tasks ${classItem.progress}");
       }
     } catch (error) {
       if (error is DioError) {
