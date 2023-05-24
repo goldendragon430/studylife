@@ -8,16 +8,27 @@ import '../Models/API/task.dart';
 import '../../app.dart';
 
 class TaskDetailsInfoCard extends ConsumerWidget {
-  final Task taskitem;
-  const TaskDetailsInfoCard(this.taskitem, {super.key});
+  final Task taskItem;
+  const TaskDetailsInfoCard(this.taskItem, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
+    DateTime? dueDate = DateTime.tryParse(taskItem.dueDate ?? "");
+    bool duePassed = false;
+    int daysPassed = 0;
+    if (dueDate != null) {
+      var localDate = dueDate.toLocal();
+      daysPassed = localDate.daysBetween(dueDate, DateTime.now());
+      if (localDate.isBefore(DateTime.now())) {
+        duePassed = true;
+      }
+    }
+
     return Container(
-      height: 220,
+      height: 240,
       margin: const EdgeInsets.only(left: 20, right: 20, top: 175),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         // gradient: LinearGradient(
         //   begin: Alignment.topCenter,
         //   end: Alignment.center,
@@ -39,8 +50,38 @@ class TaskDetailsInfoCard extends ConsumerWidget {
       child: Stack(
         children: [
           Container(
-            height: 180,
-            decoration: const BoxDecoration(
+            height: 57,
+            margin: const EdgeInsets.only(top: 176),
+            decoration: BoxDecoration(
+              color: theme == ThemeMode.light
+                  ? Constants.taskDueBannerColor.withOpacity(0.12)
+                  : Constants.overdueTextColor.withOpacity(0.12),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                duePassed
+                    ? "Overdue by ${daysPassed} days"
+                    : "Due in ${daysPassed} days",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.normal,
+                  color: Constants.overdueTextColor,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: theme == ThemeMode.light
+                  ? Colors.white
+                  : Constants.darkThemeClassExamCardBackgroundColor,
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
               ),
@@ -63,7 +104,7 @@ class TaskDetailsInfoCard extends ConsumerWidget {
                       color: Constants.blueButtonBackgroundColor,
                     ),
                     child: Text(
-                      taskitem.type ?? "",
+                      taskItem.type ?? "",
                       style: Constants.roboto15NormalWhiteTextStyle,
                     ),
                   ),
@@ -74,21 +115,40 @@ class TaskDetailsInfoCard extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      // Description
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 40),
+                          child: Text(
+                             taskItem.details ?? "",
+                            maxLines: 4,
+                            style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.bold,
+                            color: theme == ThemeMode.light ? Constants.lightThemeTextSelectionColor : Colors.white,
+                          ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 10,
+                      ),
                       // Title
                       Text(
-                        taskitem.subject?.subjectName ?? "",
+                        taskItem.subject?.subjectName ?? "",
                         style: TextStyle(
                           fontSize: 36,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
-                          color: taskitem.subject?.colorHex != null
-                              ? HexColor.fromHex(taskitem.subject!.colorHex!)
+                          color: taskItem.subject?.colorHex != null
+                              ? HexColor.fromHex(taskItem.subject!.colorHex!)
                               : Colors.red,
                         ),
                       ),
                       // Theme
                       Text(
-                        taskitem.category ?? "",
+                        taskItem.category ?? "",
                         style: theme == ThemeMode.light
                             ? Constants.tabItemTitleTextStyle
                             : Constants.darkThemeInfoSubtitleTextStyle,
@@ -97,7 +157,7 @@ class TaskDetailsInfoCard extends ConsumerWidget {
                         height: 20,
                       ),
                       Text(
-                        "".getFormattedDateClass(taskitem.dueDate ?? ""),
+                        "".getFormattedDateClass(taskItem.dueDate ?? ""),
                         //dateFrom.getFormattedDate(dateFrom),
                         style: theme == ThemeMode.light
                             ? Constants.lightThemeDetailsDateStyle
@@ -109,7 +169,6 @@ class TaskDetailsInfoCard extends ConsumerWidget {
               ],
             ),
           ),
-          Container()
         ],
       ),
     );

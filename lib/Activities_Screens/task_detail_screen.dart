@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linear_progress_bar/linear_progress_bar.dart';
+
 import '../Utilities/constants.dart';
 import '../Extensions/extensions.dart';
 
@@ -36,7 +38,7 @@ class TaskDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    final List<TaskDueStatic> _tasksDue = TaskDueStatic.tasksDue;
+    double percentageProgress = (taskItem.progress ?? 0 / 10) * 100;
 
     return Container(
       color: theme == ThemeMode.light
@@ -63,18 +65,21 @@ class TaskDetailsScreen extends ConsumerWidget {
             margin: const EdgeInsets.only(left: 20, top: 50),
             child: ElevatedButton(
               style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(0.0),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  )),
-                  minimumSize: MaterialStateProperty.all(const Size((75), 45)),
-                  backgroundColor: MaterialStateProperty.all(Colors.black),
-                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                  textStyle: MaterialStateProperty.all(const TextStyle(
+                elevation: MaterialStateProperty.all(0.0),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                )),
+                minimumSize: MaterialStateProperty.all(const Size((75), 45)),
+                backgroundColor: MaterialStateProperty.all(Colors.black),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                textStyle: MaterialStateProperty.all(
+                  const TextStyle(
                       fontFamily: "Roboto",
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white))),
+                      color: Colors.white),
+                ),
+              ),
               onPressed: () => _editButtonPressed(context),
               child: const Text("Edit"),
             ),
@@ -97,6 +102,76 @@ class TaskDetailsScreen extends ConsumerWidget {
             ),
           ),
           TaskDetailsInfoCard(taskItem),
+          Padding(
+            padding: const EdgeInsets.only(left: 35, right: 35),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 435),
+                  child: Stack(children: [
+                    Container(
+                      height: 60,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        // shape: BoxShape.circle
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        child: LinearProgressBar(
+                          maxSteps: 10,
+                          progressType: LinearProgressBar.progressTypeLinear,
+                          currentStep: taskItem.progress ?? 0,
+                          //currentStep: 7,
+                          progressColor: Constants.lightThemePrimaryColor,
+                          backgroundColor: theme == ThemeMode.light
+                              ? Constants.lightThemePrimaryColor.withOpacity(0.15)
+                              : Constants.darkThemeSecondaryColor,
+                          minHeight: 60,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      // alignment: Alignment.center,
+                      // margin: const EdgeInsets.only(left: 32, top: 20),
+                      top: 18,
+                      left: 32,
+                      child: Text(
+                        '${percentageProgress}%',
+                        style: TextStyle(
+                            fontFamily: "Roboto",
+                            fontSize: 21,
+                            fontWeight: FontWeight.bold,
+                            color: theme == ThemeMode.light
+                                ? Constants.lightThemeTextSelectionColor
+                                : Colors.white),
+                      ),
+                    ),
+                  ]),
+                ),
+                Container(
+                  height: 25,
+                ),
+                Expanded(
+                    child: Text(
+                       maxLines: 4,
+                      'lsjdhvfksgdvfgvdskfvsgkfvdsghkfvgdhksvfgkhdsvfghkdsvfghdsvfghksdvfghksdvghkvsdghkvsdghkfvdsfghkvsdvsdghkfvsdghkfvdskghfvdsghkfvdsgkhfvdsghkvfdgshkvfdhsgvfhdgksvhgkdsvfhgk',
+                      style: TextStyle(
+                        fontFamily: "Roboto",
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: theme == ThemeMode.light
+                            ? Colors.black.withOpacity(0.7)
+                            : Colors.white.withOpacity(0.7),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+
           // Container(
           //   margin: const EdgeInsets.only(left: 20, top: 349),
           //   child: Column(
@@ -126,7 +201,6 @@ class TaskDetailsScreen extends ConsumerWidget {
           //     ],
           //   ),
           // ),
-         
         ],
       ),
     );

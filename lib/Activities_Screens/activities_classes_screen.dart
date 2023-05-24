@@ -7,6 +7,8 @@ import '../Widgets/custom_snack_bar.dart';
 import '../Extensions/extensions.dart';
 import '../Networking/subject_service.dart';
 import 'package:dio/dio.dart';
+import '../Models/Services/storage_service.dart';
+import 'dart:convert';
 
 import '../../app.dart';
 import '../Models/API/subject.dart';
@@ -24,13 +26,10 @@ class ActivitiesClassesScreen extends StatefulWidget {
 }
 
 class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
-  final List<ClassSubject> _durations = ClassSubject.subjects;
-  String selectedSubject = ClassSubject.subjects.first.title;
-  final List<ClassStatic> _classes = ClassStatic.classes;
-
-
+  String selectedSubject = "";
+  List<ClassModel> _classes = [];
+  final StorageService _storageService = StorageService();
   List<Subject> _subjects = [];
-
 
   int _page = 1;
   final int _limit = 20;
@@ -38,46 +37,42 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Future.delayed(Duration.zero, () {
-  //     _getSubjects();
-  //   });
-  //  // _controller = ScrollController()..addListener(_loadMore);
-  
-  // }
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      getData();
+    });
+  }
 
-  // API
+  void getData() async {
+    var classesData = await _storageService.readSecureData("user_classes");
 
-  //   void _getSubjects() async {
+    List<dynamic> decodedDataClasses = jsonDecode(classesData ?? "");
 
-  //   LoadingDialog.show(context);
+    // Get Tasks from storage
+    var subjectsData = await _storageService.readSecureData("user_subjects");
 
-  //   try {
-  //     var subjectsResponse =
-  //         await SubjectService().getSubjects();
+    List<dynamic> decodedDataSubjects = jsonDecode(subjectsData ?? "");
 
-  //         print("SUBJECtS $subjectsResponse");
+    setState(() {
+      _classes = List<ClassModel>.from(
+        decodedDataClasses
+            .map((x) => ClassModel.fromJson(x as Map<String, dynamic>)),
+      );
 
-  //     if (!context.mounted) return;
+      _subjects = List<Subject>.from(
+        decodedDataSubjects
+            .map((x) => Subject.fromJson(x as Map<String, dynamic>)),
+      );
 
-  //     LoadingDialog.hide(context);
+      final names = _subjects.map((e) => e.subjectName).toSet();
+      _subjects.retainWhere((x) => names.remove(x.subjectName));
+      _subjects.insert(0, Subject(subjectName: "All Subjects"));
 
-      
-  //   } catch (error) {
-  //     LoadingDialog.hide(context);
-  //     if (error is DioError) {
-  //       LoadingDialog.hide(context);
-  //       // CustomSnackBar.show(
-  //       //     context, CustomSnackBarType.error, error.response?.data['message']);
-  //     } else {
-  //       LoadingDialog.hide(context);
-  //       CustomSnackBar.show(
-  //           context, CustomSnackBarType.error, "Oops, something went wrong");
-  //     }
-  //   }
-  // }
+      selectedSubject = _subjects[0].subjectName ?? "";
+    });
+  }
 
   void _selectedCard(int index) {
     Navigator.push(
@@ -116,12 +111,11 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
                   value: selectedSubject,
                   onChanged: (String? newValue) =>
                       setState(() => selectedSubject = newValue ?? ""),
-                  items: _durations
+                  items: _subjects
                       .map<DropdownMenuItem<String>>(
-                          (ClassSubject durationItem) =>
-                              DropdownMenuItem<String>(
-                                value: durationItem.title,
-                                child: Text(durationItem.title),
+                          (Subject subjectItem) => DropdownMenuItem<String>(
+                                value: subjectItem.subjectName,
+                                child: Text(subjectItem.subjectName ?? ""),
                               ))
                       .toList(),
                   icon: const Icon(Icons.keyboard_arrow_down),
@@ -129,22 +123,22 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
               ),
             ),
           ),
-          // Classes
-          // Container(
-          //   alignment: Alignment.topCenter,
-          //   height: double.infinity,
-          //   margin: const EdgeInsets.only(top: 84),
-          //   child: ListView.builder(
-          //       // controller: widget._controller,
-          //       itemCount: _classes.length,
-          //       itemBuilder: (context, index) {
-          //         return ClassWidget(
-          //             classItem: _classes[index],
-          //             cardIndex: index,
-          //             upNext: true,
-          //             cardselected: _selectedCard);
-          //       }),
-          // ),
+         // Classes
+          Container(
+            alignment: Alignment.topCenter,
+            height: double.infinity,
+            margin: const EdgeInsets.only(top: 84),
+            child: ListView.builder(
+                // controller: widget._controller,
+                itemCount: _classes.length,
+                itemBuilder: (context, index) {
+                  return ClassWidget(
+                      classItem: _classes[index],
+                      cardIndex: index,
+                      upNext: true,
+                      cardselected: _selectedCard);
+                }),
+          ),
         ],
       );
     });

@@ -46,9 +46,8 @@ class TaskWidget extends ConsumerWidget {
     bool duePassed = false;
     int daysPassed = 0;
     if (dueDate != null) {
-          print("PROGRESSS AAA ${taskItem.progress}");
       var localDate = dueDate.toLocal();
-      if (localDate.isAfter(DateTime.now())) {
+      if (localDate.isBefore(DateTime.now())) {
         duePassed = true;
         daysPassed = localDate.daysBetween(dueDate, DateTime.now());
       }
