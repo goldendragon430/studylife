@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../app.dart';
-import '../../Models/event.dart';
+import '../../Models/API/event.dart';
 import '../../Utilities/constants.dart';
 import '../custom_painter_class.dart';
 
@@ -37,8 +37,8 @@ class _WeekViewWidgetState extends State<WeekViewWidget> {
     final CalendarEventData<Event> finalEvent =
         events.firstWhere((element) => element.startTime == startDuration);
 
-    if (finalEvent.event?.eventType != null) {
-      switch (finalEvent.event?.eventType) {
+    if (finalEvent.event?.eventTypeRaw != null) {
+      switch (finalEvent.event?.getEventType()) {
         case EventType.prepTimeEvent:
           return Container(
             decoration: BoxDecoration(

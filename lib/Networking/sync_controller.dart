@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 // Services
 import '../Networking/subject_service.dart';
@@ -11,6 +12,7 @@ import '../Networking/class_service.dart';
 import '../Networking/exam_service.dart';
 import '../Networking/task_service.dart';
 import '../Networking/home_service.dart';
+import '../Networking/calendar_event_service.dart';
 
 // Models
 import '../Models/API/subject.dart';
@@ -18,6 +20,7 @@ import '../Models/API/classmodel.dart';
 import '../Models/API/result.dart';
 import '../Models/API/exam.dart';
 import '../Models/API/task.dart';
+import '../Models/API/event.dart';
 
 class SyncController {
   final StorageService _storageService = StorageService();
@@ -25,14 +28,12 @@ class SyncController {
   static List<ClassModel> classes = [];
   static List<Exam> exams = [];
   static List<Task> tasks = [];
- 
+  static List<Event> events = [];
 
   Future<dynamic> syncAll() async {
     // ErrorState error = ErrorState("Opps");
     Result finalResult = Result.loading("Loading");
-    await Future.wait(
-        [_getSubjects(), _getHomeData(), _getExams()]).then((v) {
-
+    await Future.wait([_getSubjects(), _getHomeData(), _getExams(), _getCalendarEvents()]).then((v) {
       finalResult = Result.success("Success");
 
       return finalResult;
@@ -165,8 +166,39 @@ class SyncController {
       }
     }
   }
+
+  Future _getCalendarEvents() async {
+    DateTime today = DateTime.now();
+    DateTime dateFrom = today.subtract(Duration(days: 30));
+
+    String formattedDateFrom = DateFormat('yyyy/MM/dd').format(dateFrom);
+
+    String formattedDateTo = DateFormat('yyyy/MM/dd').format(today);
+
+    print("DADSSADADADADADAD $formattedDateFrom");
+
+    try {
+      var calendarEventssResponse = await CalendarEventService()
+          .getEvents(formattedDateFrom, formattedDateTo);
+
+      final eventList = (calendarEventssResponse.data['events']) as List;
+      events = eventList.map((i) => Event.fromJson(i)).toList();
+      _storageService
+          .writeSecureData(StorageItem("user_events", jsonEncode(events)));
+
+            for (var eventItem in events) {
+        print("EVENt ${eventItem.room}");
+      }
+    } catch (error) {
+      print("AAAAA ERROR ${error.toString()}");
+      if (error is DioError) {
+        throw Result.error(error.response?.data['message']);
+      } else {
+        throw Result.error(error.toString());
+      }
+    }
+  }
 }
 
-final syncControllerProvider = StateProvider<SyncController>((ref) => SyncController());
-
-
+final syncControllerProvider =
+    StateProvider<SyncController>((ref) => SyncController());

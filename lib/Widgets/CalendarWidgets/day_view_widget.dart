@@ -4,9 +4,10 @@ import './horizontal_week_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app.dart';
-import '../../Models/event.dart';
+import '../../Models/API/event.dart';
 import '../../Utilities/constants.dart';
 import 'package:intl/intl.dart';
+import '../../Extensions/extensions.dart';
 
 class DayViewWidget extends StatefulWidget {
   final GlobalKey<DayViewState>? state;
@@ -44,14 +45,16 @@ class _DayViewWidgetState extends State<DayViewWidget> {
     final startHourString = DateFormat('HH:mm').format(startDuration);
     final endHourString = DateFormat('HH:mm').format(endDuration);
 
-    if (finalEvent.event?.eventType != null) {
-      switch (finalEvent.event?.eventType) {
+    if (finalEvent.event?.eventTypeRaw != null) {
+      switch (finalEvent.event?.getEventType()) {
         // Check event type
         case EventType.prepTimeEvent:
           return Container(
             margin: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Colors.red,
+              color: finalEvent.event?.subject?.colorHex != null
+                  ? HexColor.fromHex(finalEvent.event!.subject!.colorHex!)
+                  : Colors.red,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Container(
@@ -84,12 +87,17 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                                   top: 18, right: 15, left: 15),
                               child: Text(
                                 finalEvent.event?.title ?? "",
-                                style: const TextStyle(
+                                style: TextStyle(
                                     overflow: TextOverflow.visible,
                                     fontSize: 20,
                                     fontFamily: 'BebasNeue',
                                     fontWeight: FontWeight.normal,
-                                    color: Colors.red),
+                                    color:
+                                        finalEvent.event?.subject?.colorHex !=
+                                                null
+                                            ? HexColor.fromHex(finalEvent
+                                                .event!.subject!.colorHex!)
+                                            : Colors.red),
                               ),
                             ),
                           ),
@@ -112,7 +120,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                       Container(
                         margin: const EdgeInsets.only(left: 15, top: 8),
                         child: Text(
-                          "subtitle text",
+                          finalEvent.event?.eventTypeRaw ?? "",
                           style: TextStyle(
                             fontSize: 12,
                             fontFamily: 'Roboto',
@@ -175,7 +183,10 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                           height: 14,
                           width: 14,
                           decoration: BoxDecoration(
-                            color: Colors.red,
+                            color: finalEvent.event?.subject?.colorHex != null
+                                ? HexColor.fromHex(
+                                    finalEvent.event!.subject!.colorHex!)
+                                : Colors.red,
                             borderRadius: BorderRadius.circular(7),
                           ),
                         ),
@@ -184,12 +195,16 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                             margin: const EdgeInsets.only(top: 18, right: 15),
                             child: Text(
                               finalEvent.event?.title ?? "",
-                              style: const TextStyle(
+                              style: TextStyle(
                                   overflow: TextOverflow.visible,
                                   fontSize: 20,
                                   fontFamily: 'BebasNeue',
                                   fontWeight: FontWeight.normal,
-                                  color: Colors.red),
+                                  color: finalEvent.event?.subject?.colorHex !=
+                                          null
+                                      ? HexColor.fromHex(
+                                          finalEvent.event!.subject!.colorHex!)
+                                      : Colors.red),
                             ),
                           ),
                         ),
@@ -198,7 +213,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                     Container(
                       margin: const EdgeInsets.only(left: 15, top: 8),
                       child: Text(
-                        "subtitle text",
+                        finalEvent.event?.eventTypeRaw ?? "",
                         style: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Roboto',
@@ -237,9 +252,11 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                     ? Colors.white
                     : Constants.darkThemeSecondaryBackgroundColor,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(width: 2.0, color: theme == ThemeMode.light
-                            ? Constants.lightThemeTextSelectionColor
-                            : Colors.white),
+                border: Border.all(
+                    width: 2.0,
+                    color: theme == ThemeMode.light
+                        ? Constants.lightThemeTextSelectionColor
+                        : Colors.white),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),

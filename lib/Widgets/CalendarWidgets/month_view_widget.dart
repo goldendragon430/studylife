@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app.dart';
-import '../../Models/event.dart';
+import '../../Models/API/event.dart';
 import '../../Extensions/extensions.dart';
 import '../../Utilities/constants.dart';
 

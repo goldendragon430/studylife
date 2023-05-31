@@ -4,6 +4,7 @@ import 'package:my_study_life_flutter/Widgets/ClassWidgets/class_widget.dart';
 import 'dart:convert';
 import 'dart:math' as math;
 import '../Models/Services/storage_service.dart';
+import 'package:calendar_view/calendar_view.dart';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -28,6 +29,7 @@ import '../Models/API/classmodel.dart';
 import '../Models/API/exam.dart';
 import '../Models/API/task.dart';
 import '../Models/user.model.dart';
+import '../Models/API/event.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
@@ -80,10 +82,11 @@ class _HomePageState extends State<HomePage> {
   List<ClassModel> _classes = [];
   List<Exam> _exams = [];
   List<Task> _tasks = [];
+  List<CalendarEventData<Event>> _events = [];
   int classesCount = 0;
   int examsCount = 0;
   int tasksCount = 0;
-
+// CalendarControllerProvider<Event> eventPpovider = CalendarControllerProvider(controller: controller, child: child);
   int selectedTabIndex = 0;
   final SyncController _syncController = SyncController();
 
@@ -127,6 +130,11 @@ class _HomePageState extends State<HomePage> {
 
       List<dynamic> decodedDataTasks = jsonDecode(tasksData ?? "");
 
+      // Get Events from storage
+      var eventsData = await _storageService.readSecureData("user_events");
+
+      List<dynamic> decodedDataEvents = jsonDecode(eventsData ?? "");
+
       setState(() {
         _classes = List<ClassModel>.from(
           decodedDataClasses
@@ -146,6 +154,86 @@ class _HomePageState extends State<HomePage> {
         );
 
         _homeTabItemsDataSource[2].badgeNumber = _tasks.length;
+
+        var events = List<Event>.from(
+          decodedDataEvents
+              .map((x) => Event.fromJson(x as Map<String, dynamic>)),
+        );
+
+        // DateTime _now = DateTime.now();
+
+        //  print("EVENT COUNT : ${events.length}");
+
+        for (var eventEntry in events) {
+          //         print("TEACHER : ${eventEntry.room}");
+
+          var newCalendarEntry = CalendarEventData(
+            date: eventEntry.getFormattedStartingDate(),
+            event: eventEntry,
+            title: eventEntry.mode ?? "",
+            description: "Today is project meeting.",
+            startTime: DateTime(
+                eventEntry.getFormattedStartingDate().year,
+                eventEntry.getFormattedStartingDate().month,
+                eventEntry.getFormattedStartingDate().day,
+                eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
+                eventEntry.toTimeOfDay(eventEntry.startTime ?? "").minute),
+            endTime: DateTime(
+                eventEntry.getFormattedStartingDate().year,
+                eventEntry.getFormattedStartingDate().month,
+                eventEntry.getFormattedStartingDate().day,
+                eventEntry.endTime != null
+                    ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").hour
+                    : eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
+                eventEntry.endTime != null ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").minute : eventEntry.duration ?? 60),
+          );
+
+          // print("DATE START : ${newCalendarEntry.date}");
+          // print("TIMEEE : ${newCalendarEntry.startTime}");
+          // print("TIMEEE END: ${newCalendarEntry.endTime}");
+
+          _events.add(newCalendarEntry);
+        }
+        // var eventEntry = events.first;
+        //  var newCalendarEntry = CalendarEventData(
+        //     date: _now,
+        //     event: eventEntry,
+        //     title: eventEntry.mode ?? "",
+        //     description: "Today is project meeting.",
+        //     startTime: DateTime(
+        //         _now.year,
+        //         _now.month,
+        //         _now.day,
+        //         _now.hour,
+        //         _now.minute),
+        //     endTime: DateTime(
+        //         _now.year,
+        //         _now.month,
+        //         _now.day,
+        //         16,
+        //         ),
+        //   );
+
+        //   print("DATE START : ${newCalendarEntry.date}");
+        //   print("TIMEEE : ${newCalendarEntry.startTime}");
+        //   print("TIMEEE END: ${newCalendarEntry.endTime}");
+
+        //   _events.add(newCalendarEntry);
+
+        CalendarControllerProvider.of<Event>(
+                scaffoldMessengerKey.currentState!.context)
+            .controller
+            .addAll(_events);
+
+        //       var entry =      CalendarEventData(
+        //   date: _now,
+        //   startTime: DateTime(_now.year, _now.month, _now.day, 00),
+        //   endTime: DateTime(_now.year, _now.month, _now.day, 02),
+        //   event: Event(title: "CHEMISTRY", eventType: EventType.classEvent),
+        //   title: "Football Tournament",
+        //   description: "Go to football tournament.",
+        // );
+        //      CalendarControllerProvider.of<Event>(scaffoldMessengerKey.currentState!.context).controller.add(entry);
       });
     }
   }
@@ -266,7 +354,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
-      final sync = ref.watch(syncControllerProvider);
+     // final sync = ref.watch(syncControllerProvider);
 
       return ScaffoldMessenger(
         child: Scaffold(
