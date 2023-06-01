@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Widgets/ProfileWidgets/collection_widget_four_items.dart';
 import 'package:beamer/beamer.dart';
+import '../Models/Services/storage_service.dart';
+import 'dart:convert';
 
 import '../../app.dart';
 import '../Controllers/auth_notifier.dart';
@@ -17,6 +19,7 @@ import '../../Profile_Screens/manage_subjects_screen.dart';
 import '../../Profile_Screens/change_email_screen.dart';
 import '../Profile_Screens/change_password_screen.dart';
 import './general_settings_screen.dart';
+import '../Models/user.model.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -29,13 +32,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final List<ProfileItemStatic> _itemsPersonalize =
       ProfileItemStatic.personalizationItems;
   final List<ProfileItemStatic> _itemsEdit = ProfileItemStatic.editItems;
+  final StorageService _storageService = StorageService();
+
+  String userName = '';
+  String email = '';
+  String imageUrl = '';
 
   @override
-    void initState() {
-      super.initState();
-    print("PROFILE AAAA");
-   
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      _getUser();
+    });
+  }
 
+  void _getUser() async {
+    var userString = await _storageService.readSecureData("activeUser");
+    if (userString != null && userString.isNotEmpty) {
+      Map<String, dynamic> userMap = jsonDecode(userString);
+
+      var user = UserModel.fromJson(userMap);
+
+      setState(() {
+        userName = "${user.firstName} ${user.lastName}";
+        email = user.email;
+        imageUrl = user.profileImage ?? "";
+      });
+    }
   }
 
   void _selectedGridCard(int index) {
@@ -146,30 +169,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       margin: const EdgeInsets.only(top: 21),
                       height: 146,
                       width: 146,
-                      padding: EdgeInsets.all(50),
+                      padding: const EdgeInsets.all(50),
                       decoration: BoxDecoration(
-                          color: theme == ThemeMode.light
-                              ? Constants.lightThemeProfileImageCntainerColor
-                              : Constants.darkThemeProfileImageCntainerColor,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              width: 7,
-                              color: theme == ThemeMode.light
-                                  ? Constants
-                                      .lightThemeProfileImageCntainerColor
-                                  : Constants
-                                      .darkThemeProfileImageCntainerColor),
-                          image: DecorationImage(
-                              // fit: BoxFit.fill,
-                              image: AssetImage(
-                                  'assets/images/ProfileImageTest.png'))),
+                        color: theme == ThemeMode.light
+                            ? Constants.lightThemeProfileImageCntainerColor
+                            : Constants.darkThemeProfileImageCntainerColor,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            width: 7,
+                            color: theme == ThemeMode.light
+                                ? Constants.lightThemeProfileImageCntainerColor
+                                : Constants.darkThemeProfileImageCntainerColor),
+                        image: DecorationImage(
+                           fit: BoxFit.scaleDown,
+                          image:
+                              NetworkImage(imageUrl),
+                        ),
+                      ),
+                      // child: Container(
+                      //   margin: EdgeInsets.all(4),
+                      //   height: 142,
+                      //   width: 142,
+                      //   child: ClipRRect(
+                      //     borderRadius:
+                      //         BorderRadius.circular(71), // Image border
+                      //     child: Image.network(
+                      //       fit: BoxFit.fill,
+                      //       imageUrl,
+                      //       height: 142,
+                      //       width: 143,
+                      //     ),
+                      //   ),
+                      // ),
                     );
                   case 1:
                     return Container(
                       alignment: Alignment.center,
                       margin: const EdgeInsets.only(top: 14),
                       child: Text(
-                        'Mark Anderson',
+                        userName,
                         style: TextStyle(
                             fontSize: 24,
                             fontFamily: 'Roboto',
@@ -183,7 +221,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     return Container(
                       alignment: Alignment.center,
                       margin: const EdgeInsets.only(top: 6),
-                      child: Text('mark.anderson@gmail.com',
+                      child: Text(email,
                           style: theme == ThemeMode.light
                               ? Constants.socialLoginLightButtonTextStyle
                               : Constants.socialLoginDarkButtonTextStyle),

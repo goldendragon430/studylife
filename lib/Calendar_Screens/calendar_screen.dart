@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_study_life_flutter/Extensions/extensions.dart';
+import 'package:my_study_life_flutter/Models/API/exam.dart';
 import '../Utilities/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'dart:convert';
 import '../Models/Services/storage_service.dart';
 import 'dart:math' as math;
+import 'package:dio/dio.dart';
+import '../Widgets/loaderIndicator.dart';
+import '../Widgets/custom_snack_bar.dart';
 
 import '../../app.dart';
 import '../Activities_Screens/custom_segmentedcontrol.dart';
@@ -19,6 +24,13 @@ import '../Widgets/ClassWidgets/class_widget.dart';
 import '../Widgets/custom_centered_dialog.dart';
 import '../Models/API/classmodel.dart';
 import '../Home_Screens/home_page.dart';
+import '../Models/API/event.dart';
+import '../Widgets/exam_widget.dart';
+import '../Home_Screens/exam_details_screen.dart';
+import '../Activities_Screens/task_detail_screen.dart';
+import '../Models/API/task.dart';
+import '../Widgets/TaskWidgets/task_widget.dart';
+import '../Networking/calendar_event_service.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
@@ -67,7 +79,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   final ValueNotifier<DateTime> currentSelectedDay =
       ValueNotifier(DateTime.now());
 
-  final List<ClassStatic> _classes = ClassStatic.classes;
+  List<Event> _events = [];
   final StorageService _storageService = StorageService();
 
   static GlobalKey<MonthViewState> stateKey = GlobalKey<MonthViewState>();
@@ -80,12 +92,71 @@ class _CalendarScreenState extends State<CalendarScreen> {
     currentMonthName = _getCurrentMonthName();
     currentWeekName = _getCurrentWeekName();
     currentSelectedDayStringName = _getCurrentDayName();
-    // Future.delayed(Duration.zero, () {
-    //   syncData();
-    // });
+    Future.delayed(const Duration(seconds: 2), () {
+      getData();
+    });
   }
 
-   // Sliver
+  void getData() async {
+    var eventData = await _storageService.readSecureData("user_events");
+
+    List<dynamic> decodedDataClasses = jsonDecode(eventData ?? "");
+
+    setState(() {
+      var allEvents = List<Event>.from(
+        decodedDataClasses
+            .map((x) => Event.fromJson(x as Map<String, dynamic>)),
+      );
+
+      _events = allEvents.where((e) {
+        final mapDate = e.getFormattedStartingDate();
+
+        return mapDate.isToday();
+      }).toList();
+      // for (var event in _events) {
+      // print("OVA LISTA OH ${event.getEventType()}");
+
+      // }
+    });
+  }
+
+  Future _getCalendarEventsForDate(DateTime date) async {
+  //  DateTime dateTo = date.add(Duration(days: 1));
+
+    String formattedDateFrom = DateFormat('yyyy/MM/dd').format(date);
+
+    String formattedDateTo = DateFormat('yyyy/MM/dd').format(date);
+
+    LoadingDialog.show(context);
+
+    try {
+      var calendarEventssResponse = await CalendarEventService()
+          .getEvents(formattedDateFrom, formattedDateTo);
+
+      if (!context.mounted) return;
+
+      LoadingDialog.hide(context);
+
+      final eventList = (calendarEventssResponse.data['events']) as List;
+      _events = eventList.map((i) => Event.fromJson(i)).toList();
+
+      for (var eventItem in _events) {
+        print("EVENt ${eventItem.getFormattedStartingDate()}");
+      }
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            error.response?.data['message'], false);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Oops, something went wrong", false);
+      }
+    }
+  }
+
+  // Sliver
   SliverPersistentHeader makeHeader(ThemeMode theme) {
     return SliverPersistentHeader(
       pinned: true,
@@ -98,63 +169,101 @@ class _CalendarScreenState extends State<CalendarScreen> {
               ? Constants.lightThemeBackgroundColor
               : Constants.darkThemeBackgroundColor,
           child: Stack(
-                  children: [
-                    Container(
-                      margin:
-                          const EdgeInsets.only(top: 135, left: 20, right: 20),
-                      height: 281,
-                      padding: EdgeInsets.only(bottom: 10, left: 10, right: 4),
-                      decoration: BoxDecoration(
-                        color: theme == ThemeMode.light
-                            ? Colors.white
-                            : Constants.darkThemeSecondaryBackgroundColor,
-                        border: Border.all(
-                          width: 0,
-                          color: theme == ThemeMode.dark
-                              ? Colors.white
-                              : Colors.transparent,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: theme == ThemeMode.light
-                                ? Colors.black.withOpacity(.1)
-                                : Colors.white.withOpacity(.1),
-                            blurRadius: 15.0, // soften the shadow
-                            spreadRadius: 5.0,
-                            offset: Offset(
-                              0.0,
-                              2.0,
-                            ),
-                          ),
-                        ],
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 135, left: 20, right: 20),
+                height: 281,
+                padding: EdgeInsets.only(bottom: 10, left: 10, right: 4),
+                decoration: BoxDecoration(
+                  color: theme == ThemeMode.light
+                      ? Colors.white
+                      : Constants.darkThemeSecondaryBackgroundColor,
+                  border: Border.all(
+                    width: 0,
+                    color: theme == ThemeMode.dark
+                        ? Colors.white
+                        : Colors.transparent,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme == ThemeMode.light
+                          ? Colors.black.withOpacity(.1)
+                          : Colors.white.withOpacity(.1),
+                      blurRadius: 15.0, // soften the shadow
+                      spreadRadius: 5.0,
+                      offset: Offset(
+                        0.0,
+                        2.0,
                       ),
-                      child: MonthViewWidget(
-                        state: stateKey,
-                        pageChanged: _calendarPageChanged,
-                        daySelected: _calendarDaySelected,
-                        currentSelectedDay: currentSelectedDay.value,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 430, left: 20),
-                      child: Text(currentSelectedDayStringName,
-                          style: theme == ThemeMode.light
-                              ? Constants.lightThemeSubtitleTextStyle
-                              : Constants.darkThemeTaskDueDescriptionTextStyle),
                     ),
                   ],
                 ),
+                child: MonthViewWidget(
+                  state: stateKey,
+                  pageChanged: _calendarPageChanged,
+                  daySelected: _calendarDaySelected,
+                  currentSelectedDay: currentSelectedDay.value,
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 430, left: 20),
+                child: Text(currentSelectedDayStringName,
+                    style: theme == ThemeMode.light
+                        ? Constants.lightThemeSubtitleTextStyle
+                        : Constants.darkThemeTaskDueDescriptionTextStyle),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   void _selectedCard(int index) {
+    var classModel = ClassModel(
+        id: _events[index].id,
+        module: _events[index].module,
+        mode: _events[index].mode,
+        room: _events[index].room,
+        building: _events[index].building,
+        onlineUrl: _events[index].onlineUrl,
+        teacher: _events[index].teacher,
+        teachersEmail: _events[index].teachersEmail,
+        occurs: _events[index].occurs,
+        days: _events[index].days,
+        startDate: _events[index].startDate,
+        endDate: _events[index].endDate,
+        startTime: _events[index].startTime,
+        endTime: _events[index].endTime,
+        createdAt: _events[index].createdAt,
+        subject: _events[index].subject);
+
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ClassDetailsScreen(ClassModel()),
+            builder: (context) => ClassDetailsScreen(classModel),
+            fullscreenDialog: true));
+  }
+
+  void _selectedExamCard(int index) {
+    var examItem = Exam(
+        id: _events[index].id,
+        resit: _events[index].resit,
+        module: _events[index].module,
+        mode: _events[index].mode,
+        onlineUrl: _events[index].onlineUrl,
+        room: _events[index].room,
+        seat: _events[index].seat,
+        startDate: _events[index].startDate,
+        startTime: _events[index].startTime,
+        duration: _events[index].duration,
+        createdAt: _events[index].createdAt);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ExamDetailsScreen(examItem: examItem),
             fullscreenDialog: true));
   }
 
@@ -251,6 +360,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
       currentSelectedDay.value = date;
       currentSelectedDayStringName = dayFormat.format(date);
     });
+
+    _getCalendarEventsForDate(date);
   }
 
   void _weekDayCalendarPageChanged(DateTime date) {
@@ -354,167 +465,173 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ],
         ),
         body: Stack(
-            children: [
-              Container(
-                height: 45,
-                //width: double.infinity,
-                margin: const EdgeInsets.only(left: 40, right: 40, top: 16),
-                child: CustomSegmentedControl(
-                  _selectedTabWithIndex,
-                  tabs: {
-                    1: Text(
-                      'Days',
-                      style: theme == ThemeMode.light
-                          ? Constants.lightThemeRegular14TextSelectedStyle
-                          : Constants.darkThemeRegular14TextStyle,
-                    ),
-                    2: Text(
-                      'Week',
-                      style: theme == ThemeMode.light
-                          ? Constants.lightThemeRegular14TextSelectedStyle
-                          : Constants.darkThemeRegular14TextStyle,
-                    ),
-                    3: Text(
-                      'Month',
-                      style: theme == ThemeMode.light
-                          ? Constants.lightThemeRegular14TextSelectedStyle
-                          : Constants.darkThemeRegular14TextStyle,
-                    ),
-                  },
-                ),
+          children: [
+            Container(
+              height: 45,
+              //width: double.infinity,
+              margin: const EdgeInsets.only(left: 40, right: 40, top: 16),
+              child: CustomSegmentedControl(
+                _selectedTabWithIndex,
+                tabs: {
+                  1: Text(
+                    'Days',
+                    style: theme == ThemeMode.light
+                        ? Constants.lightThemeRegular14TextSelectedStyle
+                        : Constants.darkThemeRegular14TextStyle,
+                  ),
+                  2: Text(
+                    'Week',
+                    style: theme == ThemeMode.light
+                        ? Constants.lightThemeRegular14TextSelectedStyle
+                        : Constants.darkThemeRegular14TextStyle,
+                  ),
+                  3: Text(
+                    'Month',
+                    style: theme == ThemeMode.light
+                        ? Constants.lightThemeRegular14TextSelectedStyle
+                        : Constants.darkThemeRegular14TextStyle,
+                  ),
+                },
               ),
-              Container(
-                height: 45,
-                margin: const EdgeInsets.only(top: 80, left: 40, right: 40),
-                decoration: BoxDecoration(
-                  color: theme == ThemeMode.light
-                      ? Constants.lightThemeSecondaryColor
-                      : Constants.darkThemeDividerColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      onPressed: _tappedLeftNavigationButton,
-                      icon: theme == ThemeMode.light
-                          ? Image.asset('assets/images/ArrowLeftLightTheme.png')
-                          : Image.asset('assets/images/ArrowLeftDarkTheme.png'),
-                    ),
-                    Container(
-                      width: 40,
-                    ),
-                    Text(
-                      selectedTabIndex != 2
-                          ? currentMonthName
-                          : currentWeekName,
-                      style: theme == ThemeMode.light
-                          ? Constants.lightThemeRegular14TextSelectedStyle
-                          : Constants.darkThemeRegular14TextStyle,
-                    ),
-                    Container(
-                      width: 40,
-                    ),
-                    IconButton(
-                      onPressed: _tappedRightNavigationButton,
-                      icon: theme == ThemeMode.light
-                          ? Image.asset(
-                              'assets/images/ArrowRightLightTheme.png')
-                          : Image.asset(
-                              'assets/images/ArrowRightDarkTheme.png'),
-                    ),
-                  ],
-                ),
+            ),
+            Container(
+              height: 45,
+              margin: const EdgeInsets.only(top: 80, left: 40, right: 40),
+              decoration: BoxDecoration(
+                color: theme == ThemeMode.light
+                    ? Constants.lightThemeSecondaryColor
+                    : Constants.darkThemeDividerColor,
+                borderRadius: BorderRadius.circular(8),
               ),
-              Container(
-                height: 20,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    onPressed: _tappedLeftNavigationButton,
+                    icon: theme == ThemeMode.light
+                        ? Image.asset('assets/images/ArrowLeftLightTheme.png')
+                        : Image.asset('assets/images/ArrowLeftDarkTheme.png'),
+                  ),
+                  Container(
+                    width: 40,
+                  ),
+                  Text(
+                    selectedTabIndex != 2 ? currentMonthName : currentWeekName,
+                    style: theme == ThemeMode.light
+                        ? Constants.lightThemeRegular14TextSelectedStyle
+                        : Constants.darkThemeRegular14TextStyle,
+                  ),
+                  Container(
+                    width: 40,
+                  ),
+                  IconButton(
+                    onPressed: _tappedRightNavigationButton,
+                    icon: theme == ThemeMode.light
+                        ? Image.asset('assets/images/ArrowRightLightTheme.png')
+                        : Image.asset('assets/images/ArrowRightDarkTheme.png'),
+                  ),
+                ],
               ),
-              if (selectedTabIndex == 1) ...[
-                Container(
-                    margin: EdgeInsets.only(top: 75),
-                    child: DayViewWidget(
-                      state: dayStateKey,
-                      daySelected: _weekDayCalendarDaySelected,
-                      pageChanged: _weekDayCalendarPageChanged,
-                      selectedDay: currentSelectedDay.value,
-                    )),
-              ],
-              if (selectedTabIndex == 2) ...[
-                Container(
-                    margin: EdgeInsets.only(top: 135),
-                    child: WeekViewWidget(
-                      state: weekStateKey,
-                      onPageChange: _weekViewPageChanged,
-                      onEventTap: _weekViewEventTapped,
-                    )),
-              ],
-              if (selectedTabIndex == 3) ...[
-                Stack(
-                  children: [
-                    Container(
-                      margin:
-                          const EdgeInsets.only(top: 135, left: 20, right: 20),
-                      height: 281,
-                      padding: EdgeInsets.only(bottom: 10, left: 10, right: 4),
-                      decoration: BoxDecoration(
-                        color: theme == ThemeMode.light
-                            ? Colors.white
-                            : Constants.darkThemeSecondaryBackgroundColor,
-                        border: Border.all(
-                          width: 0,
-                          color: theme == ThemeMode.dark
-                              ? Colors.white
-                              : Colors.transparent,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: theme == ThemeMode.light
-                                ? Colors.black.withOpacity(.1)
-                                : Colors.white.withOpacity(.1),
-                            blurRadius: 15.0, // soften the shadow
-                            spreadRadius: 5.0,
-                            offset: Offset(
-                              0.0,
-                              2.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      child: MonthViewWidget(
-                        state: stateKey,
-                        pageChanged: _calendarPageChanged,
-                        daySelected: _calendarDaySelected,
-                        currentSelectedDay: currentSelectedDay.value,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 430, left: 20),
-                      child: Text(currentSelectedDayStringName,
-                          style: theme == ThemeMode.light
-                              ? Constants.lightThemeSubtitleTextStyle
-                              : Constants.darkThemeTaskDueDescriptionTextStyle),
-                    ),
-                    // Container(
-                    //   alignment: Alignment.topCenter,
-                    //   height: double.infinity,
-                    //   margin: const EdgeInsets.only(top: 450),
-                    //   child: ListView.builder(
-                    //       // controller: widget._controller,
-                    //       itemCount: _classes.length,
-                    //       itemBuilder: (context, index) {
-                    //         return ClassWidget(
-                    //             classItem: _classes[index],
-                    //             cardIndex: index,
-                    //             upNext: true,
-                    //             cardselected: _selectedCard);
-                    //       }),
-                    // ),
-                  ],
-                ),
-              ],
+            ),
+            Container(
+              height: 20,
+            ),
+            if (selectedTabIndex == 1) ...[
+              Container(
+                  margin: EdgeInsets.only(top: 75),
+                  child: DayViewWidget(
+                    state: dayStateKey,
+                    daySelected: _weekDayCalendarDaySelected,
+                    pageChanged: _weekDayCalendarPageChanged,
+                    selectedDay: currentSelectedDay.value,
+                  )),
             ],
-          ),
+            if (selectedTabIndex == 2) ...[
+              Container(
+                  margin: EdgeInsets.only(top: 135),
+                  child: WeekViewWidget(
+                    state: weekStateKey,
+                    onPageChange: _weekViewPageChanged,
+                    onEventTap: _weekViewEventTapped,
+                  )),
+            ],
+            if (selectedTabIndex == 3) ...[
+              Stack(
+                children: [
+                  Container(
+                    margin:
+                        const EdgeInsets.only(top: 135, left: 20, right: 20),
+                    height: 281,
+                    padding: EdgeInsets.only(bottom: 10, left: 10, right: 4),
+                    decoration: BoxDecoration(
+                      color: theme == ThemeMode.light
+                          ? Colors.white
+                          : Constants.darkThemeSecondaryBackgroundColor,
+                      border: Border.all(
+                        width: 0,
+                        color: theme == ThemeMode.dark
+                            ? Colors.white
+                            : Colors.transparent,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme == ThemeMode.light
+                              ? Colors.black.withOpacity(.1)
+                              : Colors.white.withOpacity(.1),
+                          blurRadius: 15.0, // soften the shadow
+                          spreadRadius: 5.0,
+                          offset: Offset(
+                            0.0,
+                            2.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    child: MonthViewWidget(
+                      state: stateKey,
+                      pageChanged: _calendarPageChanged,
+                      daySelected: _calendarDaySelected,
+                      currentSelectedDay: currentSelectedDay.value,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 430, left: 20),
+                    child: Text(currentSelectedDayStringName,
+                        style: theme == ThemeMode.light
+                            ? Constants.lightThemeSubtitleTextStyle
+                            : Constants.darkThemeTaskDueDescriptionTextStyle),
+                  ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    height: double.infinity,
+                    margin: const EdgeInsets.only(top: 450),
+                    child: ListView.builder(
+                        // controller: widget._controller,
+                        itemCount: _events.length,
+                        itemBuilder: (context, index) {
+                          switch (_events[index].getEventType()) {
+                            case EventType.classEvent:
+                              return ClassWidget(
+                                  eventItem: _events[index],
+                                  cardIndex: index,
+                                  upNext: true,
+                                  cardselected: _selectedCard);
+                            case EventType.examEvent:
+                              return ExamWidget(
+                                  eventItem: _events[index],
+                                  cardIndex: index,
+                                  upNext: true,
+                                  cardselected: _selectedExamCard);
+                            default:
+                          }
+                        }),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
       );
     });
   }

@@ -65,7 +65,7 @@ class UserModel extends Equatable {
       role: json['role'],
       isVerified: json['isVerified'],
       verificationCode: json['verificationCode'],
-      profileImage: json['profileImage'],
+      profileImage: json['profileImageUrl'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
     );
@@ -79,19 +79,28 @@ class UserModel extends Equatable {
         'role': role,
         'isVerified': isVerified,
         'verificationCode': verificationCode,
-        'profileImage': profileImage,
+        'profileImageUrl': profileImage,
         'createdAt': createdAt,
         'updatedAt': updatedAt,
-
- 
       }..removeWhere(
           (dynamic key, dynamic value) => key == null || value == null);
 
   @override
-  List<Object> get props => [id, email, firstName, lastName, role, isVerified, verificationCode, createdAt, updatedAt];
+  List<Object> get props => [
+        id,
+        email,
+        firstName,
+        lastName,
+        role,
+        isVerified,
+        verificationCode,
+        createdAt,
+        updatedAt
+      ];
 
   @override
-  String toString() => "email: $email, id: $id, firstName: $firstName, lastName: $lastName, role: $role, isVerified: $isVerified, verificationCode: $verificationCode, createdAt: $createdAt, updatedAt: $updatedAt";
+  String toString() =>
+      "profileImageUrl: $profileImage email: $email, id: $id, firstName: $firstName, lastName: $lastName, role: $role, isVerified: $isVerified, verificationCode: $verificationCode, createdAt: $createdAt, updatedAt: $updatedAt";
 
   //static const empty = UserModel(id: 0, email: "-");
 

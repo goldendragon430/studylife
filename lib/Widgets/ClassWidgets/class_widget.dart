@@ -8,20 +8,23 @@ import '../../Models/class_datasource.dart';
 import '../../Models/API/classmodel.dart';
 import '../../Utilities/constants.dart';
 import '../../Extensions/extensions.dart';
+import '../../Models/API/event.dart';
 
 class ClassWidget extends ConsumerWidget {
   final int cardIndex;
   final bool upNext;
 
-  final ClassModel classItem;
+  final ClassModel? classItem;
+  final Event? eventItem;
   final Function cardselected;
 
   const ClassWidget(
       {super.key,
-      required this.classItem,
+      this.classItem,
       required this.cardIndex,
       required this.upNext,
-      required this.cardselected});
+      required this.cardselected,
+      this.eventItem});
 
   void _cardTapped() {
     cardselected(cardIndex);
@@ -68,18 +71,28 @@ class ClassWidget extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      classItem.subject?.subjectName ?? "".toUpperCase(),
+                      eventItem == null
+                          ? classItem?.subject?.subjectName ?? "".toUpperCase()
+                          : eventItem?.subject?.subjectName ?? "".toUpperCase(),
                       style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'BebasNeue',
                           fontWeight: FontWeight.normal,
-                          color: classItem.subject?.colorHex != null
-                              ? HexColor.fromHex(classItem.subject!.colorHex!)
-                              : Colors.red),
+                          color: eventItem == null
+                              ? classItem?.subject?.colorHex != null
+                                  ? HexColor.fromHex(
+                                      classItem!.subject!.colorHex!)
+                                  : Colors.red
+                              : eventItem?.subject?.colorHex != null
+                                  ? HexColor.fromHex(
+                                      eventItem!.subject!.colorHex!)
+                                  : Colors.red),
                     ),
                     Expanded(
                       child: Text(
-                        classItem.module ?? "",
+                        eventItem == null
+                            ? classItem?.module ?? ""
+                            : eventItem?.module ?? "",
                         maxLines: 4,
                         style: theme == ThemeMode.light
                             ? Constants.socialLoginLightButtonTextStyle
@@ -87,6 +100,7 @@ class ClassWidget extends ConsumerWidget {
                       ),
                     ),
                     Text(
+                      // eventItem == null ?
                       // '${_getFormattedTime(classItem.startDate)} - ${_getFormattedTime(classItem.dateTo)}',
                       "11:00 - 12:00",
                       style: theme == ThemeMode.light
@@ -108,7 +122,9 @@ class ClassWidget extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10), // Image border
                     child: Image.network(
                       fit: BoxFit.fill,
-                      classItem.subject?.imageUrl ?? "",
+                      eventItem == null
+                          ? classItem?.subject?.imageUrl ?? ""
+                          : eventItem?.subject?.imageUrl ?? "",
                       height: 114,
                       width: 143,
                     ),
@@ -139,60 +155,62 @@ class ClassWidget extends ConsumerWidget {
                   ),
                 ),
               ),
-              if (classItem.upNext != null) ...[
-                if (classItem.upNext == true) ...[
-                  // Up Next banner
-                  Align(
-                    alignment: AlignmentDirectional.topEnd,
-                    child: Container(
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: theme == ThemeMode.light
-                            ? Constants.lightThemeUpNextBannerBackgroundColor
-                            : Constants.darkThemeUpNextBannerBackgroundColor,
-                        borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(10.0),
-                            bottomLeft: Radius.circular(10.0)),
+              if (classItem != null) ...[
+                if (classItem!.upNext != null) ...[
+                  if (classItem!.upNext == true) ...[
+                    // Up Next banner
+                    Align(
+                      alignment: AlignmentDirectional.topEnd,
+                      child: Container(
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: theme == ThemeMode.light
+                              ? Constants.lightThemeUpNextBannerBackgroundColor
+                              : Constants.darkThemeUpNextBannerBackgroundColor,
+                          borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(10.0),
+                              bottomLeft: Radius.circular(10.0)),
+                        ),
+                        width: 83,
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(
+                            left: 6, right: 6, top: 6, bottom: 6),
+                        child: Text(
+                          "Up Next",
+                          style: theme == ThemeMode.light
+                              ? Constants.lightThemeUpNextBannerTextStyle
+                              : Constants.darkThemeUpNextBannerTextStyle,
+                        ),
                       ),
-                      width: 83,
-                      alignment: Alignment.center,
-                      padding:
-                          EdgeInsets.only(left: 6, right: 6, top: 6, bottom: 6),
-                      child: Text(
-                        "Up Next",
-                        style: theme == ThemeMode.light
-                            ? Constants.lightThemeUpNextBannerTextStyle
-                            : Constants.darkThemeUpNextBannerTextStyle,
-                      ),
-                    ),
-                  )
+                    )
+                  ],
                 ],
-              ],
-              if (classItem.tasks != null) ...[
-                if (classItem.tasks!.isNotEmpty) ...[
-                  // Add Tasks Due banner
-                  Align(
-                    alignment: AlignmentDirectional.bottomEnd,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 8, bottom: 8),
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: Constants.taskDueBannerColor,
-                        borderRadius: BorderRadius.circular(3.0),
+                if (classItem!.tasks != null) ...[
+                  if (classItem!.tasks!.isNotEmpty) ...[
+                    // Add Tasks Due banner
+                    Align(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      child: Container(
+                        margin: EdgeInsets.only(right: 8, bottom: 8),
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: Constants.taskDueBannerColor,
+                          borderRadius: BorderRadius.circular(3.0),
+                        ),
+                        width: 83,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(
+                            left: 6, right: 6, top: 6, bottom: 6),
+                        child: Text(
+                          "Task Due",
+                          //"${classItem.tasksDue} Task Due",
+                          style: Constants.taskDueBannerTextStyle,
+                        ),
                       ),
-                      width: 83,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.only(
-                          left: 6, right: 6, top: 6, bottom: 6),
-                      child: Text(
-                        "Task Due",
-                        //"${classItem.tasksDue} Task Due",
-                        style: Constants.taskDueBannerTextStyle,
-                      ),
-                    ),
-                  )
+                    )
+                  ],
                 ],
-              ],
+              ]
             ],
           ),
         ),

@@ -7,17 +7,20 @@ import '../app.dart';
 import '../Utilities/constants.dart';
 import '../Models/exam_datasource.dart';
 import '../Models/API/exam.dart';
+import '../Models/API/event.dart';
 
 class ExamWidget extends ConsumerWidget {
   final int cardIndex;
   final bool upNext;
 
-  final Exam examItem;
+  final Exam? examItem;
+  final Event? eventItem;
   final Function cardselected;
 
   const ExamWidget(
       {super.key,
-      required this.examItem,
+      this.examItem,
+      this.eventItem,
       required this.cardIndex,
       required this.upNext,
       required this.cardselected});
@@ -67,18 +70,28 @@ class ExamWidget extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      examItem.subject?.subjectName ?? "" .toUpperCase(),
+                      eventItem == null
+                          ? examItem?.subject?.subjectName ?? "".toUpperCase()
+                          : eventItem?.subject?.subjectName ?? "".toUpperCase(),
                       style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'BebasNeue',
                           fontWeight: FontWeight.normal,
-                          color: examItem.subject?.colorHex != null
-                              ? HexColor.fromHex(examItem.subject!.colorHex!)
-                              : Colors.red),
+                          color: eventItem == null
+                              ? examItem?.subject?.colorHex != null
+                                  ? HexColor.fromHex(
+                                      examItem!.subject!.colorHex!)
+                                  : Colors.red
+                              : eventItem?.subject?.colorHex != null
+                                  ? HexColor.fromHex(
+                                      eventItem!.subject!.colorHex!)
+                                  : Colors.red),
                     ),
                     Expanded(
                       child: Text(
-                        examItem.module ?? "",
+                        eventItem == null
+                            ? examItem?.module ?? ""
+                            : eventItem?.module ?? "",
                         maxLines: 4,
                         style: theme == ThemeMode.light
                             ? Constants.socialLoginLightButtonTextStyle
@@ -86,13 +99,17 @@ class ExamWidget extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      '${examItem.getExamStartFormattedDate()}',
+                      eventItem == null
+                          ? '${examItem?.getExamStartFormattedDate()}'
+                          : '${eventItem?.getFormattedStartingDate()}',
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
                           : Constants.darkTHemeClassDateTextStyle,
                     ),
-                      Text(
-                      '${(examItem.duration ?? 1 * 60)} Minutes - ${examItem.type}',
+                    Text(
+                      eventItem == null
+                          ? '${(examItem?.duration ?? 1 * 60)} Minutes - ${examItem?.type}'
+                          : '${(eventItem?.duration ?? 1 * 60)} Minutes - ${eventItem?.mode}',
                       style: theme == ThemeMode.light
                           ? Constants.socialLoginLightButtonTextStyle
                           : Constants.socialLoginDarkButtonTextStyle,
@@ -100,7 +117,7 @@ class ExamWidget extends ConsumerWidget {
                   ],
                 ),
               ),
-             Positioned(
+              Positioned(
                 right: 0,
                 bottom: 0,
                 top: 0,
@@ -109,13 +126,16 @@ class ExamWidget extends ConsumerWidget {
                   height: 142,
                   width: 143,
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10), // Image border
-                      child: Image.network(
-                          fit: BoxFit.fill,
-                          examItem.subject?.imageUrl ?? "",
-                          height: 142,
-                          width: 143,
-                        ),),
+                    borderRadius: BorderRadius.circular(10), // Image border
+                    child: Image.network(
+                      fit: BoxFit.fill,
+                      eventItem == null
+                          ? examItem?.subject?.imageUrl ?? ""
+                          : eventItem?.subject?.imageUrl ?? "",
+                      height: 142,
+                      width: 143,
+                    ),
+                  ),
                 ),
               ),
               Positioned(

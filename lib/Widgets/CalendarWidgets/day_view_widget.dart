@@ -86,7 +86,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                               margin: const EdgeInsets.only(
                                   top: 18, right: 15, left: 15),
                               child: Text(
-                                finalEvent.event?.title ?? "",
+                                finalEvent.event?.subject?.subjectName ?? "",
                                 style: TextStyle(
                                     overflow: TextOverflow.visible,
                                     fontSize: 20,
@@ -194,7 +194,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                           child: Container(
                             margin: const EdgeInsets.only(top: 18, right: 15),
                             child: Text(
-                              finalEvent.event?.title ?? "",
+                              finalEvent.event?.subject?.subjectName ?? "",
                               style: TextStyle(
                                   overflow: TextOverflow.visible,
                                   fontSize: 20,
@@ -336,7 +336,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                         margin:
                             const EdgeInsets.only(top: 18, right: 15, left: 15),
                         child: Text(
-                          finalEvent.event?.title ?? "",
+                          finalEvent.event?.subject?.subjectName ?? "",
                           style: TextStyle(
                               overflow: TextOverflow.visible,
                               fontSize: 15,

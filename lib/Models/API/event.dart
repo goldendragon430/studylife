@@ -26,6 +26,7 @@ class Event {
   String? teachersEmail;
   String? occurs;
   List<String>? days;
+  bool? resit;
   String? startDate;
   String? endDate;
   String? startTime;
@@ -33,6 +34,7 @@ class Event {
   String? createdAt;
   EventType? eventType;
   Subject? subject;
+  String? seat;
 
   // Calculated
 
@@ -94,7 +96,9 @@ class Event {
       this.endTime,
       this.createdAt,
       this.subject,
-      this.duration});
+      this.duration,
+      this.resit,
+      this.seat});
 
   Event.fromJson(Map<String, dynamic> json) {
     List<String> dayStrings = [];
@@ -125,7 +129,8 @@ class Event {
     endTime = json['endTime'];
     createdAt = json['createdAt'];
     duration = json['duration'];
-    // eventType = getEventType();
+    resit = json['resit'];
+    seat = json['seat'];
     subject =
         json['subject'] != null ? Subject.fromJson(json['subject']) : null;
   }
@@ -152,6 +157,8 @@ class Event {
     data['endTime'] = this.endTime;
     data['createdAt'] = this.createdAt;
     data['duration'] = this.duration;
+    data['resit'] = resit;
+    data['seat'] = seat;
     return data;
   }
 }

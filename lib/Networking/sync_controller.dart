@@ -71,9 +71,9 @@ class SyncController {
       _storageService
           .writeSecureData(StorageItem("user_tasks", jsonEncode(tasks)));
 
-      for (var classItem in tasks) {
-        print("tasks ${classItem.progress}");
-      }
+      // for (var classItem in classes) {
+      //   print("tasks ${classItem.subject?.subjectName}");
+      // }
     } catch (error) {
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);
@@ -175,8 +175,6 @@ class SyncController {
 
     String formattedDateTo = DateFormat('yyyy/MM/dd').format(today);
 
-    print("DADSSADADADADADAD $formattedDateFrom");
-
     try {
       var calendarEventssResponse = await CalendarEventService()
           .getEvents(formattedDateFrom, formattedDateTo);
@@ -186,11 +184,10 @@ class SyncController {
       _storageService
           .writeSecureData(StorageItem("user_events", jsonEncode(events)));
 
-            for (var eventItem in events) {
-        print("EVENt ${eventItem.room}");
-      }
+      //       for (var eventItem in events) {
+      //   print("EVENt ${eventItem.getFormattedStartingDate()}");
+      // }
     } catch (error) {
-      print("AAAAA ERROR ${error.toString()}");
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);
       } else {
