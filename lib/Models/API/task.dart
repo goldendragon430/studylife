@@ -39,6 +39,10 @@ class Task {
       this.subject,
       this.exam});
 
+  DateTime getExamDueDateTime() {
+    return DateTime.tryParse(dueDate ?? "") ?? DateTime.now();
+  }
+
   Task.fromJson(Map<String, dynamic> json) {
     List<String> dayStrings = [];
 

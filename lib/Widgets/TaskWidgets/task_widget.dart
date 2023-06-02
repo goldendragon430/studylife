@@ -42,15 +42,13 @@ class TaskWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
     double percentageProgress = (taskItem.progress ?? 0 / 10) * 100;
-    DateTime? dueDate = DateTime.tryParse(taskItem.dueDate ?? "");
+    DateTime? dueDate = taskItem.getExamDueDateTime();
     bool duePassed = false;
     int daysPassed = 0;
-    if (dueDate != null) {
-      var localDate = dueDate.toLocal();
-      if (localDate.isBefore(DateTime.now())) {
-        duePassed = true;
-        daysPassed = localDate.daysBetween(dueDate, DateTime.now());
-      }
+   // var localDate = dueDate.toLocal();
+    if (dueDate.isBefore(DateTime.now())) {
+      duePassed = true;
+      daysPassed = dueDate.daysBetween(dueDate, DateTime.now());
     }
 
     return Card(
@@ -235,7 +233,7 @@ class TaskWidget extends ConsumerWidget {
                   child: Text(
                     duePassed
                         ? "${daysPassed} days"
-                        : _getFormattedTime(dueDate ?? DateTime.now()),
+                        : _getFormattedTime(dueDate),
                     style: duePassed
                         ? TextStyle(
                             fontSize: 14,

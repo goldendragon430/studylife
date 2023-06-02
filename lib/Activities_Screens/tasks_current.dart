@@ -9,9 +9,12 @@ import '../Models/task_datasource.dart';
 import '../Extensions/extensions.dart';
 import '../Widgets/TaskWidgets/task_widget.dart';
 import '../Models/API/task.dart';
+import '../Activities_Screens/task_detail_screen.dart';
+
 
 class TasksCurrentList extends ConsumerWidget {
-  TasksCurrentList({super.key});
+  final List<Task> tasks;
+  TasksCurrentList(this.tasks, {super.key});
   final ScrollController scrollcontroller = ScrollController();
   final List<TaskItem> _tasks = TaskItem.thisMonthTasks;
 
@@ -26,7 +29,13 @@ class TasksCurrentList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    var groupByDate = groupBy(_tasks, (obj) => obj.date.isToday());
+    var groupByDate = groupBy(tasks, (obj) => obj.getExamDueDateTime().isToday());
+
+    // groupByDate.forEach((key, value) {
+    //   print("KEY : $key");
+    //         print("Value : $value");
+
+    // });
 
     return Container(
       margin: const EdgeInsets.only(top: 164),
@@ -37,7 +46,7 @@ class TasksCurrentList extends ConsumerWidget {
         },
         itemBuilder: (BuildContext context, IndexPath index) {
           return TaskWidget(
-              taskItem: Task(),
+              taskItem: groupByDate.values.toList()[index.section][index.index],
               cardIndex: index.index,
               upNext: true,
               cardselected: _selectedCard);
@@ -45,7 +54,7 @@ class TasksCurrentList extends ConsumerWidget {
         groupHeaderBuilder: (BuildContext context, int section) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: section == 0
+            child: groupByDate.keys.toList()[section] == true
                 ? Text(
                     'Due Today (${groupByDate.values.toList()[section].length})',
                     style: TextStyle(

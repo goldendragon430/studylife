@@ -28,6 +28,7 @@ class ActivitiesClassesScreen extends StatefulWidget {
 class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
   String selectedSubject = "";
   List<ClassModel> _classes = [];
+  List<ClassModel> _allClasses = [];
   final StorageService _storageService = StorageService();
   List<Subject> _subjects = [];
 
@@ -40,13 +41,13 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration.zero, () {
       getData();
     });
   }
 
   void getData() async {
-    var classesData = await _storageService.readSecureData("user_classes");
+    var classesData = await _storageService.readSecureData("user_classes_all");
 
     List<dynamic> decodedDataClasses = jsonDecode(classesData ?? "");
 
@@ -55,11 +56,15 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
 
     List<dynamic> decodedDataSubjects = jsonDecode(subjectsData ?? "");
 
+    if (!context.mounted) return;
+
     setState(() {
-      _classes = List<ClassModel>.from(
+      _allClasses = List<ClassModel>.from(
         decodedDataClasses
             .map((x) => ClassModel.fromJson(x as Map<String, dynamic>)),
       );
+
+      _classes = _allClasses;
 
       _subjects = List<Subject>.from(
         decodedDataSubjects
@@ -72,6 +77,18 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
 
       selectedSubject = _subjects[0].subjectName ?? "";
     });
+  }
+
+  void filterClasses() {
+    if (selectedSubject != "All Subjects") {
+      _classes = _allClasses.where((e) {
+        final subject = e.subject?.subjectName;
+
+        return subject == selectedSubject;
+      }).toList();
+    } else {
+      _classes = _allClasses;
+    }
   }
 
   void _selectedCard(int index) {
@@ -109,8 +126,10 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
                 alignedDropdown: true,
                 child: DropdownButton(
                   value: selectedSubject,
-                  onChanged: (String? newValue) =>
-                      setState(() => selectedSubject = newValue ?? ""),
+                  onChanged: (String? newValue) => setState(() {
+                    selectedSubject = newValue ?? "";
+                    filterClasses();
+                  }),
                   items: _subjects
                       .map<DropdownMenuItem<String>>(
                           (Subject subjectItem) => DropdownMenuItem<String>(
@@ -123,7 +142,7 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
               ),
             ),
           ),
-         // Classes
+          // Classes
           Container(
             alignment: Alignment.topCenter,
             height: double.infinity,

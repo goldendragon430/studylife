@@ -51,6 +51,10 @@ class Exam {
     }
   }
 
+   DateTime getExamStartdateDateTime() {
+    return DateTime.tryParse(startDate ?? "") ?? DateTime.now();
+  }
+
   Exam.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['userId'];

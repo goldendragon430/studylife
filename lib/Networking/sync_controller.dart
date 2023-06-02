@@ -33,7 +33,16 @@ class SyncController {
   Future<dynamic> syncAll() async {
     // ErrorState error = ErrorState("Opps");
     Result finalResult = Result.loading("Loading");
-    await Future.wait([_getSubjects(), _getHomeData(), _getExams(), _getCalendarEvents()]).then((v) {
+    await Future.wait([
+      _getSubjects(),
+      _getHomeData(),
+      _getExams(),
+      _getCalendarEvents(),
+      _getClasses(),
+      _getTasksCurrent(),
+      _getTasksPast(),
+      _getTasksOverdue()
+    ]).then((v) {
       finalResult = Result.success("Success");
 
       return finalResult;
@@ -110,8 +119,8 @@ class SyncController {
 
       final classList = (classesResponse.data['classes']) as List;
       classes = classList.map((i) => ClassModel.fromJson(i)).toList();
-      _storageService
-          .writeSecureData(StorageItem("user_classes", jsonEncode(classes)));
+      _storageService.writeSecureData(
+          StorageItem("user_classes_all", jsonEncode(classes)));
 
       // for (var classItem in classes) {
       //   print("SUBJECtS ${classItem.module}");
@@ -127,15 +136,36 @@ class SyncController {
 
   Future _getExams() async {
     try {
-      var classesResponse = await ExamService().getExams(null, null);
+      var classesResponse = await ExamService().getExams(null, "current");
 
       final examList = (classesResponse.data['exams']) as List;
       exams = examList.map((i) => Exam.fromJson(i)).toList();
       _storageService
-          .writeSecureData(StorageItem("user_exams", jsonEncode(exams)));
+          .writeSecureData(StorageItem("user_exams_all", jsonEncode(exams)));
 
-      for (var examItem in exams) {
-        print("EXAMS ${examItem.module}");
+      // for (var examItem in exams) {
+      //   print("EXAMS ${examItem.module}");
+      // }
+    } catch (error) {
+      if (error is DioError) {
+        throw Result.error(error.response?.data['message']);
+      } else {
+        throw Result.error(error.toString());
+      }
+    }
+  }
+
+  Future _getTasksCurrent() async {
+    try {
+      var classesResponse = await TaskService().getTasks(null, "current");
+
+      final taskList = (classesResponse.data['tasks']) as List;
+      tasks = taskList.map((i) => Task.fromJson(i)).toList();
+      _storageService.writeSecureData(
+          StorageItem("user_tasks_current", jsonEncode(tasks)));
+
+      for (var taskItem in tasks) {
+        print("TASKS ${taskItem.subject?.subjectName}");
       }
     } catch (error) {
       if (error is DioError) {
@@ -146,14 +176,35 @@ class SyncController {
     }
   }
 
-  Future _getTasksDue() async {
+  Future _getTasksPast() async {
     try {
-      var classesResponse = await TaskService().getTasks(null, null);
+      var classesResponse = await TaskService().getTasks(null, "past");
 
       final taskList = (classesResponse.data['tasks']) as List;
       tasks = taskList.map((i) => Task.fromJson(i)).toList();
       _storageService
-          .writeSecureData(StorageItem("user_tasks", jsonEncode(exams)));
+          .writeSecureData(StorageItem("user_tasks_past", jsonEncode(tasks)));
+
+      for (var taskItem in tasks) {
+        print("TASKS ${taskItem.subject?.subjectName}");
+      }
+    } catch (error) {
+      if (error is DioError) {
+        throw Result.error(error.response?.data['message']);
+      } else {
+        throw Result.error(error.toString());
+      }
+    }
+  }
+
+  Future _getTasksOverdue() async {
+    try {
+      var classesResponse = await TaskService().getTasks(null, "overdue");
+
+      final taskList = (classesResponse.data['tasks']) as List;
+      tasks = taskList.map((i) => Task.fromJson(i)).toList();
+      _storageService.writeSecureData(
+          StorageItem("user_tasks_overdue", jsonEncode(tasks)));
 
       for (var taskItem in tasks) {
         print("TASKS ${taskItem.subject?.subjectName}");

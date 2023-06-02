@@ -11,12 +11,14 @@ import '../Home_Screens/exam_details_screen.dart';
 import '../Models/task_datasource.dart';
 import '../Widgets/TaskWidgets/task_widget.dart';
 import '../Models/API/exam.dart';
+import '../Models/API/task.dart';
+import '../Activities_Screens/task_detail_screen.dart';
 
 class ExpandableListView extends StatefulWidget {
   final String period;
   final String numberOfItems;
-  final List<ExamStatic>? exams;
-  final List<TaskItem>? tasks;
+  final List<Exam>? exams;
+  final List<Task>? tasks;
 
   const ExpandableListView(
       {Key? key,
@@ -37,16 +39,16 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>  ExamDetailsScreen(examItem: Exam(),),
+            builder: (context) =>  ExamDetailsScreen(examItem: widget.exams![index]),
             fullscreenDialog: true));
   }
 
   void _selectedTaskCard(int index) {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => const ExamDetailsScreen(),
-    //         fullscreenDialog: true));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TaskDetailsScreen(widget.tasks![index]),
+            fullscreenDialog: true));
   }
 
   @override
@@ -122,27 +124,26 @@ class _ExpandableListViewState extends State<ExpandableListView> {
               Container(
                 height: 20,
               ),
-              // ExpandableContainer(
-              //     expanded: expandFlag,
-              //     child: ListView.builder(
-              //       itemBuilder: (BuildContext context, int index) {
-              //         if (widget.exams != null) {
-              //           return ExamWidget(
-              //               classItem: widget.exams![index],
-              //               cardIndex: index,
-              //               upNext: true,
-              //               cardselected: _selectedExamCard);
-              //         } else {
-              //           return TaskWidget(
-              //               taskItem: widget.tasks![index],
-              //               cardIndex: index,
-              //               upNext: true,
-              //               cardselected: _selectedTaskCard);
-              //           ;
-              //         }
-              //       },
-              //       itemCount: widget.exams != null ? widget.exams!.length : widget.tasks!.length,
-              //     ))
+              ExpandableContainer(
+                  expanded: expandFlag,
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      if (widget.exams != null) {
+                        return ExamWidget(
+                            examItem: widget.exams![index],
+                            cardIndex: index,
+                            upNext: true,
+                            cardselected: _selectedExamCard);
+                      } else {
+                        return TaskWidget(
+                            taskItem: widget.tasks![index],
+                            cardIndex: index,
+                            upNext: true,
+                            cardselected: _selectedTaskCard);
+                      }
+                    },
+                    itemCount: widget.exams != null ? widget.exams!.length : widget.tasks!.length,
+                  ))
             ],
           ),
         );

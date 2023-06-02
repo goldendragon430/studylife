@@ -9,9 +9,13 @@ import '../Widgets/expandable_listview.dart';
 import '../Models/task_datasource.dart';
 import '../Extensions/extensions.dart';
 import '../Widgets/TaskWidgets/task_widget.dart';
+import '../Models/API/task.dart';
+import '../Activities_Screens/task_detail_screen.dart';
 
 class TasksOverdueList extends ConsumerWidget {
-  TasksOverdueList({super.key});
+  final List<Task> tasks;
+
+  TasksOverdueList(this.tasks, {super.key});
   final ScrollController scrollcontroller = ScrollController();
   final List<TaskItem> _tasks = TaskItem.overdueTasks;
 
@@ -31,7 +35,7 @@ class TasksOverdueList extends ConsumerWidget {
       margin: const EdgeInsets.only(top: 164),
       child: ListView.builder(
           // controller: widget._controller,
-          itemCount: _tasks.length,
+          itemCount: tasks.length,
           itemBuilder: (context, index) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -41,7 +45,7 @@ class TasksOverdueList extends ConsumerWidget {
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.only(left: 20),
                     child: Text(
-                      'Overdue (${_tasks.length})',
+                      'Overdue (${tasks.length})',
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Roboto',
@@ -50,11 +54,11 @@ class TasksOverdueList extends ConsumerWidget {
                     ),
                   ),
                 ],
-                // TaskWidget(
-                //     taskItem: _tasks[index],
-                //     cardIndex: index,
-                //     upNext: true,
-                //     cardselected: _selectedCard),
+                TaskWidget(
+                    taskItem: tasks[index],
+                    cardIndex: index,
+                    upNext: true,
+                    cardselected: _selectedCard),
               ],
             );
           }),
