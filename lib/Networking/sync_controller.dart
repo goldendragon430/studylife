@@ -13,6 +13,7 @@ import '../Networking/exam_service.dart';
 import '../Networking/task_service.dart';
 import '../Networking/home_service.dart';
 import '../Networking/calendar_event_service.dart';
+import '../Networking/holiday_Service.dart';
 
 // Models
 import '../Models/API/subject.dart';
@@ -21,6 +22,7 @@ import '../Models/API/result.dart';
 import '../Models/API/exam.dart';
 import '../Models/API/task.dart';
 import '../Models/API/event.dart';
+import '../Models/API/holiday.dart';
 
 class SyncController {
   final StorageService _storageService = StorageService();
@@ -29,6 +31,7 @@ class SyncController {
   static List<Exam> exams = [];
   static List<Task> tasks = [];
   static List<Event> events = [];
+  static List<Holiday> holidays = [];
 
   Future<dynamic> syncAll() async {
     // ErrorState error = ErrorState("Opps");
@@ -41,7 +44,9 @@ class SyncController {
       _getClasses(),
       _getTasksCurrent(),
       _getTasksPast(),
-      _getTasksOverdue()
+      _getTasksOverdue(),
+      _getHolidays("upcoming"),
+      _getHolidays("past"),
     ]).then((v) {
       finalResult = Result.success("Success");
 
@@ -164,9 +169,9 @@ class SyncController {
       _storageService.writeSecureData(
           StorageItem("user_tasks_current", jsonEncode(tasks)));
 
-      for (var taskItem in tasks) {
-        print("TASKS ${taskItem.subject?.subjectName}");
-      }
+      // for (var taskItem in tasks) {
+      //   print("TASKS ${taskItem.subject?.subjectName}");
+      // }
     } catch (error) {
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);
@@ -185,9 +190,9 @@ class SyncController {
       _storageService
           .writeSecureData(StorageItem("user_tasks_past", jsonEncode(tasks)));
 
-      for (var taskItem in tasks) {
-        print("TASKS ${taskItem.subject?.subjectName}");
-      }
+      // for (var taskItem in tasks) {
+      //   print("TASKS ${taskItem.subject?.subjectName}");
+      // }
     } catch (error) {
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);
@@ -206,9 +211,9 @@ class SyncController {
       _storageService.writeSecureData(
           StorageItem("user_tasks_overdue", jsonEncode(tasks)));
 
-      for (var taskItem in tasks) {
-        print("TASKS ${taskItem.subject?.subjectName}");
-      }
+      // for (var taskItem in tasks) {
+      //   print("TASKS ${taskItem.subject?.subjectName}");
+      // }
     } catch (error) {
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);
@@ -234,6 +239,33 @@ class SyncController {
       events = eventList.map((i) => Event.fromJson(i)).toList();
       _storageService
           .writeSecureData(StorageItem("user_events", jsonEncode(events)));
+
+      //       for (var eventItem in events) {
+      //   print("EVENt ${eventItem.getFormattedStartingDate()}");
+      // }
+    } catch (error) {
+      if (error is DioError) {
+        throw Result.error(error.response?.data['message']);
+      } else {
+        throw Result.error(error.toString());
+      }
+    }
+  }
+
+  Future _getHolidays(String filter) async {
+    try {
+      var holidaysResponse = await HolidayService().getHolidays(filter);
+
+      final holidayList = (holidaysResponse.data['holidays']) as List;
+      holidays = holidayList.map((i) => Holiday.fromJson(i)).toList();
+
+      if (filter == "upcoming") {
+        _storageService.writeSecureData(
+            StorageItem("user_holidays_upcoming", jsonEncode(holidays)));
+      } else {
+        _storageService.writeSecureData(
+            StorageItem("user_holidays_past", jsonEncode(holidays)));
+      }
 
       //       for (var eventItem in events) {
       //   print("EVENt ${eventItem.getFormattedStartingDate()}");

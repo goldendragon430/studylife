@@ -10,9 +10,10 @@ import '../Extensions/extensions.dart';
 import '../../app.dart';
 import '../Models/holidays_datasource.dart';
 import '../Widgets/holiday_xtra_info_card.dart';
+import '../Models/API/holiday.dart';
 
 class HolidayXtraDetailScreen extends StatefulWidget {
-  final HolidayItem item;
+  final Holiday item;
 
   const HolidayXtraDetailScreen({super.key, required this.item});
 
@@ -76,10 +77,10 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
   }
 
   _getFromCamera() async {
-   final file = await _picker.pickImage(
-        source: ImageSource.camera,
-        maxWidth: 1800,
-        maxHeight: 1800,
+    final file = await _picker.pickImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
     );
 
     setState(() {
@@ -89,7 +90,7 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
     // if (file != null) {
     //     File imageFile = File(pickedFile.path);
     // }
-}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,7 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
           height: double.infinity,
           child: Stack(
             children: [
-              if (widget.item.holidayImageBig == null) ...[
+              if (widget.item.imageUrl == null) ...[
                 if (_path == null) ...[
                   Container(
                     height: screenHeight - 290,
@@ -174,11 +175,15 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
                   ),
                 ),
               ],
-              if (widget.item.holidayImageBig != null) ...[
+              if (widget.item.imageUrl != null) ...[
                 Container(
                   height: screenHeight - 290,
                   alignment: Alignment.topCenter,
-                  child: Image.asset("assets/images/HolidayBigBackground.png"),
+                  child: Image.network(
+                    widget.item.imageUrl ?? "",
+                                      height: screenHeight - 290,
+                    fit: BoxFit.fitHeight,
+                  ),
                 ),
               ],
               Container(

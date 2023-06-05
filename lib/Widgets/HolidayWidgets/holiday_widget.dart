@@ -6,13 +6,14 @@ import 'package:group_list_view/group_list_view.dart';
 
 import '../../app.dart';
 import '../../Models/holidays_datasource.dart';
+import '../../Models/API/holiday.dart';
 import '../../Utilities/constants.dart';
 
 class HolidayWidget extends ConsumerWidget {
   final IndexPath cardIndex;
   final bool upNext;
 
-  final HolidayItem holidayItem;
+  final Holiday holidayItem;
   final Function cardselected;
 
   const HolidayWidget(
@@ -56,7 +57,7 @@ class HolidayWidget extends ConsumerWidget {
       child: InkWell(
         onTap: _cardTapped,
         child: Container(
-          height: holidayItem.holidayImage != null ? 103 : 73,
+          height: holidayItem.imageUrl != null ? 103 : 73,
           child: Stack(
             children: [
               Container(
@@ -68,7 +69,7 @@ class HolidayWidget extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        holidayItem.title,
+                        holidayItem.title ?? "",
                         maxLines: 4,
                         style: TextStyle(
                             fontSize: 15,
@@ -80,9 +81,9 @@ class HolidayWidget extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      holidayItem.dateTo != null
-                          ? '${_getFormattedTime(holidayItem.dateFrom)} - ${_getFormattedTime(holidayItem.dateTo ?? DateTime.now())}'
-                          : _getFormattedTime(holidayItem.dateFrom),
+                      holidayItem.endDate != null
+                          ? '${_getFormattedTime(holidayItem.getStartDate())} - ${_getFormattedTime(holidayItem.getEndDate())}'
+                          : _getFormattedTime(holidayItem.getEndDate()),
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
                           : Constants.darkTHemeClassDateTextStyle,
@@ -90,24 +91,43 @@ class HolidayWidget extends ConsumerWidget {
                   ],
                 ),
               ),
-              if (holidayItem.holidayImage != null) ...[
+              if (holidayItem.imageUrl != null) ...[
                 Positioned(
                   right: 0,
+                  bottom: 0,
+                  top: 0,
                   child: Container(
+                    margin: EdgeInsets.all(0),
                     height: 141,
                     width: 143,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: Image.asset(
-                        holidayItem.holidayImage ?? "",
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10), // Image border
+                      child: Image.network(
+                        fit: BoxFit.fill,
+                        holidayItem.imageUrl ?? "",
+                        height: 141,
+                        width: 143,
                       ),
                     ),
                   ),
                 ),
+                // Positioned(
+                //   right: 0,
+                //   child: Container(
+                //     height: 141,
+                //     width: 143,
+                //     child: FittedBox(
+                //       fit: BoxFit.fill,
+                //       child: Image.asset(
+                //         holidayItem.holidayImage ?? "",
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Positioned(
                   right: 45,
                   child: Container(
-                    height: 114.0,
+                    height: 141.0,
                     width: 98,
                     decoration: BoxDecoration(
                       color: Colors.white,

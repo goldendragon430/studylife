@@ -6,12 +6,14 @@ import 'package:group_list_view/group_list_view.dart';
 import "package:collection/collection.dart";
 
 import '../../app.dart';
-import '../Home_Screens/exam_details_screen.dart';
 import './custom_segmentedcontrol.dart';
 import '../Models/holidays_datasource.dart';
 import '../Widgets/HolidayWidgets/holiday_widget.dart';
+import '../Models/Services/storage_service.dart';
+import 'dart:convert';
 
 import './holiday_xtra_detail_screen.dart';
+import '../Models/API/holiday.dart';
 
 class ActivitiesHolidaysScreen extends StatefulWidget {
   const ActivitiesHolidaysScreen({super.key});
@@ -22,12 +24,50 @@ class ActivitiesHolidaysScreen extends StatefulWidget {
 }
 
 class _ActivitiesHolidaysScreenState extends State<ActivitiesHolidaysScreen> {
-  final List<HolidayItem> _holidays = HolidayItem.holidays;
   int selectedTabIndex = 1;
   final todaysDate = DateTime.now();
+  List<Holiday> _allHolidaysPast = [];
+  List<Holiday> _allHolidaysUpcoming = [];
 
-  void _selectedCard(IndexPath index, HolidayItem item) {
-     Navigator.push(
+  final StorageService _storageService = StorageService();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      getData();
+    });
+  }
+
+  void getData() async {
+    var upcomingHolidaysData =
+        await _storageService.readSecureData("user_holidays_upcoming");
+
+    List<dynamic> decodedDataUpcomingClasses =
+        jsonDecode(upcomingHolidaysData ?? "");
+
+    var pastHolidaysData =
+        await _storageService.readSecureData("user_holidays_past");
+
+    List<dynamic> decodedDataPastClasses = jsonDecode(pastHolidaysData ?? "");
+
+    if (!context.mounted) return;
+
+    setState(() {
+      _allHolidaysUpcoming = List<Holiday>.from(
+        decodedDataUpcomingClasses
+            .map((x) => Holiday.fromJson(x as Map<String, dynamic>)),
+      );
+
+      _allHolidaysPast = List<Holiday>.from(
+        decodedDataPastClasses
+            .map((x) => Holiday.fromJson(x as Map<String, dynamic>)),
+      );
+    });
+  }
+
+  void _selectedCard(IndexPath index, Holiday item) {
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => HolidayXtraDetailScreen(item: item),
@@ -45,11 +85,14 @@ class _ActivitiesHolidaysScreenState extends State<ActivitiesHolidaysScreen> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
-        final startOfWeek = todaysDate.findFirstDateOfTheWeek(todaysDate);
-        final endOfWeek = todaysDate.findLastDateOfTheWeek(todaysDate);
+      final startOfWeek = todaysDate.findFirstDateOfTheWeek(todaysDate);
+      final endOfWeek = todaysDate.findLastDateOfTheWeek(todaysDate);
 
+      var groupByDateUpcoming = groupBy(_allHolidaysUpcoming,
+          (obj) => obj.getStartDate().isBetween(startOfWeek, endOfWeek));
 
-      var groupByDate = groupBy(_holidays, (obj) => obj.dateFrom.isBetween(startOfWeek, endOfWeek));
+      var groupByDatePast = groupBy(_allHolidaysPast,
+          (obj) => obj.getStartDate().isBetween(startOfWeek, endOfWeek));
 
       return Stack(
         children: [
@@ -78,14 +121,21 @@ class _ActivitiesHolidaysScreenState extends State<ActivitiesHolidaysScreen> {
           Container(
             margin: const EdgeInsets.only(top: 80),
             child: GroupListView(
-              sectionsCount: groupByDate.keys.toList().length,
+              sectionsCount: selectedTabIndex == 1
+                  ? groupByDateUpcoming.keys.toList().length
+                  : groupByDatePast.keys.toList().length,
               countOfItemInSection: (int section) {
-                return groupByDate.values.toList()[section].length;
+                return selectedTabIndex == 1
+                    ? groupByDateUpcoming.values.toList()[section].length
+                    : groupByDatePast.values.toList()[section].length;
               },
               itemBuilder: (BuildContext context, IndexPath index) {
                 return HolidayWidget(
-                    holidayItem: groupByDate.values.toList()[index.section]
-                        [index.index],
+                    holidayItem: selectedTabIndex == 1
+                        ? groupByDateUpcoming.values.toList()[index.section]
+                            [index.index]
+                        : groupByDatePast.values.toList()[index.section]
+                            [index.index],
                     cardIndex: index,
                     upNext: true,
                     cardselected: _selectedCard);
@@ -96,7 +146,9 @@ class _ActivitiesHolidaysScreenState extends State<ActivitiesHolidaysScreen> {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: section == 0
                       ? Text(
-                          'This week (${groupByDate.values.toList()[section].length})',
+                          selectedTabIndex == 1
+                              ? 'This week (${groupByDateUpcoming.values.toList()[section].length})'
+                              : 'Past (${groupByDatePast.values.toList()[section].length})',
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',
@@ -107,7 +159,9 @@ class _ActivitiesHolidaysScreenState extends State<ActivitiesHolidaysScreen> {
                           ),
                         )
                       : Text(
-                          'This month (${groupByDate.values.toList()[section].length})',
+                          selectedTabIndex == 1
+                              ? 'This month (${groupByDateUpcoming.values.toList()[section].length})'
+                              : 'This month (${groupByDatePast.values.toList()[section].length})',
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',

@@ -38,7 +38,6 @@ class ClassService {
     var response = await Api().dio.post(
         '/api/class',
         data: body);
-    print(response);
 
     return response;
   }

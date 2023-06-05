@@ -7,15 +7,16 @@ import '../Utilities/constants.dart';
 import '../Extensions/extensions.dart';
 import '../Models/holidays_datasource.dart';
 import '../../app.dart';
+import '../Models/API/holiday.dart';
 
 class HolidayXtraInfoInfoCard extends ConsumerWidget {
-  final HolidayItem item;
+  final Holiday item;
   const HolidayXtraInfoInfoCard(this.item, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    final startDateString = DateFormat('EEE, dd, MMM').format(item.dateFrom);
+    final startDateString = DateFormat('EEE, dd, MMM').format(item.getStartDate());
 
     return Container(
       //  height: 154,
@@ -50,7 +51,7 @@ class HolidayXtraInfoInfoCard extends ConsumerWidget {
             Container(
               child: Expanded(
                 child: Text(
-                  item.title,
+                  item.title ?? "",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -69,7 +70,7 @@ class HolidayXtraInfoInfoCard extends ConsumerWidget {
             Container(
               height: 18,
               child: Text(
-                item.type.toString(),
+                "Holiday",
                 style: TextStyle(
                   fontSize: 15,
                   fontFamily: 'Roboto',

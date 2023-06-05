@@ -63,6 +63,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (!context.mounted) return;
 
+      print("EVE GA RESPONSE: ${response.data['message']}");
+
       LoadingDialog.hide(context);
       CustomSnackBar.show(
           context, CustomSnackBarType.success, response.data['message'], false);
@@ -72,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (error is DioError) {
         LoadingDialog.hide(context);
         CustomSnackBar.show(
-            context, CustomSnackBarType.error, error.response?.data['msg'], false);
+            context, CustomSnackBarType.error, error.response?.data['message'], false);
       } else {
         LoadingDialog.hide(context);
         CustomSnackBar.show(

@@ -26,18 +26,31 @@ class HolidayService {
   }
 
   Future<Response> createHoliday(Holiday holidayItem) async {
-    String fileName = holidayItem.imageUrl!.split('/').last;
+    if (holidayItem.imageUrl == null) {
+      
+      FormData formData = FormData.fromMap({
+        "title": holidayItem.title,
+        "startDate": holidayItem.startDate,
+        "endDate": holidayItem.endDate,
+      });
 
-    FormData formData = FormData.fromMap({
-      "title": holidayItem.title,
-      "startDate": holidayItem.startDate,
-      "endDate": holidayItem.endDate,
-      "image": await MultipartFile.fromFile(holidayItem.imageUrl!,
-          filename: fileName),
-    });
+      var response = await Api().dio.post('/api/holiday', data: formData);
 
-    var response = await Api().dio.post('/api/holiday', data: formData);
+      return response;
+    } else {
+      String fileName = holidayItem.imageUrl!.split('/').last;
 
-    return response;
+      FormData formData = FormData.fromMap({
+        "title": holidayItem.title,
+        "startDate": holidayItem.startDate,
+        "endDate": holidayItem.endDate,
+        "image": await MultipartFile.fromFile(holidayItem.imageUrl!,
+            filename: fileName),
+      });
+
+      var response = await Api().dio.post('/api/holiday', data: formData);
+
+      return response;
+    }
   }
 }

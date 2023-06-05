@@ -24,6 +24,14 @@ class Holiday {
     }
   }
 
+  DateTime getStartDate() {
+    return DateTime.tryParse(startDate ?? "") ?? DateTime.now();
+  }
+
+  DateTime getEndDate() {
+    return DateTime.tryParse(endDate ?? "") ?? DateTime.now();
+  }
+
   Holiday(
       {this.id,
       this.userId,

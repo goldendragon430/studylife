@@ -190,7 +190,7 @@ class _CreateScreenState extends State<CreateScreen>
   void _saveHoliday(Holiday holidayItem) async {
     final contextMain = scaffoldMessengerKey.currentContext!;
 
-    // print(examItem.subject);
+     print(holidayItem.title);
     // print(examItem.mode);
     // print(examItem.module);
     // print(examItem.room);
@@ -201,7 +201,6 @@ class _CreateScreenState extends State<CreateScreen>
     //     print(examItem.duration);
 
     if (holidayItem.title == null ||
-        holidayItem.imageUrl == null ||
         holidayItem.startDate == null ||
         holidayItem.endDate == null) {
       CustomSnackBar.show(contextMain, CustomSnackBarType.error,
