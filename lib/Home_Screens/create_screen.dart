@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_study_life_flutter/Models/subjects_datasource.dart';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -21,9 +22,22 @@ import '../Home_Screens/home_page.dart';
 import '../../Networking/exam_service.dart';
 import '../Networking/holiday_Service.dart';
 import '../Models/API/holiday.dart';
+import '../Models/API/classmodel.dart';
+import '../Models/API/exam.dart';
+import '../Models/API/task.dart';
 
 class CreateScreen extends StatefulWidget {
-  const CreateScreen({super.key});
+  final ClassModel? classItem;
+  final Exam? examItem;
+  final Task? taskItem;
+  final Holiday? holidayItem;
+
+  const CreateScreen(
+      {super.key,
+      this.classItem,
+      this.examItem,
+      this.taskItem,
+      this.holidayItem});
 
   @override
   State<CreateScreen> createState() => _CreateScreenState();
@@ -32,6 +46,8 @@ class CreateScreen extends StatefulWidget {
 class _CreateScreenState extends State<CreateScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  int initialTabIndex = 0;
+  bool isEditing = false;
 
   @override
   void initState() {
@@ -42,16 +58,43 @@ class _CreateScreenState extends State<CreateScreen>
         milliseconds: 1600,
       ),
     );
-
     _controller.addListener(() {
       setState(() {});
     });
+    checkForEditedItems();
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void checkForEditedItems() {
+    if (widget.classItem != null) {
+      setState(() {
+        isEditing = true;
+        initialTabIndex = 0;
+      });
+    }
+    if (widget.examItem != null) {
+      setState(() {
+        isEditing = true;
+        initialTabIndex = 1;
+      });
+    }
+    if (widget.taskItem != null) {
+      setState(() {
+        isEditing = true;
+        initialTabIndex = 2;
+      });
+    }
+    if (widget.holidayItem != null) {
+      setState(() {
+        isEditing = true;
+        initialTabIndex = 3;
+      });
+    }
   }
 
   void _saveClass(ClassModel classItem) async {
@@ -99,24 +142,51 @@ class _CreateScreenState extends State<CreateScreen>
 
     LoadingDialog.show(context);
 
-    try {
-      var response = await ClassService().createClass(classItem);
+    if (isEditing) {
+      try {
+        var response = await ClassService().updateClass(classItem);
 
-      if (!contextMain.mounted) return;
+        if (!contextMain.mounted) return;
 
-      LoadingDialog.hide(context);
-      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
-          response.data['message'], true);
-      Navigator.pop(context);
-    } catch (error) {
-      if (error is DioError) {
+        print("ASDADADADGDSKHFBDSG ${response.data['message']}");
+
         LoadingDialog.hide(context);
-        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
-            error.response?.data['message'], true);
-      } else {
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          print("dsfsfsfsfsf ${error.response.toString()}");
+
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data.toString() ?? "", true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    } else {
+      try {
+        var response = await ClassService().createClass(classItem);
+
+        if (!contextMain.mounted) return;
+
         LoadingDialog.hide(context);
-        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
-            "Oops, something went wrong", true);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
       }
     }
   }
@@ -165,8 +235,9 @@ class _CreateScreenState extends State<CreateScreen>
 
     LoadingDialog.show(context);
 
-    try {
-      var response = await ExamService().createExam(examItem);
+    if (isEditing) {
+       try {
+      var response = await ExamService().updateExam(examItem);
 
       if (!contextMain.mounted) return;
 
@@ -185,20 +256,32 @@ class _CreateScreenState extends State<CreateScreen>
             "Oops, something went wrong", true);
       }
     }
+    } else {
+      try {
+        var response = await ExamService().createExam(examItem);
+
+        if (!contextMain.mounted) return;
+
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    }
   }
 
   void _saveHoliday(Holiday holidayItem) async {
     final contextMain = scaffoldMessengerKey.currentContext!;
-
-     print(holidayItem.title);
-    // print(examItem.mode);
-    // print(examItem.module);
-    // print(examItem.room);
-    // print(examItem.startTime);
-    // print(examItem.startDate);
-    //     print(examItem.type);
-    //     print(examItem.seat);
-    //     print(examItem.duration);
 
     if (holidayItem.title == null ||
         holidayItem.startDate == null ||
@@ -241,12 +324,15 @@ class _CreateScreenState extends State<CreateScreen>
         animationController: _controller,
         builder: (BuildContext context) {
           return Container(
-            height: MediaQuery.of(context).size.height * 0.9,
+            height: isEditing
+                ? MediaQuery.of(context).size.height * 0.7
+                : MediaQuery.of(context).size.height * 0.8,
             // decoration: BoxDecoration(
             //   color: Colors.red,
             //   borderRadius: BorderRadius.circular(50.0),
             // ),
             child: DefaultTabController(
+              initialIndex: initialTabIndex,
               length: 5,
               child: Scaffold(
                 appBar: AppBar(
@@ -311,12 +397,19 @@ class _CreateScreenState extends State<CreateScreen>
                 ),
                 body: TabBarView(
                   children: [
-                    CreateClass(saveClass: _saveClass),
+                    CreateClass(
+                      saveClass: _saveClass,
+                      editedClass: widget.classItem,
+                    ),
                     CreateExam(
+                      editedExam: widget.examItem,
                       saveExam: _saveExam,
                     ),
                     CreateTask(),
-                    CreateHoliday(saveHoliday: _saveHoliday,),
+                    CreateHoliday(
+                      holidayItem: widget.holidayItem,
+                      saveHoliday: _saveHoliday,
+                    ),
                     CreateExtra(),
                   ],
                 ),

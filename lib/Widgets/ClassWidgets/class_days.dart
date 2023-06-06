@@ -7,10 +7,12 @@ import '../../Extensions/extensions.dart';
 import '../../app.dart';
 import '../tag_card.dart';
 import '../../Models/subjects_datasource.dart';
+import '../../Models/API/classmodel.dart';
 
 class ClassWeekDays extends StatefulWidget {
   final Function subjectSelected;
-  ClassWeekDays({super.key, required this.subjectSelected});
+  final ClassModel? classItem;
+  ClassWeekDays({super.key, required this.subjectSelected, this.classItem});
 
   @override
   State<ClassWeekDays> createState() => _ClassWeekDaysState();
@@ -19,6 +21,19 @@ class ClassWeekDays extends StatefulWidget {
 class _ClassWeekDaysState extends State<ClassWeekDays> {
   final List<ClassTagItem> _days = ClassTagItem.classDays;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.classItem != null) {
+      if (widget.classItem?.occurs == "repeating") {
+        for (var day in widget.classItem?.days ?? []) {
+          var selectedIndex = _days.indexWhere(
+              (element) => element.title.toLowerCase() == day.toLowerCase());
+          _days[selectedIndex].selected = true;
+        }
+      }
+    }
+  }
 
   void _selectTab(int index) {
     setState(() {
@@ -26,9 +41,9 @@ class _ClassWeekDaysState extends State<ClassWeekDays> {
       //   item.selected = false;
       // }
 
-      _days[index].selected = true;
+      _days[index].selected = !_days[index].selected;
       widget.subjectSelected(_days);
-      print("CARD SELECTED $index");
+      // print("CARD SELECTED $index");
     });
   }
 
@@ -47,7 +62,9 @@ class _ClassWeekDaysState extends State<ClassWeekDays> {
           children: [
             Text(
               'Days*',
-              style: theme == ThemeMode.light ? Constants.lightThemeSubtitleTextStyle : Constants.darkThemeSubtitleTextStyle,
+              style: theme == ThemeMode.light
+                  ? Constants.lightThemeSubtitleTextStyle
+                  : Constants.darkThemeSubtitleTextStyle,
               textAlign: TextAlign.left,
             ),
             Container(

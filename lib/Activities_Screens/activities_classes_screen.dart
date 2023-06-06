@@ -94,7 +94,7 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ClassDetailsScreen(ClassModel()),
+            builder: (context) => ClassDetailsScreen(_classes[index]),
             fullscreenDialog: true));
   }
 

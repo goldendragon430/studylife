@@ -10,7 +10,8 @@ import '../../Models/subjects_datasource.dart';
 
 class SelectExamType extends StatefulWidget {
   final Function subjectSelected;
-  SelectExamType({super.key, required this.subjectSelected});
+  final String? type;
+  SelectExamType({super.key, required this.subjectSelected, this.type});
 
   @override
   State<SelectExamType> createState() => _SelectExamTypeState();
@@ -20,6 +21,19 @@ class _SelectExamTypeState extends State<SelectExamType> {
   final List<ClassTagItem> _types = ClassTagItem.examTypes;
 
   int selectedTabIndex = 0;
+
+  @override
+  void initState() {
+    checkifEditing();
+    super.initState();
+  }
+
+  void checkifEditing() {
+    if (widget.type != null) {
+      var firstIndex = _types.indexWhere((element) => element.title .toLowerCase()== widget.type!.toLowerCase());
+      _types[firstIndex].selected = true;
+    }
+  }
 
   void _selectTab(int index) {
     setState(() {

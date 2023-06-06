@@ -14,16 +14,17 @@ import '../Activities_Screens/task_detail_screen.dart';
 
 class TasksCurrentList extends ConsumerWidget {
   final List<Task> tasks;
-  TasksCurrentList(this.tasks, {super.key});
+  final BuildContext mainContext;
+  TasksCurrentList(this.tasks, this.mainContext, {super.key});
   final ScrollController scrollcontroller = ScrollController();
   final List<TaskItem> _tasks = TaskItem.thisMonthTasks;
 
   void _selectedCard(int index) {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => const ClassDetailsScreen(),
-    //         fullscreenDialog: true));
+    Navigator.push(
+        mainContext,
+        MaterialPageRoute(
+            builder: (context) =>  TaskDetailsScreen(tasks[index]),
+            fullscreenDialog: true));
   }
 
   @override

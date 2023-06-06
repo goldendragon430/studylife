@@ -10,14 +10,20 @@ import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
+import '../../Models/API/classmodel.dart';
+import '../../Models/API/holiday.dart';
 
 class SelectDates extends StatefulWidget {
   final Function dateSelected;
   final bool shouldDisableEndDate;
+  final ClassModel? classItem;
+  final Holiday? holidayItem;
   const SelectDates(
       {super.key,
       required this.dateSelected,
-      required this.shouldDisableEndDate});
+      required this.shouldDisableEndDate,
+      this.classItem,
+      this.holidayItem});
 
   @override
   State<SelectDates> createState() => _SelectDatesState();
@@ -35,9 +41,32 @@ class _SelectDatesState extends State<SelectDates> {
 
   @override
   void initState() {
-    dateFromController.text = "Fri, 4 Mar 2023";
-    dateToController.text = "Fri, 4 Mar 2023";
+    if (widget.classItem != null) {
+      dateFromController.text =
+          widget.classItem?.getFormattedStartDate() ?? "Fri, 4 Mar 2023";
+      dateToController.text =
+          widget.classItem?.getFormattedEndDate() ?? "Fri, 4 Mar 2023";
+    } else if (widget.holidayItem != null) {
+      dateFromController.text =
+          widget.holidayItem?.getFormattedStartDate() ?? "Fri, 4 Mar 2023";
+      dateToController.text =
+          widget.holidayItem?.getFormattedEndDate() ?? "Fri, 4 Mar 2023";
+    } else {
+      dateFromController.text = "Fri, 4 Mar 2023";
+      dateToController.text = "Fri, 4 Mar 2023";
+    }
+
     super.initState();
+  }
+
+  String _getFormattedTime(DateTime time) {
+    var localDate = time.toLocal();
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse(localDate.toString());
+
+    var outputFormat = DateFormat('HH:mm');
+    var outputDate = outputFormat.format(inputDate);
+    return outputDate.toString();
   }
 
   void _tappedOnDateFrom(ThemeMode theme, bool isDateFrom) {

@@ -10,10 +10,12 @@ import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
+import '../../Models/API/classmodel.dart';
 
 class SelectTimes extends StatefulWidget {
   final Function timeSelected;
-  SelectTimes({super.key, required this.timeSelected});
+  final ClassModel? classItem;
+  SelectTimes({super.key, required this.timeSelected, this.classItem});
 
   @override
   State<SelectTimes> createState() => _SelectTimesState();
@@ -31,9 +33,42 @@ class _SelectTimesState extends State<SelectTimes> {
 
   @override
   void initState() {
-    timeFromController.text = "9:00AM";
-    timeToController.text = "10:30AM";
+    if (widget.classItem != null) {
+      TimeOfDay startTime = toTimeOfDay(widget.classItem?.startTime);
+      TimeOfDay endTime = toTimeOfDay(widget.classItem?.endTime);
+
+      var fullstartDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute);
+      var fullendDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute);
+
+      timeFromController.text = _getFormattedTime(fullstartDate);
+      timeToController.text = _getFormattedTime(fullendDate);
+    } else {
+      timeFromController.text = "9:00AM";
+      timeToController.text = "10:30AM";
+    }
+
     super.initState();
+  }
+
+  String _getFormattedTime(DateTime time) {
+    var localDate = time.toLocal();
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse(localDate.toString());
+
+    var outputFormat = DateFormat('HH:mm');
+    var outputDate = outputFormat.format(inputDate);
+    return outputDate.toString();
+  }
+
+  TimeOfDay toTimeOfDay(String? time) {
+    if (time != null && time.isNotEmpty) {
+      List<String> timeSplit = time.split(":");
+      int hour = int.parse(timeSplit.first);
+      int minute = int.parse(timeSplit[1]);
+      return TimeOfDay(hour: hour, minute: minute);
+    } else {
+      return TimeOfDay.now();
+    }
   }
 
   void _tappedOnTimeFrom(ThemeMode theme, bool isDateFrom) {

@@ -9,17 +9,19 @@ import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
+import '../../Models/API/exam.dart';
 
 class ExamDateTimeDuration extends StatefulWidget {
   final Function dateSelected;
   final Function timeSelected;
   final Function durationSelected;
-
+  final Exam? examItem;
   const ExamDateTimeDuration(
       {super.key,
       required this.dateSelected,
       required this.timeSelected,
-      required this.durationSelected});
+      required this.durationSelected,
+      this.examItem});
 
   @override
   State<ExamDateTimeDuration> createState() => _ExamDateTimeDurationState();
@@ -37,9 +39,44 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
 
   @override
   void initState() {
-    dateController.text = "Fri, 4 Mar 2023";
-    timeController.text = "10:30 AM";
+    if (widget.examItem != null) {
+      dateController.text =
+          widget.examItem?.getExamStartFormattedDate() ?? "Fri, 4 Mar 2023";
+
+      TimeOfDay startTime = toTimeOfDay(widget.examItem?.startTime);
+
+      var fullstartDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, startTime.hour, startTime.minute);
+      timeController.text = _getFormattedTime(fullstartDate);
+      var firstDurationIndex = _durations.indexWhere((element) => element.duration == widget.examItem?.duration);
+      selectedDuration = _durations[firstDurationIndex].title;
+    } else {
+      dateController.text = "Fri, 4 Mar 2023";
+      timeController.text = "10:30";
+    }
+
     super.initState();
+  }
+
+  String _getFormattedTime(DateTime time) {
+    var localDate = time.toLocal();
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse(localDate.toString());
+
+    var outputFormat = DateFormat('HH:mm');
+    var outputDate = outputFormat.format(inputDate);
+    return outputDate.toString();
+  }
+
+  TimeOfDay toTimeOfDay(String? time) {
+    if (time != null && time.isNotEmpty) {
+      List<String> timeSplit = time.split(":");
+      int hour = int.parse(timeSplit.first);
+      int minute = int.parse(timeSplit[1]);
+      return TimeOfDay(hour: hour, minute: minute);
+    } else {
+      return TimeOfDay.now();
+    }
   }
 
   void _showiOSDateSelectionDialog(Widget child) {
@@ -103,7 +140,7 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
       setState(() {
         date = picked;
         dateController.text = DateFormat('EEE, d MMM, yyyy').format(picked);
-         widget.dateSelected(picked);
+        widget.dateSelected(picked);
       });
     }
   }
@@ -117,7 +154,7 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
             use24hFormat: true,
             onDateTimeChanged: (DateTime newDate) {
               setState(() {
-                 widget.dateSelected(newDate);
+                widget.dateSelected(newDate);
                 date = newDate;
                 dateController.text =
                     DateFormat('EEE, d MMM, yyyy').format(newDate);
@@ -325,12 +362,11 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
                   alignedDropdown: true,
                   child: DropdownButton(
                     value: selectedDuration,
-                    onChanged: (String? newValue) =>
-                    setState(() {
+                    onChanged: (String? newValue) => setState(() {
                       widget.durationSelected(newValue);
                       selectedDuration = newValue ?? "";
                     }),
-                       // setState(() => selectedDuration = newValue ?? ""),
+                    // setState(() => selectedDuration = newValue ?? ""),
                     items: _durations
                         .map<DropdownMenuItem<String>>(
                             (ExamDuration durationItem) =>

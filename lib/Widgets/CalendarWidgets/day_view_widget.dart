@@ -8,6 +8,10 @@ import '../../Models/API/event.dart';
 import '../../Utilities/constants.dart';
 import 'package:intl/intl.dart';
 import '../../Extensions/extensions.dart';
+import '../../Models/API/classmodel.dart';
+import '../../Home_Screens/class_details_screen.dart';
+import '../../Models/API/exam.dart';
+import '../../Home_Screens/exam_details_screen.dart'; 
 
 class DayViewWidget extends StatefulWidget {
   final GlobalKey<DayViewState>? state;
@@ -32,6 +36,53 @@ class DayViewWidget extends StatefulWidget {
 class _DayViewWidgetState extends State<DayViewWidget> {
   // static GlobalKey<DayViewState> dayViewStateKey = GlobalKey<DayViewState>();
   // final GlobalKey weekViewStateKey = GlobalKey();
+
+   void _openClassDetails(Event eventItem) {
+    var classModel = ClassModel(
+        id: eventItem.id,
+        module: eventItem.module,
+        mode: eventItem.mode,
+        room: eventItem.room,
+        building: eventItem.building,
+        onlineUrl: eventItem.onlineUrl,
+        teacher: eventItem.teacher,
+        teachersEmail: eventItem.teachersEmail,
+        occurs: eventItem.occurs,
+        days: eventItem.days,
+        startDate: eventItem.startDate,
+        endDate: eventItem.endDate,
+        startTime: eventItem.startTime,
+        endTime: eventItem.endTime,
+        createdAt: eventItem.createdAt,
+        subject: eventItem.subject);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ClassDetailsScreen(classModel),
+            fullscreenDialog: true));
+  }
+
+  void _openExamDetails(Event eventItem) {
+    var examItem = Exam(
+        id: eventItem.id,
+        resit: eventItem.resit,
+        module: eventItem.module,
+        mode: eventItem.mode,
+        onlineUrl: eventItem.onlineUrl,
+        room: eventItem.room,
+        seat: eventItem.seat,
+        startDate: eventItem.startDate,
+        startTime: eventItem.startTime,
+        duration: eventItem.duration,
+        createdAt: eventItem.createdAt);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ExamDetailsScreen(examItem: examItem),
+            fullscreenDialog: true));
+  }
 
   // Event tile creation
   Container createEventTileContainer(
@@ -397,6 +448,21 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                 color: Colors.transparent,
                 margin: const EdgeInsets.only(top: 130, left: 20),
                 child: DayView<Event>(
+                  onEventTap: (events, date) {
+                    var tappedevent = events.first;
+
+                  //  print("EVENT ${tappedevent.event!.getEventType()}");
+
+                    switch (tappedevent.event!.getEventType()) {
+                      case EventType.classEvent:
+                        _openClassDetails(tappedevent.event ?? Event());
+                        break;
+                        case EventType.examEvent:
+                        _openExamDetails(tappedevent.event ?? Event());
+                        break;
+                      default:
+                    }
+                  },
                   verticalLineOffset: 40,
                   backgroundColor: Colors.transparent,
                   key: widget.state,

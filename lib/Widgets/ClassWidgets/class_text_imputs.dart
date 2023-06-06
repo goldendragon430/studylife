@@ -6,6 +6,7 @@ import '../../Extensions/extensions.dart';
 import '../regular_teztField.dart';
 import '../../app.dart';
 import '../../Models/subjects_datasource.dart';
+import '../../Models/API/classmodel.dart';
 
 enum TextFieldType {
   moduleName, roomName, buildingName, teacherName, onlineURL, techerEmail, seatName, 
@@ -14,10 +15,11 @@ enum TextFieldType {
 class ClassTextImputs extends StatefulWidget {
   final Function textInputAdded;
   final bool isClassInPerson;
+  final ClassModel? classItem;
   const ClassTextImputs(
       {super.key,
       required this.textInputAdded,
-      required this.isClassInPerson});
+      required this.isClassInPerson, this.classItem});
 
   @override
   State<ClassTextImputs> createState() => _ClassTextImputsState();
@@ -35,6 +37,19 @@ class _ClassTextImputsState extends State<ClassTextImputs> {
 
   void _submitForm(String text, TextFieldType type) {
          widget.textInputAdded(text, type);
+  }
+
+  @override
+  void initState() {
+    if (widget.classItem != null) {
+      moduleNameController.text = widget.classItem?.module ?? "";
+      roomNameController.text = widget.classItem?.room ?? "";
+      buildingNameController.text = widget.classItem?.building ?? "";
+      teacherNameController.text = widget.classItem?.teacher ?? "";
+      onlineUrlController.text = widget.classItem?.onlineUrl ?? "";
+      teachersEmailController.text = widget.classItem?.teachersEmail ?? "";
+    }
+    super.initState();
   }
 
   @override

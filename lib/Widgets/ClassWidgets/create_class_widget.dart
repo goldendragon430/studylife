@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +24,8 @@ import '../../Models/API/classmodel.dart';
 
 class CreateClass extends StatefulWidget {
   final Function saveClass;
-  const CreateClass({super.key, required this.saveClass});
+  final ClassModel? editedClass;
+  const CreateClass({super.key, required this.saveClass, this.editedClass});
 
   @override
   State<CreateClass> createState() => _CreateClassState();
@@ -38,13 +40,30 @@ class _CreateClassState extends State<CreateClass> {
   bool isClassInPerson = true;
   bool addStartEndDates = false;
   bool isOccurringOnce = true;
+  bool isEditing = false;
 
   @override
   void initState() {
     super.initState();
+    checkForEditedClass();
     Future.delayed(Duration.zero, () {
       getSubjects();
     });
+  }
+
+  void checkForEditedClass() {
+    if (widget.editedClass != null) {
+      isEditing = true;
+      newClass = widget.editedClass!;
+
+      if (newClass.mode != "in-person") {
+        isClassInPerson = false;
+      }
+
+      if (newClass.occurs != "once") {
+        isOccurringOnce = false;
+      }
+    }
   }
 
   void getSubjects() async {
@@ -56,6 +75,12 @@ class _CreateClassState extends State<CreateClass> {
       _subjects = List<Subject>.from(
         decodedData.map((x) => Subject.fromJson(x as Map<String, dynamic>)),
       );
+      if (isEditing) {
+        var selectedSubjectIndex = _subjects.indexWhere((element) => element.id == widget.editedClass?.subject?.id);
+        var selectedSubject = _subjects[selectedSubjectIndex];
+        selectedSubject.selected = true;
+        _subjects[selectedSubjectIndex] = selectedSubject;
+      }
     });
   }
 
@@ -67,7 +92,7 @@ class _CreateClassState extends State<CreateClass> {
         newClass.subject = savedSubject;
       }
     }
-    print("Selected subject: ${subject.subjectName}");
+    // print("Selected subject: ${subject.subjectName}");
   }
 
   void _textInputAdded(String text, TextFieldType type) {
@@ -170,7 +195,7 @@ class _CreateClassState extends State<CreateClass> {
   }
 
   void _cancel() {
-     Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override
@@ -215,6 +240,7 @@ class _CreateClassState extends State<CreateClass> {
                         // Select Mode
                         SelectClassMode(
                           subjectSelected: _subjectModeSelected,
+                          isClassInPerson: isClassInPerson,
                         )
                       ],
                       if (index == 2) ...[
@@ -222,11 +248,13 @@ class _CreateClassState extends State<CreateClass> {
                         ClassTextImputs(
                           textInputAdded: _textInputAdded,
                           isClassInPerson: isClassInPerson,
+                          classItem: newClass,
                         )
                       ],
                       if (index == 3) ...[
                         // Select Ocurring
                         ClassRepetition(
+                          classItem: newClass,
                           subjectSelected: _classRepetitionSelected,
                         )
                       ],
@@ -234,11 +262,13 @@ class _CreateClassState extends State<CreateClass> {
                         if (!isOccurringOnce) ...[
                           // Select Week days
                           ClassWeekDays(
+                            classItem: newClass,
                             subjectSelected: _classDaysSelected,
                           )
                         ],
                         if (isOccurringOnce) ...[
                           SelectTimes(
+                            classItem: newClass,
                             timeSelected: _selectedTimes,
                           )
                         ],
@@ -247,6 +277,7 @@ class _CreateClassState extends State<CreateClass> {
                         if (!isOccurringOnce) ...[
                           // Select Time From/To
                           SelectTimes(
+                            classItem: newClass,
                             timeSelected: _selectedTimes,
                           )
                         ],
@@ -270,6 +301,7 @@ class _CreateClassState extends State<CreateClass> {
                           if (isOccurringOnce || addStartEndDates) ...[
                             if (index == 7) ...[
                               SelectDates(
+                                classItem: newClass,
                                 dateSelected: _selectedDates,
                                 shouldDisableEndDate: isOccurringOnce,
                               ),
@@ -280,6 +312,7 @@ class _CreateClassState extends State<CreateClass> {
                       if (isOccurringOnce || addStartEndDates) ...[
                         if (index == 7) ...[
                           SelectDates(
+                            classItem: newClass,
                             dateSelected: _selectedDates,
                             shouldDisableEndDate: isOccurringOnce,
                           ),

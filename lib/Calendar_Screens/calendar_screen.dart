@@ -18,18 +18,14 @@ import '../Models/API/event.dart';
 import '../Widgets/CalendarWidgets/day_view_widget.dart';
 import '../Widgets/CalendarWidgets/month_view_widget.dart';
 import '../Widgets/CalendarWidgets/week_view_widget.dart';
-import '.././Models/class_datasource.dart';
 import '../Home_Screens/class_details_screen.dart';
 import '../Widgets/ClassWidgets/class_widget.dart';
 import '../Widgets/custom_centered_dialog.dart';
 import '../Models/API/classmodel.dart';
-import '../Home_Screens/home_page.dart';
 import '../Models/API/event.dart';
 import '../Widgets/exam_widget.dart';
 import '../Home_Screens/exam_details_screen.dart';
-import '../Activities_Screens/task_detail_screen.dart';
 import '../Models/API/task.dart';
-import '../Widgets/TaskWidgets/task_widget.dart';
 import '../Networking/calendar_event_service.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
@@ -121,7 +117,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future _getCalendarEventsForDate(DateTime date) async {
-  //  DateTime dateTo = date.add(Duration(days: 1));
+    //  DateTime dateTo = date.add(Duration(days: 1));
 
     String formattedDateFrom = DateFormat('yyyy/MM/dd').format(date);
 
@@ -140,9 +136,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
       final eventList = (calendarEventssResponse.data['events']) as List;
       _events = eventList.map((i) => Event.fromJson(i)).toList();
 
-      for (var eventItem in _events) {
-        print("EVENt ${eventItem.getFormattedStartingDate()}");
-      }
+      // for (var eventItem in _events) {
+      //   print("EVENt ${eventItem.getFormattedStartingDate()}");
+      // }
     } catch (error) {
       if (error is DioError) {
         LoadingDialog.hide(context);
@@ -259,6 +255,53 @@ class _CalendarScreenState extends State<CalendarScreen> {
         startTime: _events[index].startTime,
         duration: _events[index].duration,
         createdAt: _events[index].createdAt);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ExamDetailsScreen(examItem: examItem),
+            fullscreenDialog: true));
+  }
+
+  void _openClassDetails(Event eventItem) {
+    var classModel = ClassModel(
+        id: eventItem.id,
+        module: eventItem.module,
+        mode: eventItem.mode,
+        room: eventItem.room,
+        building: eventItem.building,
+        onlineUrl: eventItem.onlineUrl,
+        teacher: eventItem.teacher,
+        teachersEmail: eventItem.teachersEmail,
+        occurs: eventItem.occurs,
+        days: eventItem.days,
+        startDate: eventItem.startDate,
+        endDate: eventItem.endDate,
+        startTime: eventItem.startTime,
+        endTime: eventItem.endTime,
+        createdAt: eventItem.createdAt,
+        subject: eventItem.subject);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ClassDetailsScreen(classModel),
+            fullscreenDialog: true));
+  }
+
+  void _openExamDetails(Event eventItem) {
+    var examItem = Exam(
+        id: eventItem.id,
+        resit: eventItem.resit,
+        module: eventItem.module,
+        mode: eventItem.mode,
+        onlineUrl: eventItem.onlineUrl,
+        room: eventItem.room,
+        seat: eventItem.seat,
+        startDate: eventItem.startDate,
+        startTime: eventItem.startTime,
+        duration: eventItem.duration,
+        createdAt: eventItem.createdAt);
 
     Navigator.push(
         context,
@@ -399,7 +442,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _weekViewEventTapped(
-      List<CalendarEventData<Event>> events, DateTime date) {}
+      List<CalendarEventData<Event>> events, DateTime date) {
+    var tappedevent = events.first;
+
+    //  print("EVENT ${tappedevent.event!.getEventType()}");
+
+    switch (tappedevent.event!.getEventType()) {
+      case EventType.classEvent:
+        _openClassDetails(tappedevent.event ?? Event());
+        break;
+      case EventType.examEvent:
+        _openExamDetails(tappedevent.event ?? Event());
+        break;
+      default:
+    }
+  }
 
   void _openLegend() {
     showCenteredPopup(context);

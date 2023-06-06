@@ -26,15 +26,27 @@ class ClassModel {
 
   // Calculated
 
-  String getFormattedDate(String? date) {
-    DateTime? createdAtDate = DateTime.tryParse(date ?? "");
+  String getFormattedStartDate() {
+    DateTime? createdAtDate = DateTime.tryParse(startDate ?? "");
 
     if (createdAtDate != null) {
       String formattedDate =
-          DateFormat('MM/dd/yyyy HH:mm:ss').format(createdAtDate);
+          DateFormat('EEE, d MMM, yyyy').format(createdAtDate);
       return formattedDate;
     } else {
-      return "";
+      return "Fri, 4 Mar 2023";
+    }
+  }
+
+  String getFormattedEndDate() {
+    DateTime? createdAtDate = DateTime.tryParse(endDate ?? "");
+
+    if (createdAtDate != null) {
+      String formattedDate =
+          DateFormat('EEE, d MMM, yyyy').format(createdAtDate);
+      return formattedDate;
+    } else {
+      return "Fri, 4 Mar 2023";
     }
   }
 
@@ -118,8 +130,8 @@ class ClassModel {
     data['endTime'] = endTime;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
-     if (tasks != null) {
-        data['tasks'] = tasks;
+    if (tasks != null) {
+      data['tasks'] = tasks;
     }
     if (subject != null) {
       data['subject'] = subject!.toJson();

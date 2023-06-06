@@ -10,7 +10,8 @@ import '../../Widgets/custom_snack_bar.dart';
 
 class AddPhotoWidget extends StatefulWidget {
   final Function photoAdded;
-  const AddPhotoWidget({super.key, required this.photoAdded});
+  final String? imageUrl;
+  const AddPhotoWidget({super.key, required this.photoAdded, this.imageUrl});
 
   @override
   State<AddPhotoWidget> createState() => _AddPhotoWidgetState();
@@ -19,6 +20,15 @@ class AddPhotoWidget extends StatefulWidget {
 class _AddPhotoWidgetState extends State<AddPhotoWidget> {
   final ImagePicker _picker = ImagePicker();
   String? _path = null;
+  String? _imageUrl = null;
+
+  @override
+  void initState() {
+    if (widget.imageUrl != null) {
+      _imageUrl = widget.imageUrl;
+    }
+    super.initState();
+  }
 
   void _uploadPhoto(context) {
     _showOptions(context);
@@ -78,6 +88,7 @@ class _AddPhotoWidgetState extends State<AddPhotoWidget> {
   void _removeImage() {
     setState(() {
       _path = null;
+      _imageUrl = null;
     });
   }
 
@@ -115,21 +126,26 @@ class _AddPhotoWidgetState extends State<AddPhotoWidget> {
                         width: 100,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: (_path == null)
-                              ? theme == ThemeMode.light
-                                  ? Image.asset(
-                                      'assets/images/AddPhotoBackgroundImage.png',
-                                      fit: BoxFit.cover)
-                                  : Image.asset(
-                                      'assets/images/AddPhotoBackgroundImageDarkTheme.png',
-                                      fit: BoxFit.cover)
-                              : Image.file(
-                                  File(_path!),
+                          child: _imageUrl != null
+                              ? Image.network(
+                                  _imageUrl!,
                                   fit: BoxFit.cover,
-                                ),
+                                )
+                              : (_path == null)
+                                  ? theme == ThemeMode.light
+                                      ? Image.asset(
+                                          'assets/images/AddPhotoBackgroundImage.png',
+                                          fit: BoxFit.cover)
+                                      : Image.asset(
+                                          'assets/images/AddPhotoBackgroundImageDarkTheme.png',
+                                          fit: BoxFit.cover)
+                                  : Image.file(
+                                      File(_path!),
+                                      fit: BoxFit.cover,
+                                    ),
                         ),
                       ),
-                      if (_path != null) ...[
+                      if (_path != null || _imageUrl != null) ...[
                         Positioned(
                           right: -30,
                           top: -10,

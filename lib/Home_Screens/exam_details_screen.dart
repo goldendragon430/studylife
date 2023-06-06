@@ -11,6 +11,7 @@ import '../Widgets/task_due_card.dart';
 import '../Widgets/custom_alert.dart';
 import './add_exam_score.dart';
 import '../Models/API/exam.dart';
+import '../Home_Screens/create_screen.dart';
 
 class ExamDetailsScreen extends StatefulWidget {
   final Exam examItem;
@@ -22,11 +23,24 @@ class ExamDetailsScreen extends StatefulWidget {
 
 class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
   void _editButtonPressed(BuildContext context) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => const CustomAlertView(),
-    //       fullscreenDialog: true));
+    bottomSheetForSignIn(context);
+  }
+
+    bottomSheetForSignIn(BuildContext context) {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        context: context,
+        // transitionAnimationController: controller,
+        enableDrag: false,
+        builder: (context) {
+          return CreateScreen(examItem: widget.examItem);
+        });
   }
 
   void _closeButtonPressed(context) {

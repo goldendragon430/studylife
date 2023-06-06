@@ -14,7 +14,8 @@ import '.././rounded_elevated_button.dart';
 
 class CreateHoliday extends StatefulWidget {
   final Function saveHoliday;
-  const CreateHoliday({super.key, required this.saveHoliday});
+  final Holiday? holidayItem;
+  const CreateHoliday({super.key, required this.saveHoliday, this.holidayItem});
 
   @override
   State<CreateHoliday> createState() => _CreateHolidayState();
@@ -24,13 +25,27 @@ class _CreateHolidayState extends State<CreateHoliday> {
   final ScrollController scrollcontroller = ScrollController();
 
   late Holiday newHoliday = Holiday();
+  bool isEditing = false;
+
+  @override
+  void initState() {
+    checkForEditedHoliday();
+    super.initState();
+  }
+
+   void checkForEditedHoliday() {
+    if (widget.holidayItem != null) {
+      isEditing = true;
+      newHoliday = widget.holidayItem!;
+    }
+  }
 
   void _textInputAdded(String input) {
     newHoliday.title = input;
   }
 
   void _selectedDates(DateTime pickedDate, bool isDateFrom) {
-   String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
     if (isDateFrom) {
       newHoliday.startDate = formattedDate;
     } else {
@@ -42,12 +57,12 @@ class _CreateHolidayState extends State<CreateHoliday> {
     newHoliday.imageUrl = path;
   }
 
-   void _saveHoliday() {
+  void _saveHoliday() {
     widget.saveHoliday(newHoliday);
   }
 
   void _cancel() {
-     Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override
@@ -67,56 +82,58 @@ class _CreateHolidayState extends State<CreateHoliday> {
                 children: [
                   if (index == 0) ...[
                     HolidayTextImputs(
+                      holidayName: isEditing ? newHoliday.title : null,
                       formsFilled: _textInputAdded,
-                      hintText: 'Holoiday Name',
+                      hintText: 'Holiday Name',
                       labelTitle: 'Name*',
                     )
                   ],
                   if (index == 1) ...[
                     SelectDates(
+                      holidayItem: isEditing ? newHoliday : null,
                       dateSelected: _selectedDates,
                       shouldDisableEndDate: false,
                     ),
                   ],
                   if (index == 2) ...[
                     AddPhotoWidget(
+                      imageUrl: newHoliday.imageUrl,
                       photoAdded: _photoAdded,
                     )
                   ],
-                   if (index == 3) ...[
-                          // Save/Cancel buttons
-                          Container(
-                            height: 68,
-                          ),
-                          Container(
-                            alignment: Alignment.topCenter,
-                            width: double.infinity,
-                            // margin: const EdgeInsets.only(top: 260),
-                            padding:
-                                const EdgeInsets.only(left: 106, right: 106),
-                            child: Column(
-                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                RoundedElevatedButton(
-                                    _saveHoliday,
-                                    "Save Holiday",
-                                    Constants.lightThemePrimaryColor,
-                                    Colors.black,
-                                    45),
-                                RoundedElevatedButton(
-                                    _cancel,
-                                    "Cancel",
-                                    Constants.blueButtonBackgroundColor,
-                                    Colors.white,
-                                    45)
-                              ],
-                            ),
-                          ),
-                          Container(
-                            height: 88,
-                          ),
+                  if (index == 3) ...[
+                    // Save/Cancel buttons
+                    Container(
+                      height: 68,
+                    ),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      width: double.infinity,
+                      // margin: const EdgeInsets.only(top: 260),
+                      padding: const EdgeInsets.only(left: 106, right: 106),
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          RoundedElevatedButton(
+                              _saveHoliday,
+                              "Save Holiday",
+                              Constants.lightThemePrimaryColor,
+                              Colors.black,
+                              45),
+                          RoundedElevatedButton(
+                              _cancel,
+                              "Cancel",
+                              Constants.blueButtonBackgroundColor,
+                              Colors.white,
+                              45)
                         ],
+                      ),
+                    ),
+                    Container(
+                      height: 88,
+                    ),
+                  ],
                 ],
               );
             }),

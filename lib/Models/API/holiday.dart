@@ -24,6 +24,30 @@ class Holiday {
     }
   }
 
+  String getFormattedStartDate() {
+    DateTime? createdAtDate = DateTime.tryParse(startDate ?? "");
+
+    if (createdAtDate != null) {
+      String formattedDate =
+          DateFormat('EEE, d MMM, yyyy').format(createdAtDate);
+      return formattedDate;
+    } else {
+      return "Fri, 4 Mar 2023";
+    }
+  }
+
+  String getFormattedEndDate() {
+    DateTime? createdAtDate = DateTime.tryParse(endDate ?? "");
+
+    if (createdAtDate != null) {
+      String formattedDate =
+          DateFormat('EEE, d MMM, yyyy').format(createdAtDate);
+      return formattedDate;
+    } else {
+      return "Fri, 4 Mar 2023";
+    }
+  }
+
   DateTime getStartDate() {
     return DateTime.tryParse(startDate ?? "") ?? DateTime.now();
   }

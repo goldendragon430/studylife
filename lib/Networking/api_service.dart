@@ -80,7 +80,7 @@ class AppInterceptors extends Interceptor {
     options.headers['Content-Type'] = "application/json; charset=UTF-8;";
 
     print(
-        "Performing request path: ${options.uri} , body: ${options.data}, headers: ${options.headers}");
+        "Performing request path: ${options.uri} , method: ${options.method}, body: ${options.data}, headers: ${options.headers}");
 
     return handler.next(options);
   }

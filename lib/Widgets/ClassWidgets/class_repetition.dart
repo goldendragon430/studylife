@@ -7,10 +7,12 @@ import '../../Extensions/extensions.dart';
 import '../../app.dart';
 import '../tag_card.dart';
 import '../../Models/subjects_datasource.dart';
+import '../../Models/API/classmodel.dart';
 
 class ClassRepetition extends StatefulWidget {
   final Function subjectSelected;
-  ClassRepetition({super.key, required this.subjectSelected});
+  final ClassModel? classItem;
+  ClassRepetition({super.key, required this.subjectSelected, this.classItem});
 
   @override
   State<ClassRepetition> createState() => _ClassRepetitionState();
@@ -18,6 +20,16 @@ class ClassRepetition extends StatefulWidget {
 
 class _ClassRepetitionState extends State<ClassRepetition> {
   final List<ClassTagItem> _repetitions = ClassTagItem.repetitionModes;
+
+  @override
+  void initState() {
+     if (widget.classItem != null) {
+      var selectedIndex = _repetitions.indexWhere(
+              (element) => element.title.toLowerCase() == widget.classItem?.occurs?.toLowerCase());
+          _repetitions[selectedIndex].selected = true;
+    }
+    super.initState();
+  }
 
   int selectedTabIndex = 0;
 

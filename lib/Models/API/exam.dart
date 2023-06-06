@@ -18,6 +18,9 @@ class Exam {
   String? createdAt;
   String? updatedAt;
   Subject? subject;
+  String? building;
+  String? teacher;
+  String? occurs;
 
   Exam(
       {this.id,
@@ -35,7 +38,10 @@ class Exam {
       this.duration,
       this.createdAt,
       this.updatedAt,
-      this.subject});
+      this.subject,
+      this.building,
+      this.teacher,
+      this.occurs});
 
   // Calculated
 
@@ -71,6 +77,9 @@ class Exam {
     duration = json['duration'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    building = json['building'];
+    teacher = json['teacher'];
+    occurs = json['occurs'];
     subject =
         json['subject'] != null ? Subject.fromJson(json['subject']) : null;
   }
@@ -87,11 +96,14 @@ class Exam {
     data['onlineUrl'] = onlineUrl;
     data['room'] = room;
     data['seat'] = seat;
+    data['building'] = building;
     data['startDate'] = startDate;
     data['startTime'] = startTime;
     data['duration'] = duration;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
+    data['teacher'] = teacher;
+    data['occurs'] = occurs;
     if (subject != null) {
       data['subject'] = subject!.toJson();
     }

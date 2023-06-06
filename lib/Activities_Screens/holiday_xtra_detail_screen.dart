@@ -11,6 +11,7 @@ import '../../app.dart';
 import '../Models/holidays_datasource.dart';
 import '../Widgets/holiday_xtra_info_card.dart';
 import '../Models/API/holiday.dart';
+import '../Home_Screens/create_screen.dart';
 
 class HolidayXtraDetailScreen extends StatefulWidget {
   final Holiday item;
@@ -27,11 +28,24 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
   String? _path = null;
 
   void _editButtonPressed(BuildContext context) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => const CustomAlertView(),
-    //       fullscreenDialog: true));
+    bottomSheetForSignIn(context);
+  }
+
+   bottomSheetForSignIn(BuildContext context) {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        context: context,
+        // transitionAnimationController: controller,
+        enableDrag: false,
+        builder: (context) {
+          return CreateScreen(holidayItem: widget.item);
+        });
   }
 
   void _closeButtonPressed(context) {
@@ -72,7 +86,7 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
 
     setState(() {
       _path = file?.path;
-      print(file!.path);
+    //  print(file!.path);
     });
   }
 
@@ -128,7 +142,6 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
                         ),
                       ),
                     ),
-                    //child: Image.asset("assets/images/BlurBackgroundBig.png"),
                   ),
                 ],
                 if (_path != null) ...[

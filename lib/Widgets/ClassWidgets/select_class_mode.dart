@@ -8,9 +8,11 @@ import '../../app.dart';
 import '../tag_card.dart';
 import '../../Models/subjects_datasource.dart';
 
+
 class SelectClassMode extends StatefulWidget {
   final Function subjectSelected;
-  SelectClassMode({super.key, required this.subjectSelected});
+  final bool? isClassInPerson;
+  SelectClassMode({super.key, required this.subjectSelected, this.isClassInPerson});
 
   @override
   State<SelectClassMode> createState() => _SelectClassModeState();
@@ -18,6 +20,23 @@ class SelectClassMode extends StatefulWidget {
 
 class _SelectClassModeState extends State<SelectClassMode> {
   final List<ClassTagItem> _subjects = ClassTagItem.subjectModes;
+
+  @override
+  void initState() {
+    if (widget.isClassInPerson != null) {
+      if (widget.isClassInPerson == false) {
+        var mode = _subjects[1];
+        mode.selected = true;
+        _subjects[1] = mode;
+      }
+      else {
+         var mode = _subjects[0];
+        mode.selected = true;
+        _subjects[0] = mode;
+      }
+    }
+    super.initState();
+  }
 
   int selectedTabIndex = 0;
 

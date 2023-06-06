@@ -10,17 +10,31 @@ import '../Models/tasks_due_dataSource.dart';
 import '../Widgets/task_due_card.dart';
 import '../Widgets/custom_alert.dart';
 import '../Models/API/classmodel.dart';
+import '../Home_Screens/create_screen.dart';
 
 class ClassDetailsScreen extends ConsumerWidget {
   final ClassModel classItem;
   const ClassDetailsScreen(this.classItem, {super.key});
 
   void _editButtonPressed(BuildContext context) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => const CustomAlertView(),
-    //       fullscreenDialog: true));
+    bottomSheetForSignIn(context);
+  }
+
+  bottomSheetForSignIn(BuildContext context) {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        context: context,
+        // transitionAnimationController: controller,
+        enableDrag: false,
+        builder: (context) {
+          return CreateScreen(classItem: classItem);
+        });
   }
 
   void _closeButtonPressed(context) {

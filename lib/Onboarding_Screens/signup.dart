@@ -63,8 +63,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (!context.mounted) return;
 
-      print("EVE GA RESPONSE: ${response.data['message']}");
-
       LoadingDialog.hide(context);
       CustomSnackBar.show(
           context, CustomSnackBarType.success, response.data['message'], false);

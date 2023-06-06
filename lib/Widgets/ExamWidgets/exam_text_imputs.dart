@@ -5,12 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../regular_teztField.dart';
 import '../../app.dart';
 import '../ClassWidgets/class_text_imputs.dart';
+import '../../Models/API/exam.dart';
 
 class ExamTextImputs extends StatefulWidget {
   final Function textInputAdded;
   final bool isExamInPerson;
+  final Exam? examItem;
   const ExamTextImputs(
-      {super.key, required this.textInputAdded, required this.isExamInPerson});
+      {super.key, required this.textInputAdded, required this.isExamInPerson, this.examItem});
 
   @override
   State<ExamTextImputs> createState() => _ExamTextImputsState();
@@ -23,6 +25,18 @@ class _ExamTextImputsState extends State<ExamTextImputs> {
   final onlineUrlController = TextEditingController();
 
   int selectedTabIndex = 0;
+
+  @override
+  void initState() {
+    if (widget.examItem != null) {
+      moduleNameController.text = widget.examItem?.module ?? "";
+      roomNameController.text = widget.examItem?.room ?? "";
+      seatNameController.text = widget.examItem?.seat ?? "";
+      onlineUrlController.text = widget.examItem?.onlineUrl ?? "";
+
+    }
+    super.initState();
+  }
 
    void _submitForm(String text, TextFieldType type) {
          widget.textInputAdded(text, type);

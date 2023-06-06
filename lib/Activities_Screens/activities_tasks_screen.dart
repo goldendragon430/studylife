@@ -264,13 +264,13 @@ class _ActivitiesTasksScreenState extends State<ActivitiesTasksScreen> {
           ),
           // Check which tab is selected
           if (selectedTabIndex == 1) ...[
-            TasksCurrentList(_tasksCurrent),
+            TasksCurrentList(_tasksCurrent, context),
           ],
           if (selectedTabIndex == 2) ...[
             TasksPastList(groupedByDate, groupedKeys),
           ],
           if (selectedTabIndex == 3) ...[
-            TasksOverdueList(_tasksOverdue),
+            TasksOverdueList(_tasksOverdue, context),
           ]
         ],
       );

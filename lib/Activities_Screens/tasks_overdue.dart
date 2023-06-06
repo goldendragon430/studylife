@@ -14,17 +14,17 @@ import '../Activities_Screens/task_detail_screen.dart';
 
 class TasksOverdueList extends ConsumerWidget {
   final List<Task> tasks;
+  final BuildContext mainContext;
 
-  TasksOverdueList(this.tasks, {super.key});
+  TasksOverdueList(this.tasks, this.mainContext, {super.key});
   final ScrollController scrollcontroller = ScrollController();
-  final List<TaskItem> _tasks = TaskItem.overdueTasks;
 
   void _selectedCard(int index) {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => const ClassDetailsScreen(),
-    //         fullscreenDialog: true));
+    Navigator.push(
+        mainContext,
+        MaterialPageRoute(
+            builder: (context) =>  TaskDetailsScreen(tasks[index]),
+            fullscreenDialog: true));
   }
 
   @override

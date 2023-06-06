@@ -20,8 +20,8 @@ class UserService {
 
   Future<Response> signUp(String email, String password) async {
     var body = jsonEncode({
-      "first_name": "Borne",
-      "last_name": "Test",
+      "first_name": "Mystudylife",
+      "last_name": "User",
       'email': email,
       'password': password,
     });
