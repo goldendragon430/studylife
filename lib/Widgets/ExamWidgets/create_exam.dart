@@ -34,7 +34,7 @@ class _CreateExamState extends State<CreateExam> {
   final ScrollController scrollcontroller = ScrollController();
   final StorageService _storageService = StorageService();
   static List<Subject> _subjects = [];
-  late Exam newExam = Exam();
+  late Exam newExam = Exam(mode: "in-person", duration: 30);
 
   bool isExamInPerson = true;
   bool resitOn = false;
@@ -49,15 +49,25 @@ class _CreateExamState extends State<CreateExam> {
     });
   }
 
+  @override
+  void dispose() {
+    newExam = Exam(mode: "in-person");
+    isExamInPerson = true;
+    resitOn = false;
+    isEditing = false;
+    super.dispose();
+  }
+
   void checkForEditedExam() {
     if (widget.editedExam != null) {
       isEditing = true;
       newExam = widget.editedExam!;
+      newExam.duration = 30;
 
       if (newExam.mode != "in-person") {
         isExamInPerson = false;
       }
-      
+
       if (newExam.resit != null) {
         resitOn = newExam.resit ?? false;
       }
@@ -69,12 +79,13 @@ class _CreateExamState extends State<CreateExam> {
 
     List<dynamic> decodedData = jsonDecode(subjectsData ?? "");
 
-     setState(() {
+    setState(() {
       _subjects = List<Subject>.from(
         decodedData.map((x) => Subject.fromJson(x as Map<String, dynamic>)),
       );
       if (isEditing) {
-        var selectedSubjectIndex = _subjects.indexWhere((element) => element.id == int.parse(widget.editedExam?.subjectId ?? ""));
+        var selectedSubjectIndex = _subjects.indexWhere((element) =>
+            element.id == int.parse(widget.editedExam?.subjectId ?? ""));
         var selectedSubject = _subjects[selectedSubjectIndex];
         selectedSubject.selected = true;
         _subjects[selectedSubjectIndex] = selectedSubject;
@@ -90,7 +101,7 @@ class _CreateExamState extends State<CreateExam> {
         newExam.subject = savedSubject;
       }
     }
-   // print("Selected subject: ${subject.subjectName}");
+    // print("Selected subject: ${subject.subjectName}");
   }
 
   void _examModeSelected(ClassTagItem mode) {
@@ -154,7 +165,7 @@ class _CreateExamState extends State<CreateExam> {
   }
 
   void _classDaysSelected(List<ClassTagItem> days) {
-   // print("Selected repetitionMode: ${days}");
+    // print("Selected repetitionMode: ${days}");
     List<String> daysList = [];
     for (var dayItem in days) {
       daysList.add(dayItem.title.toLowerCase());
@@ -217,7 +228,9 @@ class _CreateExamState extends State<CreateExam> {
                           changedState: _switchChangedState)
                     ],
                     if (index == 2) ...[
-                      SelectExamType(subjectSelected: _examTypeSelected, type: newExam.type)
+                      SelectExamType(
+                          subjectSelected: _examTypeSelected,
+                          type: newExam.type)
                     ],
                     if (index == 3) ...[
                       // Select Mode
@@ -237,7 +250,7 @@ class _CreateExamState extends State<CreateExam> {
                     if (index == 5) ...[
                       // Select Day,Time, Duration
                       ExamDateTimeDuration(
-                        examItem: isEditing ? newExam : null,
+                          examItem: isEditing ? newExam : null,
                           dateSelected: _dateOfExamSelected,
                           timeSelected: _timeOfExamSelected,
                           durationSelected: _durationOfExamSelected),

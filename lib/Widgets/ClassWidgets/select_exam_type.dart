@@ -28,6 +28,14 @@ class _SelectExamTypeState extends State<SelectExamType> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    for (var type in _types) {
+      type.selected = false;
+    }
+    super.dispose();
+  }
+
   void checkifEditing() {
     if (widget.type != null) {
       var firstIndex = _types.indexWhere((element) => element.title .toLowerCase()== widget.type!.toLowerCase());

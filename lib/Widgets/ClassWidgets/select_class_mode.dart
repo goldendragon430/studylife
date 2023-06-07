@@ -38,6 +38,14 @@ class _SelectClassModeState extends State<SelectClassMode> {
     super.initState();
   }
 
+    @override
+  void dispose() {
+    for (var mode in _subjects) {
+      mode.selected = false;
+    }
+    super.dispose();
+  }
+
   int selectedTabIndex = 0;
 
   void _selectTab(int index) {

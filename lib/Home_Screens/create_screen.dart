@@ -2,6 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Models/subjects_datasource.dart';
+import 'package:my_study_life_flutter/Networking/task_service.dart';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -140,15 +141,13 @@ class _CreateScreenState extends State<CreateScreen>
       }
     }
 
-    LoadingDialog.show(context);
-
     if (isEditing) {
+      LoadingDialog.show(context);
+
       try {
         var response = await ClassService().updateClass(classItem);
 
         if (!contextMain.mounted) return;
-
-        print("ASDADADADGDSKHFBDSG ${response.data['message']}");
 
         LoadingDialog.hide(context);
         CustomSnackBar.show(contextMain, CustomSnackBarType.success,
@@ -169,6 +168,8 @@ class _CreateScreenState extends State<CreateScreen>
       }
     } else {
       try {
+        LoadingDialog.show(context);
+
         var response = await ClassService().createClass(classItem);
 
         if (!contextMain.mounted) return;
@@ -183,6 +184,7 @@ class _CreateScreenState extends State<CreateScreen>
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
               error.response?.data['message'], true);
         } else {
+          print("dsfsfsfsfsf ${error.toString()}");
           LoadingDialog.hide(context);
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
               "Oops, something went wrong", true);
@@ -236,29 +238,97 @@ class _CreateScreenState extends State<CreateScreen>
     LoadingDialog.show(context);
 
     if (isEditing) {
-       try {
-      var response = await ExamService().updateExam(examItem);
+      try {
+        var response = await ExamService().updateExam(examItem);
 
-      if (!contextMain.mounted) return;
+        if (!contextMain.mounted) return;
 
-      LoadingDialog.hide(context);
-      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
-          response.data['message'], true);
-      Navigator.pop(context);
-    } catch (error) {
-      if (error is DioError) {
         LoadingDialog.hide(context);
-        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
-            error.response?.data['message'], true);
-      } else {
-        LoadingDialog.hide(context);
-        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
-            "Oops, something went wrong", true);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
       }
-    }
     } else {
       try {
         var response = await ExamService().createExam(examItem);
+
+        if (!contextMain.mounted) return;
+
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    }
+  }
+
+  void _saveTask(Task taskItem) async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+
+    // print(examItem.subject);
+    // print(examItem.mode);
+    // print(examItem.module);
+    // print(examItem.room);
+    // print(examItem.startTime);
+    // print(examItem.startDate);
+    //     print(examItem.type);
+    //     print(examItem.seat);
+    //     print(examItem.duration);
+
+    if (taskItem.title == null ||
+        taskItem.dueDate == null ||
+        taskItem.type == null) {
+      CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+          "Please fill in all fields.", true);
+      return;
+    }
+
+    LoadingDialog.show(context);
+
+    if (isEditing) {
+      try {
+        var response = await TaskService().updateTask(taskItem);
+
+        if (!contextMain.mounted) return;
+
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    } else {
+      try {
+        var response = await TaskService().createTask(taskItem);
 
         if (!contextMain.mounted) return;
 
@@ -291,26 +361,51 @@ class _CreateScreenState extends State<CreateScreen>
       return;
     }
 
-    LoadingDialog.show(context);
+    if (isEditing) {
+      LoadingDialog.show(context);
 
-    try {
-      var response = await HolidayService().createHoliday(holidayItem);
+      try {
+        var response = await HolidayService().updateHoliday(holidayItem);
 
-      if (!contextMain.mounted) return;
+        if (!contextMain.mounted) return;
 
-      LoadingDialog.hide(context);
-      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
-          response.data['message'], true);
-      Navigator.pop(context);
-    } catch (error) {
-      if (error is DioError) {
         LoadingDialog.hide(context);
-        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
-            error.response?.data['message'], true);
-      } else {
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    } else {
+      LoadingDialog.show(context);
+
+      try {
+        var response = await HolidayService().createHoliday(holidayItem);
+
+        if (!contextMain.mounted) return;
+
         LoadingDialog.hide(context);
-        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
-            "Oops, something went wrong", true);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
       }
     }
   }
@@ -405,7 +500,8 @@ class _CreateScreenState extends State<CreateScreen>
                       editedExam: widget.examItem,
                       saveExam: _saveExam,
                     ),
-                    CreateTask(),
+                    CreateTask(saveTask: _saveTask,
+                    taskitem: widget.taskItem),
                     CreateHoliday(
                       holidayItem: widget.holidayItem,
                       saveHoliday: _saveHoliday,

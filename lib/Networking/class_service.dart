@@ -19,6 +19,9 @@ class ClassService {
   Future<Response> createClass(ClassModel classItem) async {
     String body;
 
+    String? days = null;
+    days = classItem.days?.join(",");
+
     body = jsonEncode({
       'subjectId': classItem.subject?.id ?? 0,
       'module': classItem.module,
@@ -27,11 +30,12 @@ class ClassService {
       'building': classItem.building,
       'teacher': classItem.teacher,
       'occurs': classItem.occurs,
-      'days': classItem.days,
+      'days': days,
       'startTime': classItem.startTime,
       'endTime': classItem.endTime,
       'startDate': classItem.startDate,
-      // "days": classItem.days,
+      'onlineUrl': classItem.onlineUrl,
+      'teachersEmail': classItem.teachersEmail
 
     }..removeWhere((dynamic key, dynamic value) => value == null));
 
@@ -46,7 +50,7 @@ class ClassService {
     String body;
 
     String? days = null;
-    days = classItem.days!.join(",");
+    days = classItem.days?.join(",");
 
     body = jsonEncode({
       'subjectId': classItem.subject?.id ?? 0,
@@ -60,6 +64,9 @@ class ClassService {
       'startTime': classItem.startTime,
       'endTime': classItem.endTime,
       'startDate': classItem.startDate,
+      'onlineUrl': classItem.onlineUrl,
+      'teachersEmail': classItem.teachersEmail
+
     }..removeWhere((dynamic key, dynamic value) => value == null));
 
     var response = await Api().dio.put(

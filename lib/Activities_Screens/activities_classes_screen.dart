@@ -40,7 +40,7 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
+    Future.delayed(Duration(milliseconds: 500), () {
       getData();
     });
   }

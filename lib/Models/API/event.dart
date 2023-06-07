@@ -50,6 +50,18 @@ class Event {
     }
   }
 
+  DateTime getFormattedEndingDate() {
+    DateTime? createdAtDate = DateTime.tryParse(endDate ?? "");
+
+    if (createdAtDate != null) {
+      // String formattedDate =
+      //     DateFormat('MM/dd/yyyy HH:mm:ss').format(createdAtDate);
+      return createdAtDate;
+    } else {
+      return DateTime.now();
+    }
+  }
+
   TimeOfDay toTimeOfDay(String? time) {
     if (time != null && time.isNotEmpty) {
       List<String> timeSplit = time.split(":");

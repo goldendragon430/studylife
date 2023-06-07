@@ -11,9 +11,12 @@ import './task_datetime.dart';
 import './select_tasktype.dart';
 import './select_taskOccuring.dart';
 import './select_repeatOptions.dart';
+import '../../Models/API/task.dart';
 
 class CreateTask extends StatefulWidget {
-  const CreateTask({super.key});
+  final Function saveTask;
+  final Task? taskitem;
+  const CreateTask({super.key, required this.saveTask, this.taskitem});
 
   @override
   State<CreateTask> createState() => _CreateTaskState();
@@ -24,6 +27,21 @@ class _CreateTaskState extends State<CreateTask> {
 
   bool isExamInPerson = true;
   bool resitOn = false;
+  late Task newTask = Task();
+  bool isEditing = false;
+
+  @override
+  void initState() {
+    checkForEditedHoliday();
+    super.initState();
+  }
+
+   void checkForEditedHoliday() {
+    if (widget.taskitem != null) {
+      isEditing = true;
+      newTask = widget.taskitem!;
+    }
+  }
 
   void _subjectSelected(ClassTagItem subject) {
     print("Selected subject: ${subject.title}");
@@ -56,13 +74,12 @@ class _CreateTaskState extends State<CreateTask> {
 
   void _tasRepeatDateSelect(DateTime date) {}
 
-
   void _timeOfTaskelected(TimeOfDay time) {}
 
   void _saveClass() {}
 
   void _cancel() {
-   // Navigator.pop(context);
+    // Navigator.pop(context);
   }
 
   @override
@@ -101,7 +118,9 @@ class _CreateTaskState extends State<CreateTask> {
                     if (index == 1) ...[
                       // Switch Start dates
                       TaskTextImputs(
-                        formsFilled: _TextInputAdded, labelTitle: 'Title*', hintText: 'Task Title',
+                        formsFilled: _TextInputAdded,
+                        labelTitle: 'Title*',
+                        hintText: 'Task Title',
                       ),
                     ],
                     if (index == 2) ...[

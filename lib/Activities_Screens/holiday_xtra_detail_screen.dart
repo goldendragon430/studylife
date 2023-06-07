@@ -53,7 +53,9 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
   }
 
   void _addButtonPressed(context) {
-    _showOptions(context);
+        bottomSheetForSignIn(context);
+
+    //_showOptions(context);
   }
 
   void _showOptions(BuildContext context) {

@@ -4,6 +4,7 @@ import './exam.dart';
 class Task {
   int? id;
   int? userId;
+  String? title;
   String? subjectId;
   int? examId;
   int? classId;
@@ -37,7 +38,8 @@ class Task {
       this.createdAt,
       this.updatedAt,
       this.subject,
-      this.exam});
+      this.exam,
+      this.title});
 
   DateTime getExamDueDateTime() {
     return DateTime.tryParse(dueDate ?? "") ?? DateTime.now();
@@ -70,6 +72,7 @@ class Task {
     completedAt = json['completedAt'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    title = json['title'];
     subject =
         json['subject'] != null ? Subject.fromJson(json['subject']) : null;
     exam = json['exam'] != null ? Exam.fromJson(json['exam']) : null;
@@ -92,6 +95,7 @@ class Task {
     data['completedAt'] = completedAt;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
+    data['title'] = title;
     if (subject != null) {
       data['subject'] = subject!.toJson();
     }

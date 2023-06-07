@@ -9,6 +9,7 @@ class Holiday {
   String? updatedAt;
   String? startDate;
   String? endDate;
+  String? newImagePath;
 
   // Calculated
 
@@ -64,7 +65,8 @@ class Holiday {
       this.createdAt,
       this.updatedAt,
       this.startDate,
-      this.endDate});
+      this.endDate,
+      this.newImagePath});
 
   factory Holiday.fromJson(Map<String, dynamic> json) {
     return Holiday(

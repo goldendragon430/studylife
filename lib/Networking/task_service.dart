@@ -31,27 +31,51 @@ class TaskService {
     return response;
   }
 
-//   Future<Response> createTask(Task taskItem) async {
-//     String body;
+  Future<Response> createTask(Task taskItem) async {
+    String body;
 
-//     body = jsonEncode({
-//       'subjectId': taskItem.subject?.id ?? 0,
-//       'module': taskItem.module,
-//       'mode': taskItem.mode,
-//       'room': taskItem.room,
-//       // 'building': examItem.building,
-//       //'teacher': examItem.teacher,
-//       //'occurs': examItem.occurs,
-//       'startTime': taskItem.startTime,
-//       'startDate': taskItem.startDate,
-//       'type': taskItem.type,
-//       'duration': taskItem.duration,
-//       'onlineUrl': taskItem.onlineUrl
-//     }..removeWhere((dynamic key, dynamic value) => value == null));
+    String? days = null;
+    days = taskItem.days?.join(",");
 
-//     var response = await Api().dio.post('/api/task', data: body);
-//     print(response);
+    body = jsonEncode({
+      'subjectId': taskItem.subject?.id ?? 0,
+      'details': taskItem.details,
+      'type': taskItem.type,
+      'category': taskItem.category,
+      'occurs': taskItem.occurs,
+      'dueDate': taskItem.dueDate,
+      'days': days,
+      'examId': taskItem.examId,
+      'progress': taskItem.progress,
+      'completedAt': taskItem.completedAt,
+    }..removeWhere((dynamic key, dynamic value) => value == null));
 
-//     return response;
-//   }
- }
+    var response = await Api().dio.post('/api/task', data: body);
+
+    return response;
+  }
+
+  Future<Response> updateTask(Task taskItem) async {
+    String body;
+
+    String? days = null;
+    days = taskItem.days?.join(",");
+
+    body = jsonEncode({
+      'subjectId': taskItem.subject?.id ?? 0,
+      'details': taskItem.details,
+      'type': taskItem.type,
+      'category': taskItem.category,
+      'occurs': taskItem.occurs,
+      'dueDate': taskItem.dueDate,
+      'days': days,
+      'examId': taskItem.examId,
+      'progress': taskItem.progress,
+      'completedAt': taskItem.completedAt,
+    }..removeWhere((dynamic key, dynamic value) => value == null));
+
+    var response = await Api().dio.put('/api/task/${taskItem.id}', data: body);
+
+    return response;
+  }
+}

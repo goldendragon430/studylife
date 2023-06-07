@@ -40,9 +40,84 @@ class ClassWidget extends ConsumerWidget {
       var outputDate = outputFormat.format(inputDate);
       return outputDate.toString();
     } else {
-      var outputFormat = DateFormat('EEE, d MMM ');
+      var outputFormat = DateFormat('EEE, d MMM HH:mm');
       var outputDate = outputFormat.format(inputDate);
       return outputDate.toString();
+    }
+  }
+
+  String _getStartEndTimes() {
+    if (classItem != null) {
+      TimeOfDay startTime = toTimeOfDay(classItem!.startTime);
+      TimeOfDay endTime = toTimeOfDay(classItem!.endTime);
+
+      var fullStartDate = DateTime(
+          classItem!.getFormattedStartingDate().year,
+          classItem!.getFormattedStartingDate().month,
+          classItem!.getFormattedStartingDate().day,
+          startTime.hour,
+          startTime.minute);
+
+      if (classItem!.endDate != null) {
+        var fullEndDate = DateTime(
+            classItem!.getFormattedEndingDate().year,
+            classItem!.getFormattedEndingDate().month,
+            classItem!.getFormattedEndingDate().day,
+            endTime.hour,
+            endTime.minute);
+
+        return '${_getFormattedTime(fullStartDate)} - ${_getFormattedTime(fullEndDate)}';
+      } else {
+        var fullEndDate = DateTime(
+            classItem!.getFormattedStartingDate().year,
+            classItem!.getFormattedStartingDate().month,
+            classItem!.getFormattedStartingDate().day,
+            endTime.hour,
+            endTime.minute);
+        return '${_getFormattedTime(fullStartDate)} - ${_getFormattedTime(fullEndDate)}';
+      }
+    } else if (eventItem != null) {
+      TimeOfDay startTime = toTimeOfDay(eventItem!.startTime);
+      TimeOfDay endTime = toTimeOfDay(eventItem!.endTime);
+
+      var fullStartDate = DateTime(
+          eventItem!.getFormattedStartingDate().year,
+          eventItem!.getFormattedStartingDate().month,
+          eventItem!.getFormattedStartingDate().day,
+          startTime.hour,
+          startTime.minute);
+
+      if (eventItem!.endDate != null) {
+        var fullEndDate = DateTime(
+            eventItem!.getFormattedEndingDate().year,
+            eventItem!.getFormattedEndingDate().month,
+            eventItem!.getFormattedEndingDate().day,
+            endTime.hour,
+            endTime.minute);
+
+        return '${_getFormattedTime(fullStartDate)} - ${_getFormattedTime(fullEndDate)}';
+      } else {
+        var fullEndDate = DateTime(
+            eventItem!.getFormattedStartingDate().year,
+            eventItem!.getFormattedStartingDate().month,
+            eventItem!.getFormattedStartingDate().day,
+            endTime.hour,
+            endTime.minute);
+        return '${_getFormattedTime(fullStartDate)} - ${_getFormattedTime(fullEndDate)}';
+      }
+    } else {
+      return "";
+    }
+  }
+
+  TimeOfDay toTimeOfDay(String? time) {
+    if (time != null && time.isNotEmpty) {
+      List<String> timeSplit = time.split(":");
+      int hour = int.parse(timeSplit.first);
+      int minute = int.parse(timeSplit[1]);
+      return TimeOfDay(hour: hour, minute: minute);
+    } else {
+      return TimeOfDay.now();
     }
   }
 
@@ -102,7 +177,7 @@ class ClassWidget extends ConsumerWidget {
                     Text(
                       // eventItem == null ?
                       // '${_getFormattedTime(classItem.startDate)} - ${_getFormattedTime(classItem.dateTo)}',
-                      "11:00 - 12:00",
+                      _getStartEndTimes(),
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
                           : Constants.darkTHemeClassDateTextStyle,

@@ -38,6 +38,30 @@ class ClassModel {
     }
   }
 
+  DateTime getFormattedStartingDate() {
+    DateTime? createdAtDate = DateTime.tryParse(startDate ?? "");
+
+    if (createdAtDate != null) {
+      // String formattedDate =
+      //     DateFormat('MM/dd/yyyy HH:mm:ss').format(createdAtDate);
+      return createdAtDate;
+    } else {
+      return DateTime.now();
+    }
+  }
+
+    DateTime getFormattedEndingDate() {
+    DateTime? createdAtDate = DateTime.tryParse(endDate ?? "");
+
+    if (createdAtDate != null) {
+      // String formattedDate =
+      //     DateFormat('MM/dd/yyyy HH:mm:ss').format(createdAtDate);
+      return createdAtDate;
+    } else {
+      return DateTime.now();
+    }
+  }
+
   String getFormattedEndDate() {
     DateTime? createdAtDate = DateTime.tryParse(endDate ?? "");
 

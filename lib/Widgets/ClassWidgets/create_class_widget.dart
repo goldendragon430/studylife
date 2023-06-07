@@ -35,7 +35,7 @@ class _CreateClassState extends State<CreateClass> {
   final ScrollController scrollcontroller = ScrollController();
   final StorageService _storageService = StorageService();
   static List<Subject> _subjects = [];
-  late ClassModel newClass = ClassModel(occurs: "once");
+  late ClassModel newClass = ClassModel(occurs: "once", mode: "in-person");
 
   bool isClassInPerson = true;
   bool addStartEndDates = false;
@@ -49,6 +49,16 @@ class _CreateClassState extends State<CreateClass> {
     Future.delayed(Duration.zero, () {
       getSubjects();
     });
+  }
+
+  @override
+  void dispose() {
+    newClass = ClassModel(occurs: "once", mode: "in-person");
+    isClassInPerson = true;
+    addStartEndDates = false;
+    isOccurringOnce = true;
+    isEditing = false;
+    super.dispose();
   }
 
   void checkForEditedClass() {
@@ -76,7 +86,8 @@ class _CreateClassState extends State<CreateClass> {
         decodedData.map((x) => Subject.fromJson(x as Map<String, dynamic>)),
       );
       if (isEditing) {
-        var selectedSubjectIndex = _subjects.indexWhere((element) => element.id == widget.editedClass?.subject?.id);
+        var selectedSubjectIndex = _subjects.indexWhere(
+            (element) => element.id == widget.editedClass?.subject?.id);
         var selectedSubject = _subjects[selectedSubjectIndex];
         selectedSubject.selected = true;
         _subjects[selectedSubjectIndex] = selectedSubject;
@@ -176,11 +187,14 @@ class _CreateClassState extends State<CreateClass> {
   }
 
   void _classDaysSelected(List<ClassTagItem> days) {
-    print("Selected repetitionMode: ${days}");
     List<String> daysList = [];
     for (var dayItem in days) {
-      daysList.add(dayItem.title.toLowerCase());
+      if (dayItem.selected) {
+        daysList.add(dayItem.title.toLowerCase());
+      }
+      //print("Selected repetitionMode: ${dayItem.selected}");
     }
+    newClass.days = daysList;
   }
 
   void _switchChangedState(bool isOn) {

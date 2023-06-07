@@ -54,7 +54,8 @@ class _CreateHolidayState extends State<CreateHoliday> {
   }
 
   void _photoAdded(String path) {
-    newHoliday.imageUrl = path;
+   // newHoliday.imageUrl = path;
+    newHoliday.newImagePath = path;
   }
 
   void _saveHoliday() {
@@ -97,7 +98,7 @@ class _CreateHolidayState extends State<CreateHoliday> {
                   ],
                   if (index == 2) ...[
                     AddPhotoWidget(
-                      imageUrl: newHoliday.imageUrl,
+                      imageUrl: newHoliday.newImagePath ?? newHoliday.imageUrl,
                       photoAdded: _photoAdded,
                     )
                   ],
