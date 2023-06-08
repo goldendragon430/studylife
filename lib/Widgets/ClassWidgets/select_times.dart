@@ -150,7 +150,7 @@ class _SelectTimesState extends State<SelectTimes> {
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
-        print(picked.format(context)); //output 10:51 PM
+       // print(picked.format(context)); //output 10:51 PM
         widget.timeSelected(picked, isDateFrom);
       });
     }

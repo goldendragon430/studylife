@@ -110,6 +110,7 @@ class _SelectTaskRepeatOptionsState extends State<SelectTaskRepeatOptions> {
       setState(() {
         date = picked;
         dateController.text = DateFormat('EEE, d MMM, yyyy').format(picked);
+        widget.dateSelected(picked);
       });
     }
   }
@@ -126,6 +127,7 @@ class _SelectTaskRepeatOptionsState extends State<SelectTaskRepeatOptions> {
                 date = newDate;
                 dateController.text =
                     DateFormat('EEE, d MMM, yyyy').format(newDate);
+                widget.dateSelected(newDate);
               });
             },
           ));

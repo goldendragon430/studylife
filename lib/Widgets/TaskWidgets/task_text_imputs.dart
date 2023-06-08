@@ -7,11 +7,17 @@ import '../../app.dart';
 import '../multiline_textField.dart';
 
 class TaskTextImputs extends StatefulWidget {
-  final Function formsFilled;
+  final Function titleFormFilled;
+  final Function detailsFormFilled;
   final String labelTitle;
   final String hintText;
+
   const TaskTextImputs(
-      {super.key, required this.formsFilled, required this.labelTitle, required this.hintText});
+      {super.key,
+      required this.detailsFormFilled,
+      required this.labelTitle,
+      required this.hintText,
+      required this.titleFormFilled});
 
   @override
   State<TaskTextImputs> createState() => _TaskTextImputsState();
@@ -21,7 +27,13 @@ class _TaskTextImputsState extends State<TaskTextImputs> {
   final titleController = TextEditingController();
   final detailsController = TextEditingController();
 
-  void _multilineFormSubmitted(String text) {}
+  void _multilineFormSubmitted(String text) {
+    widget.detailsFormFilled(text);
+  }
+
+  void _titleTextSubmitted() {
+    widget.titleFormFilled(titleController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +58,17 @@ class _TaskTextImputsState extends State<TaskTextImputs> {
             Container(
               height: 6,
             ),
-            RegularTextField(widget.hintText, (value) {
-              FocusScope.of(context).unfocus();
-            }, TextInputType.emailAddress, titleController,
-                theme == ThemeMode.dark, autofocus: false,),
+            RegularTextField(
+              widget.hintText,
+              (value) {
+                _titleTextSubmitted();
+                //  FocusScope.of(context).unfocus();
+              },
+              TextInputType.emailAddress,
+              titleController,
+              theme == ThemeMode.dark,
+              autofocus: false,
+            ),
             Container(
               height: 14,
             ),

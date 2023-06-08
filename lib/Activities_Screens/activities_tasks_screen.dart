@@ -166,7 +166,7 @@ class _ActivitiesTasksScreenState extends State<ActivitiesTasksScreen> {
   void groupTasksByDate() {
     groupedKeys = [];
     groupedByDate =
-        groupBy(_tasksPast, (obj) => obj.getExamDueDateTime().month);
+        groupBy(_tasksPast, (obj) => obj.getTaskDueDateTime().month);
     groupedByDate.forEach((date, list) {
       // Header
       groupedKeys.add(date);

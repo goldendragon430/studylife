@@ -242,20 +242,24 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                           ),
                         ),
                         Flexible(
+                        //  fit: FlexFit.tight,
                           child: Container(
                             margin: const EdgeInsets.only(top: 18, right: 15),
-                            child: Text(
-                              finalEvent.event?.subject?.subjectName ?? "",
-                              style: TextStyle(
-                                  overflow: TextOverflow.visible,
-                                  fontSize: 20,
-                                  fontFamily: 'BebasNeue',
-                                  fontWeight: FontWeight.normal,
-                                  color: finalEvent.event?.subject?.colorHex !=
-                                          null
-                                      ? HexColor.fromHex(
-                                          finalEvent.event!.subject!.colorHex!)
-                                      : Colors.red),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                finalEvent.event?.subject?.subjectName ?? "",
+                                style: TextStyle(
+                                    overflow: TextOverflow.visible,
+                                    fontSize: 20,
+                                    fontFamily: 'BebasNeue',
+                                    fontWeight: FontWeight.normal,
+                                    color: finalEvent.event?.subject?.colorHex !=
+                                            null
+                                        ? HexColor.fromHex(
+                                            finalEvent.event!.subject!.colorHex!)
+                                        : Colors.red),
+                              ),
                             ),
                           ),
                         ),

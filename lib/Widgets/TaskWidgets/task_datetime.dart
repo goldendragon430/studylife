@@ -10,15 +10,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
 
+import '../../Models/API/task.dart';
+
 class TaskDateTime extends StatefulWidget {
   final Function dateSelected;
   final Function timeSelected;
+  final Task? taskItem;
 
-  const TaskDateTime(
-      {super.key,
-      required this.dateSelected,
-      required this.timeSelected,
-      });
+  const TaskDateTime({
+    super.key,
+    required this.dateSelected,
+    required this.timeSelected,
+    this.taskItem,
+  });
 
   @override
   State<TaskDateTime> createState() => _TaskDateTimeState();
@@ -33,9 +37,42 @@ class _TaskDateTimeState extends State<TaskDateTime> {
 
   @override
   void initState() {
-    dateController.text = "Fri, 4 Mar 2023";
-    timeController.text = "10:30 AM";
+    if (widget.taskItem != null) {
+      dateController.text =
+          widget.taskItem?.getTaskDueFormattedDate() ?? "Fri, 4 Mar 2023";
+      //   TimeOfDay startTime = toTimeOfDay(widget.taskItem?.ti);
+
+      // var fullstartDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute);
+      // var fullendDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute);
+
+      timeController.text =
+          _getFormattedTime(widget.taskItem!.getTaskDueDateTime());
+    } else {
+      dateController.text = "Fri, 4 Mar 2023";
+      timeController.text = "10:30 AM";
+    }
     super.initState();
+  }
+
+  String _getFormattedTime(DateTime time) {
+    var localDate = time.toLocal();
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse(localDate.toString());
+
+    var outputFormat = DateFormat('HH:mm');
+    var outputDate = outputFormat.format(inputDate);
+    return outputDate.toString();
+  }
+
+  TimeOfDay toTimeOfDay(String? time) {
+    if (time != null && time.isNotEmpty) {
+      List<String> timeSplit = time.split(":");
+      int hour = int.parse(timeSplit.first);
+      int minute = int.parse(timeSplit[1]);
+      return TimeOfDay(hour: hour, minute: minute);
+    } else {
+      return TimeOfDay.now();
+    }
   }
 
   void _showiOSDateSelectionDialog(Widget child) {
@@ -98,6 +135,7 @@ class _TaskDateTimeState extends State<TaskDateTime> {
     if (picked != null && picked != date) {
       setState(() {
         date = picked;
+        widget.dateSelected(picked);
         dateController.text = DateFormat('EEE, d MMM, yyyy').format(picked);
       });
     }
@@ -115,6 +153,7 @@ class _TaskDateTimeState extends State<TaskDateTime> {
                 date = newDate;
                 dateController.text =
                     DateFormat('EEE, d MMM, yyyy').format(newDate);
+                widget.dateSelected(newDate);
               });
             },
           ));
@@ -176,13 +215,15 @@ class _TaskDateTimeState extends State<TaskDateTime> {
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
-        print(picked.format(context)); //output 10:51 PM
-        DateTime parsedTime =
-            DateFormat.jm().parse(picked.format(context).toString());
+        widget.timeSelected(picked);
+
+        // print(picked.format(context)); //output 10:51 PM
+        //  DateTime parsedTime =
+      //  DateFormat.jm().parse(picked.format(context).toString());
         //converting to DateTime so that we can further format on different pattern.
-        print(parsedTime); //output 1970-01-01 22:53:00.000
-        String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
-        print(formattedTime);
+        //   print(parsedTime); //output 1970-01-01 22:53:00.000
+        // String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
+        // print(formattedTime);
       });
     }
   }
@@ -197,6 +238,7 @@ class _TaskDateTimeState extends State<TaskDateTime> {
             onTimerDurationChanged: (Duration changeTimer) {
               setState(() {
                 pickedTimeFrom = minutesToTimeOfDay(changeTimer);
+                widget.timeSelected(pickedTimeFrom);
                 timeController.text = pickedTimeFrom.format(context);
               });
             },
@@ -285,7 +327,7 @@ class _TaskDateTimeState extends State<TaskDateTime> {
             ),
             Container(
               height: 6,
-            ),            
+            ),
           ],
         ),
       );

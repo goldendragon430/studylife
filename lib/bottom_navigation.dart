@@ -283,6 +283,7 @@ class _ScaffoldWithBottomNavBarState extends State<ScaffoldWithBottomNavBar> {
 
   bottomSheetForSignIn(BuildContext context) {
     showModalBottomSheet(
+      
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(20),

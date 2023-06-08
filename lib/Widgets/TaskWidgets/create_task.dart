@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
@@ -25,62 +26,99 @@ class CreateTask extends StatefulWidget {
 class _CreateTaskState extends State<CreateTask> {
   final ScrollController scrollcontroller = ScrollController();
 
-  bool isExamInPerson = true;
-  bool resitOn = false;
   late Task newTask = Task();
   bool isEditing = false;
 
   @override
   void initState() {
-    checkForEditedHoliday();
+    checkForEditedTask();
     super.initState();
   }
 
-   void checkForEditedHoliday() {
+  @override
+  void dispose() {
+    newTask = Task();
+    isEditing = false;
+    super.dispose();
+  }
+
+  void checkForEditedTask() {
     if (widget.taskitem != null) {
       isEditing = true;
       newTask = widget.taskitem!;
     }
   }
 
-  void _subjectSelected(ClassTagItem subject) {
-    print("Selected subject: ${subject.title}");
-  }
-
   void _taskTypeSelected(ClassTagItem taskType) {
-    print("Selected task: ${taskType.title}");
+   // print("Selected task: ${taskType.title}");
+    newTask.type = taskType.title.toLowerCase();
   }
 
-  void _TextInputAdded(String input) {
-    print("Selected subject: ${input}");
+  void _titleAdded(String text) {
+    newTask.title = text;
+  }
+
+  void _detailsAdded(String text) {
+    newTask.details = text;
   }
 
   void _taskOccuringSelected(ClassTagItem occuring) {
-    print("Selected repetitionMode: ${occuring.title}");
+    newTask.occurs = occuring.title.toLowerCase();
+   // print("Selected repetitionMode: ${occuring.title}");
   }
 
-  void _switchChangedState(bool isOn) {
-    setState(() {
-      resitOn = isOn;
-      print("Swithc isOn : $isOn");
-    });
+  void _dateOfTaskSelected(DateTime date) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    newTask.dueDate = formattedDate;
   }
-
-  void _dateOfTaskSelected(DateTime date) {}
 
   void _taskRepeatOptionSelected(ClassTagItem repeatOption) {
-    print("Selected task: ${repeatOption.title}");
+    newTask.repeatOption = repeatOption.title.toLowerCase();
+   // print("Selected task: ${repeatOption.title}");
   }
 
-  void _tasRepeatDateSelect(DateTime date) {}
+  void _tasRepeatDateSelect(DateTime date) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    newTask.endDate = formattedDate;
+  }
 
-  void _timeOfTaskelected(TimeOfDay time) {}
+  void _timeOfTaskelected(TimeOfDay time) {
+    final localizations = MaterialLocalizations.of(context);
+    final formattedTimeOfDay =
+        localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
 
-  void _saveClass() {}
+    // newTask.startTime = formattedTimeOfDay;
+  }
+
+  void _saveClass() {
+    widget.saveTask(newTask);
+  }
 
   void _cancel() {
-    // Navigator.pop(context);
+     Navigator.pop(context);
   }
+
+  //  void _selectedTimes(TimeOfDay time, bool isTimeFrom) {
+  //   final localizations = MaterialLocalizations.of(context);
+  //   final formattedTimeOfDay =
+  //       localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
+
+  //   if (isTimeFrom) {
+  //     newClass.startTime = formattedTimeOfDay;
+  //   } else {
+  //     newClass.endTime = formattedTimeOfDay;
+  //   }
+  // }
+
+  // void _selectedDates(DateTime date, bool isDateFrom) {
+  //   String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+  //   if (isDateFrom) {
+  //     newClass.startDate = formattedDate;
+  //   } else {
+  //     newClass.endDate = formattedDate;
+  //   }
+  //   print("Selected date: ${date} & ${isDateFrom}");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +156,8 @@ class _CreateTaskState extends State<CreateTask> {
                     if (index == 1) ...[
                       // Switch Start dates
                       TaskTextImputs(
-                        formsFilled: _TextInputAdded,
+                        titleFormFilled: _titleAdded,
+                        detailsFormFilled: _detailsAdded,
                         labelTitle: 'Title*',
                         hintText: 'Task Title',
                       ),

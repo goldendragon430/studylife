@@ -26,8 +26,6 @@ class CustomSnackBar {
       fontFamily: 'Roboto',
     );
 
-    
-
     // SnackBar rounded conrers
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(14),
@@ -37,7 +35,7 @@ class CustomSnackBar {
     int distanceFromTop = 150;
 
     if (isHome) {
-      distanceFromTop = 230;
+      distanceFromTop = 210;
     }
 
     final margin = EdgeInsets.only(

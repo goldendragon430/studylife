@@ -30,7 +30,7 @@ class TasksCurrentList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    var groupByDate = groupBy(tasks, (obj) => obj.getExamDueDateTime().isToday());
+    var groupByDate = groupBy(tasks, (obj) => obj.getTaskDueDateTime().isToday());
 
     // groupByDate.forEach((key, value) {
     //   print("KEY : $key");

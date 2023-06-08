@@ -1,5 +1,6 @@
 import './subject.dart';
 import './exam.dart';
+import 'package:intl/intl.dart';
 
 class Task {
   int? id;
@@ -15,6 +16,8 @@ class Task {
   String? occurs;
   List<String>? days;
   String? dueDate;
+  String? endDate;
+  String? repeatOption;
   String? completedAt;
   String? createdAt;
   String? updatedAt;
@@ -39,10 +42,24 @@ class Task {
       this.updatedAt,
       this.subject,
       this.exam,
-      this.title});
+      this.title,
+      this.repeatOption,
+      this.endDate});
 
-  DateTime getExamDueDateTime() {
+  DateTime getTaskDueDateTime() {
     return DateTime.tryParse(dueDate ?? "") ?? DateTime.now();
+  }
+
+   String getTaskDueFormattedDate() {
+    DateTime? createdAtDate = DateTime.tryParse(dueDate ?? "");
+
+    if (createdAtDate != null) {
+      String formattedDate =
+          DateFormat('EEE, dd MMM').format(createdAtDate);
+      return formattedDate;
+    } else {
+      return "";
+    }
   }
 
   Task.fromJson(Map<String, dynamic> json) {
@@ -73,6 +90,8 @@ class Task {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     title = json['title'];
+    endDate = json['endDate'];
+    repeatOption = json['repeatOption'];
     subject =
         json['subject'] != null ? Subject.fromJson(json['subject']) : null;
     exam = json['exam'] != null ? Exam.fromJson(json['exam']) : null;
@@ -96,6 +115,8 @@ class Task {
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     data['title'] = title;
+    data['repeatOption'] = repeatOption;
+    data['endDate'] = endDate;
     if (subject != null) {
       data['subject'] = subject!.toJson();
     }

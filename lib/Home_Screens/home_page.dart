@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
         //  print("EVENT COUNT : ${events.length}");
 
         for (var eventEntry in events) {
-          //         print("TEACHER : ${eventEntry.room}");
+             //  print("EVENT DATE : ${eventEntry.getFormattedStartingDate()}");
 
           var newCalendarEntry = CalendarEventData(
             date: eventEntry.getFormattedStartingDate(),

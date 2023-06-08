@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Models/subjects_datasource.dart';
 import 'package:my_study_life_flutter/Networking/task_service.dart';
+import '../Models/Services/storage_service.dart';
+import 'package:calendar_view/calendar_view.dart';
+import '../Models/Services/storage_service.dart';
+import 'dart:convert';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
 import '../../Widgets/loaderIndicator.dart';
 import '../../Widgets/custom_snack_bar.dart';
 import 'package:dio/dio.dart';
+import '../Networking/sync_controller.dart';
 
 import '../Widgets/ClassWidgets/create_class_widget.dart';
 import '../Widgets/ExamWidgets/create_exam.dart';
@@ -26,6 +31,8 @@ import '../Models/API/holiday.dart';
 import '../Models/API/classmodel.dart';
 import '../Models/API/exam.dart';
 import '../Models/API/task.dart';
+import '../Models/API/result.dart';
+import '../Models/API/event.dart';
 
 class CreateScreen extends StatefulWidget {
   final ClassModel? classItem;
@@ -49,6 +56,9 @@ class _CreateScreenState extends State<CreateScreen>
   late AnimationController _controller;
   int initialTabIndex = 0;
   bool isEditing = false;
+  final SyncController _syncController = SyncController();
+  List<CalendarEventData<Event>> _events = [];
+  final StorageService _storageService = StorageService();
 
   @override
   void initState() {
@@ -94,6 +104,76 @@ class _CreateScreenState extends State<CreateScreen>
       setState(() {
         isEditing = true;
         initialTabIndex = 3;
+      });
+    }
+  }
+
+  // API
+  void syncData() async {
+    LoadingDialog.show(context);
+
+    Result response = await _syncController.syncAll();
+
+    if (!context.mounted) return;
+
+    LoadingDialog.hide(context);
+
+    if (response is ErrorState) {
+      ErrorState error = response as ErrorState;
+
+      CustomSnackBar.show(context, CustomSnackBarType.error, error.msg, true);
+    }
+
+    if (response is SuccessState) {
+   
+
+      // Get Events from storage
+      var eventsData = await _storageService.readSecureData("user_events");
+
+      List<dynamic> decodedDataEvents = jsonDecode(eventsData ?? "");
+
+      setState(() {
+        
+
+        var events = List<Event>.from(
+          decodedDataEvents
+              .map((x) => Event.fromJson(x as Map<String, dynamic>)),
+        );
+
+        for (var eventEntry in events) {
+
+          var newCalendarEntry = CalendarEventData(
+            date: eventEntry.getFormattedStartingDate(),
+            event: eventEntry,
+            title: eventEntry.mode ?? "",
+            description: "Today is project meeting.",
+            startTime: DateTime(
+                eventEntry.getFormattedStartingDate().year,
+                eventEntry.getFormattedStartingDate().month,
+                eventEntry.getFormattedStartingDate().day,
+                eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
+                eventEntry.toTimeOfDay(eventEntry.startTime ?? "").minute),
+            endTime: DateTime(
+                eventEntry.getFormattedStartingDate().year,
+                eventEntry.getFormattedStartingDate().month,
+                eventEntry.getFormattedStartingDate().day,
+                eventEntry.endTime != null
+                    ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").hour
+                    : eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
+                eventEntry.endTime != null ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").minute : eventEntry.duration ?? 60),
+          );
+
+          _events.add(newCalendarEntry);
+        }
+
+        CalendarControllerProvider.of<Event>(
+                scaffoldMessengerKey.currentState!.context)
+            .controller
+            .addAll(_events);
+
+         Navigator.pop(context);
+
+
       });
     }
   }
@@ -146,6 +226,7 @@ class _CreateScreenState extends State<CreateScreen>
 
       try {
         var response = await ClassService().updateClass(classItem);
+        var sync = await _syncController.syncAll();
 
         if (!contextMain.mounted) return;
 
@@ -155,7 +236,6 @@ class _CreateScreenState extends State<CreateScreen>
         Navigator.pop(context);
       } catch (error) {
         if (error is DioError) {
-          print("dsfsfsfsfsf ${error.response.toString()}");
 
           LoadingDialog.hide(context);
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
@@ -177,14 +257,15 @@ class _CreateScreenState extends State<CreateScreen>
         LoadingDialog.hide(context);
         CustomSnackBar.show(contextMain, CustomSnackBarType.success,
             response.data['message'], true);
-        Navigator.pop(context);
+        syncData();
+
+        // Navigator.pop(context);
       } catch (error) {
         if (error is DioError) {
           LoadingDialog.hide(context);
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
               error.response?.data['message'], true);
         } else {
-          print("dsfsfsfsfsf ${error.toString()}");
           LoadingDialog.hide(context);
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
               "Oops, something went wrong", true);
@@ -240,6 +321,7 @@ class _CreateScreenState extends State<CreateScreen>
     if (isEditing) {
       try {
         var response = await ExamService().updateExam(examItem);
+        var sync = await _syncController.syncAll();
 
         if (!contextMain.mounted) return;
 
@@ -261,6 +343,7 @@ class _CreateScreenState extends State<CreateScreen>
     } else {
       try {
         var response = await ExamService().createExam(examItem);
+        var sync = await _syncController.syncAll();
 
         if (!contextMain.mounted) return;
 
@@ -308,6 +391,7 @@ class _CreateScreenState extends State<CreateScreen>
     if (isEditing) {
       try {
         var response = await TaskService().updateTask(taskItem);
+        var sync = await _syncController.syncAll();
 
         if (!contextMain.mounted) return;
 
@@ -329,6 +413,7 @@ class _CreateScreenState extends State<CreateScreen>
     } else {
       try {
         var response = await TaskService().createTask(taskItem);
+        var sync = await _syncController.syncAll();
 
         if (!contextMain.mounted) return;
 
@@ -366,6 +451,7 @@ class _CreateScreenState extends State<CreateScreen>
 
       try {
         var response = await HolidayService().updateHoliday(holidayItem);
+        var sync = await _syncController.syncAll();
 
         if (!contextMain.mounted) return;
 
@@ -389,6 +475,7 @@ class _CreateScreenState extends State<CreateScreen>
 
       try {
         var response = await HolidayService().createHoliday(holidayItem);
+        var sync = await _syncController.syncAll();
 
         if (!contextMain.mounted) return;
 

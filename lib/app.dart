@@ -46,7 +46,7 @@ class App extends ConsumerStatefulWidget {
 class AppState extends ConsumerState<App>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   late final _routerDelegate;
-
+  final eventController = EventController<Event>();
   @override
   void initState() {
     super.initState();
@@ -91,11 +91,7 @@ class AppState extends ConsumerState<App>
           BeamerLocations(routeInformation),
     );
     WidgetsBinding.instance.addObserver(this);
-
-   
   }
-
- 
 
   @override
   void dispose() {
@@ -123,12 +119,12 @@ class AppState extends ConsumerState<App>
     final theme = ref.watch(themeModeProvider);
 
     final signInState = ref.watch(authProvider);
-    print("object ${signInState.status}");
+   // print("object ${signInState.status}");
 
     return BeamerProvider(
       routerDelegate: _routerDelegate,
       child: CalendarControllerProvider<Event>(
-        controller: EventController<Event>()..addAll(_events),
+        controller: eventController,
         child: MaterialApp.router(
           scaffoldMessengerKey: scaffoldMessengerKey,
           debugShowCheckedModeBanner: false,
@@ -148,7 +144,7 @@ class AppState extends ConsumerState<App>
   }
 }
 
-final List<CalendarEventData<Event>> _events = [
+////final List<CalendarEventData<Event>> _events = [
   // CalendarEventData(
   //   date: _now,
   //   event: Event(title: "CHEMISTRY", eventType: EventType.breakEvent),
@@ -239,4 +235,4 @@ final List<CalendarEventData<Event>> _events = [
   //   title: "Chemistry Viva",
   //   description: "Today is Joe's birthday.",
   // ),
-];
+//];

@@ -42,7 +42,7 @@ class TaskWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
     double percentageProgress = (taskItem.progress ?? 0 / 10) * 100;
-    DateTime? dueDate = taskItem.getExamDueDateTime();
+    DateTime? dueDate = taskItem.getTaskDueDateTime();
     bool duePassed = false;
     int daysPassed = 0;
    // var localDate = dueDate.toLocal();
