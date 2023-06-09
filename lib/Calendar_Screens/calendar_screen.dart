@@ -68,22 +68,22 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen>
     with WidgetsBindingObserver {
-  AppLifecycleState? _notification;
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      _notification = state;
-      if (_notification?.index == 0) {
-           var events = CalendarControllerProvider.of<Event>(
-                scaffoldMessengerKey.currentState!.context)
-            .controller.events;
+  // AppLifecycleState? _notification;
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   setState(() {
+  //     _notification = state;
+  //     if (_notification?.index == 0) {
+  //          var events = CalendarControllerProvider.of<Event>(
+  //               scaffoldMessengerKey.currentState!.context)
+  //           .controller.events;
 
-            for (var event in events) {
-              print("OJSAAAAA ${event.event?.module}");
-            }
-      }
-    });
-  }
+  //           for (var event in events) {
+  //             print("OJSAAAAA ${event.event?.module}");
+  //           }
+  //     }
+  //   });
+  // }
 
   int selectedTabIndex = 1;
   String currentMonthName = "";
@@ -103,7 +103,7 @@ class _CalendarScreenState extends State<CalendarScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+   // WidgetsBinding.instance.addObserver(this);
     currentMonthName = _getCurrentMonthName();
     currentWeekName = _getCurrentWeekName();
     currentSelectedDayStringName = _getCurrentDayName();
@@ -112,11 +112,11 @@ class _CalendarScreenState extends State<CalendarScreen>
     });
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   WidgetsBinding.instance.removeObserver(this);
+  //   super.dispose();
+  // }
 
   void getData() async {
     var eventData = await _storageService.readSecureData("user_events");
@@ -134,9 +134,9 @@ class _CalendarScreenState extends State<CalendarScreen>
 
         return mapDate.isToday();
       }).toList();
-      for (var event in _events) {
-        print("OVA LISTA OH ${event.getEventType()}");
-      }
+      // for (var event in _events) {
+      //   print("OVA LISTA OH ${event.getEventType()}");
+      // }
     });
   }
 

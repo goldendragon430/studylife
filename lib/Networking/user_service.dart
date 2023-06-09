@@ -42,17 +42,65 @@ class UserService {
 
     var response = await Api().tokenDio.post('/api/auth/login', data: body);
     if (response.statusCode == 200) {
-
-     // var tokenData = JwtDecoder.decode(response.data['token']);
+      // var tokenData = JwtDecoder.decode(response.data['token']);
       var tokenString = response.data['token'];
-     // print("TOKEN DATA $tokenData");
+      // print("TOKEN DATA $tokenData");
 
-     // var token = AccessToken.fromJson(tokenData);
+      // var token = AccessToken.fromJson(tokenData);
       var user = UserModel.fromJson(response.data['user']);
 
-      await _storage.write(
-          key: "access_token", value: tokenString);
-     await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
+      await _storage.write(key: "access_token", value: tokenString);
+      await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
+    }
+
+    return response;
+  }
+
+  Future<Response> loginGoogleUser(
+      String email, String userId, String firstName, String lastName) async {
+    var body = jsonEncode({
+      'email': email,
+      'providerUserId': userId,
+      "firstName": firstName,
+      "lastName": lastName,
+    });
+
+    var response = await Api().tokenDio.post('/api/auth/google', data: body);
+    if (response.statusCode == 200) {
+      // var tokenData = JwtDecoder.decode(response.data['token']);
+      var tokenString = response.data['token'];
+      // print("TOKEN DATA $tokenData");
+
+      // var token = AccessToken.fromJson(tokenData);
+      var user = UserModel.fromJson(response.data['user']);
+
+      await _storage.write(key: "access_token", value: tokenString);
+      await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
+    }
+
+    return response;
+  }
+
+  Future<Response> loginFacebookUser(
+      String email, String userId, String firstName, String lastName) async {
+    var body = jsonEncode({
+      'email': email,
+      'providerUserId': userId,
+      "firstName": firstName,
+      "lastName": lastName,
+    });
+
+    var response = await Api().tokenDio.post('/api/auth/facebook', data: body);
+    if (response.statusCode == 200) {
+      // var tokenData = JwtDecoder.decode(response.data['token']);
+      var tokenString = response.data['token'];
+      // print("TOKEN DATA $tokenData");
+
+      // var token = AccessToken.fromJson(tokenData);
+      var user = UserModel.fromJson(response.data['user']);
+
+      await _storage.write(key: "access_token", value: tokenString);
+      await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
     }
 
     return response;
@@ -73,7 +121,8 @@ class UserService {
         // 'client_id': clientId,
         // 'client_secret': clientSecret,
       });
-      var response = await Api().tokenDio.post('/api/auth/refresh-token', data: body);
+      var response =
+          await Api().tokenDio.post('/api/auth/refresh-token', data: body);
 
       return response;
     } else {

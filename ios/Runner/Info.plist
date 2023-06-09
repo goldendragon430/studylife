@@ -36,6 +36,35 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+    <key>CFBundleURLTypes</key>
+    <array>
+
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.mystudylife.app</string>
+                <string>fb956309179018660</string>
+                <string>com.googleusercontent.apps.466708350180-aoaobgdf6a4ej8l79d0sgfeg9j3voehs</string>
+            </array>
+        </dict>
+  
+    </array>
+    <key>FacebookAppID</key>
+    <string>956309179018660</string>
+    <key>FacebookClientToken</key>
+    <string>dfa285540bc4325f7e2eab5a7877627f</string>
+    <key>FacebookDisplayName</key>
+    <string>MyStudyLife</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>fbapi</string>
+           <string>fb-messenger-share-api</string>
+           <string>fbauth2</string>
+           <string>fbshareextension</string>
+      
+    </array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

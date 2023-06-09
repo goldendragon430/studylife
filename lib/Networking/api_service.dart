@@ -23,8 +23,6 @@ class Api {
       sendTimeout: 30000,
     ));
 
-   
-
     dio.interceptors.addAll({
       AppInterceptors(dio),
     });

@@ -27,7 +27,7 @@ class AuthState extends Equatable {
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
-    final _storage = const FlutterSecureStorage();
+  final _storage = const FlutterSecureStorage();
 
   AuthNotifier(Ref ref)
       : repo = ref.read(appRepositoryProvider),
@@ -39,19 +39,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     /// this is where you can check if you have the cached token on the phone
     /// on app startup
     /// for now we assume no such caching is done
-    /// 
-    
+    ///
+
     var userString = await _storage.read(key: "activeUser");
     if (userString != null && userString.isNotEmpty) {
-
       Map<String, dynamic> userMap = jsonDecode(userString);
 
       var user = UserModel.fromJson(userMap);
 
-
       state = AuthState.authenticated(user);
-    }
-    else {
+    } else {
       state = const AuthState.unauthenticated();
     }
   }
@@ -60,6 +57,38 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = AuthState.loading();
 
     UserModel user = await repo.loginUser(email, password);
+
+    if (user == UserModel.empty) {
+      state = const AuthState.unauthenticated();
+    } else {
+      /// do your pre-checks about the user before marking the state as
+      /// authenticated
+      state = AuthState.authenticated(user);
+    }
+  }
+
+  Future<void> loginGoogleUser(
+      String email, String userId, String firstName, String lastName) async {
+    state = AuthState.loading();
+
+    UserModel user =
+        await repo.loginGoogleUser(email, userId, firstName, lastName);
+
+    if (user == UserModel.empty) {
+      state = const AuthState.unauthenticated();
+    } else {
+      /// do your pre-checks about the user before marking the state as
+      /// authenticated
+      state = AuthState.authenticated(user);
+    }
+  }
+
+  Future<void> loginFacebookUser(
+      String email, String userId, String firstName, String lastName) async {
+    state = AuthState.loading();
+
+    UserModel user =
+        await repo.loginFacebookUser(email, userId, firstName, lastName);
 
     if (user == UserModel.empty) {
       state = const AuthState.unauthenticated();
