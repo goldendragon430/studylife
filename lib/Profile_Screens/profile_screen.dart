@@ -20,6 +20,16 @@ import '../../Profile_Screens/change_email_screen.dart';
 import '../Profile_Screens/change_password_screen.dart';
 import './general_settings_screen.dart';
 import '../Models/user.model.dart';
+import '../Models/API/task.dart';
+import '../Profile_Screens/edit_profile_screen.dart';
+import './reminder_notifications_screen.dart';
+import './personalize_screen.dart';
+import '../../Widgets/loaderIndicator.dart';
+import '../../Widgets/custom_snack_bar.dart';
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'dart:io';
+import '../Networking/user_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -33,31 +43,101 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ProfileItemStatic.personalizationItems;
   final List<ProfileItemStatic> _itemsEdit = ProfileItemStatic.editItems;
   final StorageService _storageService = StorageService();
+  List<Task> _tasks = [];
+  List<Task> _tasksTotal = [];
+  List<Task> _tasksPast = [];
 
   String userName = '';
   String email = '';
   String imageUrl = '';
+  UserModel? editedUser;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      _getUser();
+    Future.delayed(Duration(seconds: 1), () {
+      _getData();
     });
   }
 
-  void _getUser() async {
+  void _getData() async {
     var userString = await _storageService.readSecureData("activeUser");
+
+    // Get Tasks from storage
+    var tasksData = await _storageService.readSecureData("user_tasks");
+
+    List<dynamic> decodedDataTasks = jsonDecode(tasksData ?? "");
+
+    var taskDataCurrent =
+        await _storageService.readSecureData("user_tasks_current");
+
+    List<dynamic> decodedDataTasksCurrent = jsonDecode(taskDataCurrent ?? "");
+
+    var taskDataOverdue =
+        await _storageService.readSecureData("user_tasks_past");
+
+    List<dynamic> decodedDataTasksOverdue = jsonDecode(taskDataOverdue ?? "");
+
     if (userString != null && userString.isNotEmpty) {
       Map<String, dynamic> userMap = jsonDecode(userString);
 
       var user = UserModel.fromJson(userMap);
-
+      editedUser = user;
       setState(() {
         userName = "${user.firstName} ${user.lastName}";
-        email = user.email;
-        imageUrl = user.profileImage ?? "";
+        email = user.email ?? "";
+        imageUrl = user.profileImageUrl?? "";
+
+        _tasks = List<Task>.from(
+          decodedDataTasks.map((x) => Task.fromJson(x as Map<String, dynamic>)),
+        );
+        _tasksTotal = List<Task>.from(
+          decodedDataTasksCurrent
+              .map((x) => Task.fromJson(x as Map<String, dynamic>)),
+        );
+        _tasksPast = List<Task>.from(
+          decodedDataTasksOverdue
+              .map((x) => Task.fromJson(x as Map<String, dynamic>)),
+        );
       });
+    }
+  }
+
+  void userUpdated() async {
+   // LoadingDialog.show(context);
+
+    try {
+      var response = await UserService().getUser();
+      print("user ${response.statusMessage}");
+
+    // if (!context.mounted) return;
+
+     // var userString = await _storageService.readSecureData("activeUser");
+       var user = UserModel.fromJson(response.data['user']);
+
+     // editedUser = user;
+
+     setState(() {
+        userName = "${user.firstName} ${user.lastName}";
+        email = user.email ?? "";
+        imageUrl = user.profileImageUrl ?? "";
+        Navigator.pop(context);
+
+       // LoadingDialog.hide(context);
+        // CustomSnackBar.show(context, CustomSnackBarType.success,
+        //     response.data['message'], true);
+     });
+    } catch (error) {
+      print("DASDDADSADAD ${error.toString()}");
+      if (error is DioError) {
+     //   LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+       // LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
+      }
     }
   }
 
@@ -73,6 +153,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               builder: (context) => const ManageSubjectsScreen(),
               fullscreenDialog: false));
     }
+    if (index == 1) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const PersonalizeScreen(),
+              fullscreenDialog: false));
+    }
     if (index == 2) {
       Navigator.push(
           context,
@@ -80,7 +167,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               builder: (context) => const GeneralSettingsScreen(),
               fullscreenDialog: false));
     }
-    print("Selected Personalization card with Index: $index");
+    if (index == 3) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const ReminderNotificationsScreen(),
+              fullscreenDialog: false));
+    }
   }
 
   void _selectedEditListCard(int index) {
@@ -88,7 +181,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ChangeEmailScreen(), fullscreenDialog: true),
+            builder: (context) => ChangeEmailScreen(editedUser),
+            fullscreenDialog: true),
       );
     }
     if (index == 1) {
@@ -145,7 +239,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Navigate to the Search Screen
             TextButton(
               onPressed: () {
-                // Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(
+                              editedUser: editedUser,
+                              userUpdated: userUpdated,
+                            ),
+                        fullscreenDialog: true));
               },
               child: Text(
                 'Edit',
@@ -181,9 +282,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ? Constants.lightThemeProfileImageCntainerColor
                                 : Constants.darkThemeProfileImageCntainerColor),
                         image: DecorationImage(
-                           fit: BoxFit.scaleDown,
-                          image:
-                              NetworkImage(imageUrl),
+                          fit: BoxFit.scaleDown,
+                          image: NetworkImage(imageUrl),
                         ),
                       ),
                       // child: Container(
@@ -243,10 +343,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 cardIndex: i,
                                 cardselected: _selectedGridCard,
                                 subtitle: "Next 7 days",
-                                numberFirst: 18,
+                                numberFirst: _tasks.length,
                                 isOverdue: false,
                                 isPending: true,
-                                numberSecond: 27,
+                                numberSecond: 10,
                                 isTasksOrStreak: false,
                               );
                             case 1:
@@ -255,7 +355,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 cardIndex: i,
                                 cardselected: _selectedGridCard,
                                 subtitle: "Total",
-                                numberFirst: 12,
+                                numberFirst: _tasksPast.length,
                                 isOverdue: true,
                                 isPending: false,
                                 isTasksOrStreak: false,

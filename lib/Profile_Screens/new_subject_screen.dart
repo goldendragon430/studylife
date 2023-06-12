@@ -18,7 +18,8 @@ import '../Widgets/custom_snack_bar.dart';
 import '../Networking/subject_service.dart';
 
 class AddSubjectScreen extends StatefulWidget {
-  const AddSubjectScreen({super.key});
+  final Subject? editedSubject;
+  const AddSubjectScreen({super.key, this.editedSubject});
 
   @override
   State<AddSubjectScreen> createState() => _AddSubjectScreenState();
@@ -29,10 +30,45 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
   final ScrollController scrollcontroller = ScrollController();
   final ImagePicker _picker = ImagePicker();
   String? _path = null;
+  Subject newSubject = Subject();
 
   List<SubjectColor> subjectColors = SubjectColor.subjectColors;
   List<SubjectPhoto> subjectPhotos = SubjectPhoto.subjectPhotos;
   SubjectColor? selectedColor;
+  bool isEditing = false;
+
+  @override
+  void initState() {
+    if (widget.editedSubject != null) {
+      isEditing = true;
+      newSubject = widget.editedSubject!;
+      if (widget.editedSubject?.colorHex != null) {
+        var index = subjectColors.indexWhere((element) =>
+            element.itemColor.toHex() == widget.editedSubject!.colorHex!);
+        if (index < subjectColors.length) {
+          subjectColors[index].selected = true;
+          selectedColor = subjectColors[index];
+        } else {
+          subjectColors[0].selected = true;
+        }
+      } else {
+        subjectColors[0].selected = true;
+      }
+
+      subjectNameController.text = widget.editedSubject?.subjectName ?? "";
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    selectedColor = null;
+    for (var color in subjectColors) {
+      color.selected = false;
+    }
+    isEditing = false;
+    super.dispose();
+  }
 
   void _selectedColor(int index) {
     setState(() {
@@ -127,41 +163,64 @@ class _AddSubjectScreenState extends State<AddSubjectScreen> {
       return;
     }
 
-    if (_path == null) {
-      CustomSnackBar.show(context, CustomSnackBarType.error,
-          "Please select, or upload subject image", true);
-      return;
+    if (!isEditing) {
+      if (_path == null) {
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Please select, or upload subject image", true);
+        return;
+      }
     }
 
-    Subject newSubject = Subject();
     newSubject.subjectName = finalSubjectName;
     newSubject.colorHex = selectedColor!.itemColor.toHex();
-    newSubject.imageUrl = _path;
+    newSubject.newImageUrl = _path;
 
+    if (isEditing) {
+      LoadingDialog.show(context);
 
+      try {
+        var response = await SubjectService().updateSubject(newSubject);
 
-    LoadingDialog.show(context);
-
-    try {
-      var response = await SubjectService().createSubject(newSubject);
-
-      if (!context.mounted) return;
-
-      LoadingDialog.hide(context);
-      CustomSnackBar.show(
-          context, CustomSnackBarType.success, response.data['message'], false);
-    } catch (error) {
-      //print("ADSDADSADAD ${error.toString()}");
-      if (error is DioError) {
-              print("ADSDADSADAD ${error.response?.data.toString()}");
+        if (!context.mounted) return;
 
         LoadingDialog.hide(context);
-        CustomSnackBar.show(context, CustomSnackBarType.error,
-            error.response?.data['msg'], false);
-      } else {
+        CustomSnackBar.show(context, CustomSnackBarType.success,
+            response.data['message'], false);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(context, CustomSnackBarType.error,
+              error.response?.data['msg'], false);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(context, CustomSnackBarType.error,
+              "Oops, something went wrong", false);
+        }
+      }
+    } else {
+      LoadingDialog.show(context);
+
+      try {
+        var response = await SubjectService().createSubject(newSubject);
+
+        if (!context.mounted) return;
+
         LoadingDialog.hide(context);
-        CustomSnackBar.show(context, CustomSnackBarType.error,
-            "Oops, something went wrong", false);
+        CustomSnackBar.show(context, CustomSnackBarType.success,
+            response.data['message'], false);
+        Navigator.pop(context);
+      } catch (error) {
+        //print("ADSDADSADAD ${error.toString()}");
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(context, CustomSnackBarType.error,
+              error.response?.data['msg'], false);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(context, CustomSnackBarType.error,
+              "Oops, something went wrong", false);
+        }
       }
     }
   }

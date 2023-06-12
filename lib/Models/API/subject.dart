@@ -9,6 +9,7 @@ class Subject {
   String? createdAt;
   String? updatedAt;
   bool? selected = false;
+  String? newImageUrl;
 
   // Calculated
 
@@ -32,7 +33,8 @@ class Subject {
       this.imageUrl,  
       this.createdAt,
       this.updatedAt,
-      this.selected});
+      this.selected,
+      this.newImageUrl});
 
   factory Subject.fromJson(Map<String, dynamic> json) {
     return Subject(

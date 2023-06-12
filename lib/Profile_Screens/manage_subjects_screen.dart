@@ -87,7 +87,13 @@ class _ManageSubjectsScreenState extends State<ManageSubjectsScreen> {
   }
 
   void _subjectCardSelected(int index) {
-    print("Selected subject card with Index: $index");
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddSubjectScreen(
+                  editedSubject: _subjects[index],
+                ),
+            fullscreenDialog: true));
   }
 
   @override

@@ -18,16 +18,21 @@ import 'package:equatable/equatable.dart';
 enum UserRole { student, admin, teacher }
 
 class UserModel extends Equatable {
-  final int id;
-  final String email;
-  final String firstName;
-  final String lastName;
-  final String role;
-  final bool isVerified;
-  final String verificationCode;
+  final int? id;
+  final String? email;
+  final String? firstName;
+  final String? lastName;
+  final String? role;
+  final bool? isVerified;
+  final String? profileImageUrl;
   final String? profileImage;
-  final String createdAt;
-  final String updatedAt;
+  final String? createdAt;
+  final String? updatedAt;
+  final String? provider;
+  final String? deletedAt;
+  final String? status;
+  final String? lastActiveAt;
+  final String? lastLoginAt;
 
   // Calculated
   UserRole calculatedVerifiedStatus() {
@@ -51,21 +56,32 @@ class UserModel extends Equatable {
       required this.lastName,
       required this.role,
       required this.isVerified,
-      required this.verificationCode,
+      // required this.verificationCode,
       this.profileImage,
+      this.profileImageUrl,
+      this.provider,
+      this.deletedAt,
+      this.status,
+      this.lastActiveAt,
+      this.lastLoginAt,
       required this.createdAt,
       required this.updatedAt});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
+      profileImageUrl: json['profileImageUrl'],
+      provider: json['provider'],
+      deletedAt: json['deletedAt'],
+      status: json['status'],
+      lastActiveAt: json['lastActiveAt'],
+      lastLoginAt: json['lastLoginAt'],
       email: json['email'],
       firstName: json['firstName'],
       lastName: json['lastName'],
       role: json['role'],
       isVerified: json['isVerified'],
-      verificationCode: json['verificationCode'],
-      profileImage: json['profileImageUrl'],
+      profileImage: json['profileImage'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
     );
@@ -78,29 +94,34 @@ class UserModel extends Equatable {
         'lastName': lastName,
         'role': role,
         'isVerified': isVerified,
-        'verificationCode': verificationCode,
-        'profileImageUrl': profileImage,
+        'provider': provider,
+        'deletedAt': deletedAt,
+        'status': status,
+        'lastActiveAt': lastActiveAt,
+        'lastLoginAt': lastLoginAt,
+        'profileImageUrl': profileImageUrl,
+        'profileImage': profileImage,
         'createdAt': createdAt,
         'updatedAt': updatedAt,
       }..removeWhere(
           (dynamic key, dynamic value) => key == null || value == null);
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         email,
         firstName,
         lastName,
         role,
         isVerified,
-        verificationCode,
+      //  verificationCode,
         createdAt,
         updatedAt
       ];
 
   @override
   String toString() =>
-      "profileImageUrl: $profileImage email: $email, id: $id, firstName: $firstName, lastName: $lastName, role: $role, isVerified: $isVerified, verificationCode: $verificationCode, createdAt: $createdAt, updatedAt: $updatedAt";
+      "profileImageUrl: $profileImage email: $email, id: $id, firstName: $firstName, lastName: $lastName, role: $role, isVerified: $isVerified, createdAt: $createdAt, updatedAt: $updatedAt";
 
   //static const empty = UserModel(id: 0, email: "-");
 
@@ -111,8 +132,12 @@ class UserModel extends Equatable {
       lastName: '-',
       role: '-',
       isVerified: false,
-      verificationCode: '-',
+      // verificationCode: '-',
       profileImage: '-',
       createdAt: '-',
       updatedAt: '-');
+
+ // @override
+  // TODO: implement props
+ // List<Object?> get props => throw UnimplementedError();
 }

@@ -160,12 +160,7 @@ class _HomePageState extends State<HomePage> {
               .map((x) => Event.fromJson(x as Map<String, dynamic>)),
         );
 
-        // DateTime _now = DateTime.now();
-
-        //  print("EVENT COUNT : ${events.length}");
-
         for (var eventEntry in events) {
-             //  print("EVENT DATE : ${eventEntry.getFormattedStartingDate()}");
 
           var newCalendarEntry = CalendarEventData(
             date: eventEntry.getFormattedStartingDate(),
@@ -194,46 +189,11 @@ class _HomePageState extends State<HomePage> {
 
           _events.add(newCalendarEntry);
         }
-        // var eventEntry = events.first;
-        //  var newCalendarEntry = CalendarEventData(
-        //     date: _now,
-        //     event: eventEntry,
-        //     title: eventEntry.mode ?? "",
-        //     description: "Today is project meeting.",
-        //     startTime: DateTime(
-        //         _now.year,
-        //         _now.month,
-        //         _now.day,
-        //         _now.hour,
-        //         _now.minute),
-        //     endTime: DateTime(
-        //         _now.year,
-        //         _now.month,
-        //         _now.day,
-        //         16,
-        //         ),
-        //   );
-
-        //   print("DATE START : ${newCalendarEntry.date}");
-        //   print("TIMEEE : ${newCalendarEntry.startTime}");
-        //   print("TIMEEE END: ${newCalendarEntry.endTime}");
-
-        //   _events.add(newCalendarEntry);
 
         CalendarControllerProvider.of<Event>(
                 scaffoldMessengerKey.currentState!.context)
             .controller
             .addAll(_events);
-
-        //       var entry =      CalendarEventData(
-        //   date: _now,
-        //   startTime: DateTime(_now.year, _now.month, _now.day, 00),
-        //   endTime: DateTime(_now.year, _now.month, _now.day, 02),
-        //   event: Event(title: "CHEMISTRY", eventType: EventType.classEvent),
-        //   title: "Football Tournament",
-        //   description: "Go to football tournament.",
-        // );
-        //      CalendarControllerProvider.of<Event>(scaffoldMessengerKey.currentState!.context).controller.add(entry);
       });
     }
   }
@@ -262,7 +222,7 @@ class _HomePageState extends State<HomePage> {
 
       var user = UserModel.fromJson(userMap);
       setState(() {
-        userName = user.firstName;
+        userName = user.firstName ?? "";
       });
     }
   }

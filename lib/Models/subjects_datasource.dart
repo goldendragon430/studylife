@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class ClassTagItem {
   final String title;
   bool selected;
@@ -69,9 +68,12 @@ class ClassTagItem {
         title: "Sun", selected: false, isAddNewCard: false, cardIndex: 6)
   ];
 
-    static List<ClassTagItem> lightDarkMode = [
+  static List<ClassTagItem> lightDarkMode = [
     ClassTagItem(
-        title: "Use System default", selected: false, isAddNewCard: false, cardIndex: 0),
+        title: "Use System default",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 0),
     ClassTagItem(
         title: "On", selected: false, isAddNewCard: false, cardIndex: 1),
     ClassTagItem(
@@ -95,7 +97,7 @@ class ClassTagItem {
         title: " 7 ", selected: false, isAddNewCard: false, cardIndex: 6)
   ];
 
-    static List<ClassTagItem> startWeek = [
+  static List<ClassTagItem> startWeek = [
     ClassTagItem(
         title: " A ", selected: false, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
@@ -119,6 +121,38 @@ class ClassTagItem {
         title: "Quiz", selected: false, isAddNewCard: false, cardIndex: 1),
     ClassTagItem(
         title: "Test", selected: false, isAddNewCard: false, cardIndex: 2),
+  ];
+
+  static List<ClassTagItem> notificationReminderTimes = [
+    ClassTagItem(
+        title: "5 Minutes", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "15 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
+    ClassTagItem(
+        title: "30 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 2),
+    ClassTagItem(
+        title: "30 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 2),
+    ClassTagItem(
+        title: "1 Day", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: "2 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: "3 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: "4 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: "5 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: "6 Days", selected: false, isAddNewCard: false, cardIndex: 2),
   ];
 
   static List<ClassTagItem> taskTypes = [
@@ -216,8 +250,79 @@ class ClassTagItem {
         isAddNewCard: false,
         cardIndex: 1),
   ];
-}
 
+  static List<ClassTagItem> dateTypes = [
+    ClassTagItem(
+        title: "Jan 1, 2022",
+        selected: true,
+        isAddNewCard: false,
+        cardIndex: 0),
+    ClassTagItem(
+        title: "1 Jan, 2022",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
+    ClassTagItem(
+        title: "2022, Jan 1",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 2),
+  ];
+  static List<ClassTagItem> timeTypes = [
+    ClassTagItem(
+        title: "12 hrs (Eg 3pm)",
+        selected: true,
+        isAddNewCard: false,
+        cardIndex: 0),
+    ClassTagItem(
+        title: "24 hrs (Eg 15:00)",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
+  ];
+
+  static List<ClassTagItem> academicIntervals = [
+    ClassTagItem(
+        title: "Semesters",
+        selected: true,
+        isAddNewCard: false,
+        cardIndex: 0),
+    ClassTagItem(
+        title: "Terms",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
+  ];
+  static List<ClassTagItem> taughtSessions = [
+    ClassTagItem(
+        title: "Lessons",
+        selected: true,
+        isAddNewCard: false,
+        cardIndex: 0),
+    ClassTagItem(
+        title: "Classes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
+  ];
+  static List<ClassTagItem> taughtSedaysOffssions = [
+    ClassTagItem(
+        title: "Holidays",
+        selected: true,
+        isAddNewCard: false,
+        cardIndex: 0),
+    ClassTagItem(
+        title: "Vacations",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
+         ClassTagItem(
+        title: "Days Off",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
+  ];
+}
 
 class SubjectListItem {
   final String title;
@@ -226,26 +331,73 @@ class SubjectListItem {
 
   final int cardIndex;
 
-  SubjectListItem( {
+  SubjectListItem({
     required this.subjectImage,
     required this.title,
     required this.subjectColor,
     required this.cardIndex,
   });
 
-    static List<SubjectListItem> subjectsList = [
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png" , cardIndex: 0, title: "Chemistry", subjectColor: Colors.green),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 1, title: "Maths", subjectColor: Colors.red),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 2, title: "Biology", subjectColor: Colors.purple),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 3, title: "Genetic Mutations", subjectColor: Colors.yellow),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 0, title: "Chemistry", subjectColor: Colors.green),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 1, title: "Maths", subjectColor: Colors.red),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 2, title: "Biology", subjectColor: Colors.purple),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 3, title: "Genetic Mutations", subjectColor: Colors.yellow),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 0, title: "Chemistry", subjectColor: Colors.green),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 1, title: "Maths", subjectColor: Colors.red),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 2, title: "Biology", subjectColor: Colors.purple),
-      SubjectListItem(subjectImage: "assets/images/ChemistryClassImage.png", cardIndex: 3, title: "Genetic Mutations", subjectColor: Colors.yellow),
-    ];
-
+  static List<SubjectListItem> subjectsList = [
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 0,
+        title: "Chemistry",
+        subjectColor: Colors.green),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 1,
+        title: "Maths",
+        subjectColor: Colors.red),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 2,
+        title: "Biology",
+        subjectColor: Colors.purple),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 3,
+        title: "Genetic Mutations",
+        subjectColor: Colors.yellow),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 0,
+        title: "Chemistry",
+        subjectColor: Colors.green),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 1,
+        title: "Maths",
+        subjectColor: Colors.red),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 2,
+        title: "Biology",
+        subjectColor: Colors.purple),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 3,
+        title: "Genetic Mutations",
+        subjectColor: Colors.yellow),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 0,
+        title: "Chemistry",
+        subjectColor: Colors.green),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 1,
+        title: "Maths",
+        subjectColor: Colors.red),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 2,
+        title: "Biology",
+        subjectColor: Colors.purple),
+    SubjectListItem(
+        subjectImage: "assets/images/ChemistryClassImage.png",
+        cardIndex: 3,
+        title: "Genetic Mutations",
+        subjectColor: Colors.yellow),
+  ];
 }

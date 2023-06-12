@@ -135,26 +135,48 @@ class UserService {
   Future<Response> getUser() async {
     var response = await Api().dio.get('/api/user');
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       var user = UserModel.fromJson(response.data['user']);
-      // user.printAttributes();
 
       await _storage.write(
-          key: "active_user", value: jsonEncode(user.toJson()));
+          key: "activeUser", value: jsonEncode(user.toJson()));
     }
 
     return response;
   }
 
   Future<Response> updateUser(String body) async {
-    var response = await Api().dio.post('/api/user', data: body);
+    // final map = <String, dynamic>{};
+    // map.putIfAbsent('Content-Type', () => "application/json");
+    var response = await Api()
+        .dio
+        .put('/api/user', data: body);
 
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      var user = UserModel.fromJson(response.data['data']);
+    // if (response.statusCode == 201 || response.statusCode == 200) {
+    //   var user = UserModel.fromJson(response.data['data']);
 
-      await _storage.write(
-          key: "active_user", value: jsonEncode(user.toJson()));
-    }
+    //   await _storage.write(
+    //       key: "activeUser", value: jsonEncode(user.toJson()));
+    // }
+
+    return response;
+  }
+
+  Future<Response> updateProfilePicture(String imagePath) async {
+    String fileName = imagePath.split('/').last;
+
+    FormData formData = FormData.fromMap({
+      "image": await MultipartFile.fromFile(imagePath, filename: fileName),
+    });
+
+    var response =
+        await Api().dio.post('/api/user/profile-image', data: formData);
+
+    return response;
+  }
+
+  Future<Response> updateUserPassword(String body) async {
+    var response = await Api().dio.put('/api/user/password', data: body);
 
     return response;
   }

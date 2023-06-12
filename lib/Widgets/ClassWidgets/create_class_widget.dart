@@ -298,18 +298,22 @@ class _CreateClassState extends State<CreateClass> {
                         if (isOccurringOnce) ...[
                           // Switch Start dates
                           RowSwitch(
-                              title: "Add Start/end dates?",
-                              isOn: isOccurringOnce ? true : addStartEndDates,
-                              changedState: _switchChangedState)
+                            title: "Add Start/end dates?",
+                            isOn: isOccurringOnce ? true : addStartEndDates,
+                            changedState: _switchChangedState,
+                            index: 0,
+                          )
                         ]
                       ],
                       if (index == 6) ...[
                         if (!isOccurringOnce) ...[
                           // Switch Start dates
                           RowSwitch(
-                              title: "Add Start/end dates?",
-                              isOn: isOccurringOnce ? true : addStartEndDates,
-                              changedState: _switchChangedState)
+                            title: "Add Start/end dates?",
+                            isOn: isOccurringOnce ? true : addStartEndDates,
+                            changedState: _switchChangedState,
+                            index: 0,
+                          )
                         ],
                         if (isOccurringOnce) ...[
                           if (isOccurringOnce || addStartEndDates) ...[

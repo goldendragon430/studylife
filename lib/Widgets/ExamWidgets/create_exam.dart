@@ -140,7 +140,7 @@ class _CreateExamState extends State<CreateExam> {
     // print("Selected repetitionMode: ${type.title}");
   }
 
-  void _switchChangedState(bool isOn) {
+  void _switchChangedState(bool isOn, int index) {
     setState(() {
       resitOn = isOn;
       print("Swithc isOn : $isOn");
@@ -225,7 +225,7 @@ class _CreateExamState extends State<CreateExam> {
                       RowSwitch(
                           title: "Resit",
                           isOn: resitOn,
-                          changedState: _switchChangedState)
+                          changedState: _switchChangedState, index: 0,)
                     ],
                     if (index == 2) ...[
                       SelectExamType(

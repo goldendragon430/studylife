@@ -18,3 +18,14 @@ class ProfileItemStatic {
     ProfileItemStatic(title: "Change Password"),
   ];
 }
+
+class CountryPickerData {
+  final String title;
+  CountryPickerData({required this.title});
+
+    static List<CountryPickerData> countries = [
+    CountryPickerData(title: "United Kingdom"),
+    CountryPickerData(title: "United States"),
+  ];
+
+}
