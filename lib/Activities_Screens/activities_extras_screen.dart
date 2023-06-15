@@ -4,24 +4,68 @@ import '../Utilities/constants.dart';
 import '../Extensions/extensions.dart';
 import 'package:group_list_view/group_list_view.dart';
 import "package:collection/collection.dart";
+import 'dart:convert';
 
 import '../../app.dart';
 import './custom_segmentedcontrol.dart';
 import '../Models/holidays_datasource.dart';
 import '../Widgets/ExtrasWidgets/extras_widget.dart';
 
+import './holiday_xtra_detail_screen.dart';
+import '../Models/API/xtra.dart';
+import '../Models/Services/storage_service.dart';
+
 class ActivitiesExtrasScreen extends StatefulWidget {
   const ActivitiesExtrasScreen({super.key});
 
   @override
-  State<ActivitiesExtrasScreen> createState() =>
-      _ActivitiesExtrasScreenState();
+  State<ActivitiesExtrasScreen> createState() => _ActivitiesExtrasScreenState();
 }
 
 class _ActivitiesExtrasScreenState extends State<ActivitiesExtrasScreen> {
   final List<HolidayItem> _holidays = HolidayItem.extras;
   int selectedTabIndex = 1;
   final todaysDate = DateTime.now();
+
+  List<Xtra> _allXtrasAcademic = [];
+  List<Xtra> _allXtrasNonAcademic = [];
+
+  final StorageService _storageService = StorageService();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      getData();
+    });
+  }
+
+  void getData() async {
+    var academicXtrasData =
+        await _storageService.readSecureData("user_xtras_academic");
+
+    List<dynamic> decodedDataAcademic = jsonDecode(academicXtrasData ?? "");
+
+    var nonAcademicXtrasData =
+        await _storageService.readSecureData("user_xtras_nonacademic");
+
+    List<dynamic> decodedDataNonAcademic =
+        jsonDecode(nonAcademicXtrasData ?? "");
+
+    if (!context.mounted) return;
+
+    setState(() {
+      _allXtrasAcademic = List<Xtra>.from(
+        decodedDataAcademic
+            .map((x) => Xtra.fromJson(x as Map<String, dynamic>)),
+      );
+
+      _allXtrasNonAcademic = List<Xtra>.from(
+        decodedDataNonAcademic
+            .map((x) => Xtra.fromJson(x as Map<String, dynamic>)),
+      );
+    });
+  }
 
   void _selectedCard(int index) {}
 
@@ -36,11 +80,17 @@ class _ActivitiesExtrasScreenState extends State<ActivitiesExtrasScreen> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
-        final startOfWeek = todaysDate.findFirstDateOfTheWeek(todaysDate);
-        final endOfWeek = todaysDate.findLastDateOfTheWeek(todaysDate);
+      final startOfWeek = todaysDate.findFirstDateOfTheWeek(todaysDate);
+      final endOfWeek = todaysDate.findLastDateOfTheWeek(todaysDate);
 
+      // var groupByDate = groupBy(
+      //     _holidays, (obj) => obj.dateFrom.isBetween(startOfWeek, endOfWeek));
 
-      var groupByDate = groupBy(_holidays, (obj) => obj.dateFrom.isBetween(startOfWeek, endOfWeek));
+      var groupByDateAcademic = groupBy(_allXtrasAcademic,
+          (obj) => obj.getStartDate().isBetween(startOfWeek, endOfWeek));
+
+      var groupByDateNonAcademic = groupBy(_allXtrasNonAcademic,
+          (obj) => obj.getStartDate().isBetween(startOfWeek, endOfWeek));
 
       return Stack(
         children: [
@@ -69,15 +119,22 @@ class _ActivitiesExtrasScreenState extends State<ActivitiesExtrasScreen> {
           Container(
             margin: const EdgeInsets.only(top: 80),
             child: GroupListView(
-              sectionsCount: groupByDate.keys.toList().length,
+              sectionsCount: selectedTabIndex == 1
+                  ? groupByDateAcademic.keys.toList().length
+                  : groupByDateNonAcademic.keys.toList().length,
               countOfItemInSection: (int section) {
-                return groupByDate.values.toList()[section].length;
+                return selectedTabIndex == 1
+                    ? groupByDateAcademic.values.toList()[section].length
+                    : groupByDateNonAcademic.values.toList()[section].length;
               },
               itemBuilder: (BuildContext context, IndexPath index) {
                 return ExtrasWidget(
-                    holidayItem: groupByDate.values.toList()[index.section]
-                        [index.index],
-                    cardIndex: index.index,
+                    xtraItem: selectedTabIndex == 1
+                        ? groupByDateAcademic.values.toList()[index.section]
+                            [index.index]
+                        : groupByDateNonAcademic.values.toList()[index.section]
+                            [index.index],
+                    cardIndex: index,
                     upNext: true,
                     cardselected: _selectedCard);
               },
@@ -87,7 +144,9 @@ class _ActivitiesExtrasScreenState extends State<ActivitiesExtrasScreen> {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: section == 0
                       ? Text(
-                          'This week (${groupByDate.values.toList()[section].length})',
+                          selectedTabIndex == 1
+                              ? 'This week (${groupByDateAcademic.values.toList()[section].length})'
+                              : 'Past (${groupByDateNonAcademic.values.toList()[section].length})',
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',
@@ -98,7 +157,9 @@ class _ActivitiesExtrasScreenState extends State<ActivitiesExtrasScreen> {
                           ),
                         )
                       : Text(
-                          'This month (${groupByDate.values.toList()[section].length})',
+                          selectedTabIndex == 1
+                              ? 'This month (${groupByDateAcademic.values.toList()[section].length})'
+                              : 'This month (${groupByDateNonAcademic.values.toList()[section].length})',
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',

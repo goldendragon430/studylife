@@ -115,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
      // var userString = await _storageService.readSecureData("activeUser");
        var user = UserModel.fromJson(response.data['user']);
 
-     // editedUser = user;
+      editedUser = user;
 
      setState(() {
         userName = "${user.firstName} ${user.lastName}";
@@ -128,7 +128,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         //     response.data['message'], true);
      });
     } catch (error) {
-      print("DASDDADSADAD ${error.toString()}");
       if (error is DioError) {
      //   LoadingDialog.hide(context);
         CustomSnackBar.show(context, CustomSnackBarType.error,

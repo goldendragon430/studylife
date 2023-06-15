@@ -14,6 +14,7 @@ import '../Networking/task_service.dart';
 import '../Networking/home_service.dart';
 import '../Networking/calendar_event_service.dart';
 import '../Networking/holiday_Service.dart';
+import '../Networking/xtras_service.dart';
 
 // Models
 import '../Models/API/subject.dart';
@@ -23,6 +24,7 @@ import '../Models/API/exam.dart';
 import '../Models/API/task.dart';
 import '../Models/API/event.dart';
 import '../Models/API/holiday.dart';
+import '../Models/API/xtra.dart';
 
 class SyncController {
   final StorageService _storageService = StorageService();
@@ -32,6 +34,7 @@ class SyncController {
   static List<Task> tasks = [];
   static List<Event> events = [];
   static List<Holiday> holidays = [];
+  static List<Xtra> xtras = [];
 
   Future<dynamic> syncAll() async {
     // ErrorState error = ErrorState("Opps");
@@ -47,6 +50,8 @@ class SyncController {
       _getTasksOverdue(),
       _getHolidays("upcoming"),
       _getHolidays("past"),
+      _getXtras('academic'),
+      _getXtras('non-academic'),
     ]).then((v) {
       finalResult = Result.success("Success");
 
@@ -270,6 +275,29 @@ class SyncController {
       //       for (var eventItem in events) {
       //   print("EVENt ${eventItem.getFormattedStartingDate()}");
       // }
+    } catch (error) {
+      if (error is DioError) {
+        throw Result.error(error.response?.data['message']);
+      } else {
+        throw Result.error(error.toString());
+      }
+    }
+  }
+
+  Future _getXtras(String filter) async {
+    try {
+      var holidaysResponse = await XtrasService().getXtras(filter);
+
+      final xtrasyList = (holidaysResponse.data['xtras']) as List;
+      xtras = xtrasyList.map((i) => Xtra.fromJson(i)).toList();
+
+      if (filter == "academic") {
+        _storageService.writeSecureData(
+            StorageItem("user_xtras_academic", jsonEncode(xtras)));
+      } else {
+        _storageService.writeSecureData(
+            StorageItem("user_xtras_nonacademic", jsonEncode(xtras)));
+      }
     } catch (error) {
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);

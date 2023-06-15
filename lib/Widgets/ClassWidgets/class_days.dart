@@ -8,11 +8,18 @@ import '../../app.dart';
 import '../tag_card.dart';
 import '../../Models/subjects_datasource.dart';
 import '../../Models/API/classmodel.dart';
+import '../../Models/API/xtra.dart';
 
 class ClassWeekDays extends StatefulWidget {
   final Function subjectSelected;
   final ClassModel? classItem;
-  ClassWeekDays({super.key, required this.subjectSelected, this.classItem});
+  final Xtra? xtraItem;
+
+  ClassWeekDays(
+      {super.key,
+      required this.subjectSelected,
+      this.classItem,
+      this.xtraItem});
 
   @override
   State<ClassWeekDays> createState() => _ClassWeekDaysState();
@@ -33,6 +40,23 @@ class _ClassWeekDaysState extends State<ClassWeekDays> {
         }
       }
     }
+    if (widget.xtraItem != null) {
+      if (widget.xtraItem?.occurs == "repeating") {
+        for (var day in widget.xtraItem?.days ?? []) {
+          var selectedIndex = _days.indexWhere(
+              (element) => element.title.toLowerCase() == day.toLowerCase());
+          _days[selectedIndex].selected = true;
+        }
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var day in _days) {
+      day.selected = false;
+    }
+    super.dispose();
   }
 
   void _selectTab(int index) {

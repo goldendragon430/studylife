@@ -11,11 +11,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
 import '../../Models/API/classmodel.dart';
+import '../../Models/API/xtra.dart';
 
 class SelectTimes extends StatefulWidget {
   final Function timeSelected;
   final ClassModel? classItem;
-  SelectTimes({super.key, required this.timeSelected, this.classItem});
+  final Xtra? xtraItem;
+  SelectTimes(
+      {super.key, required this.timeSelected, this.classItem, this.xtraItem});
 
   @override
   State<SelectTimes> createState() => _SelectTimesState();
@@ -37,12 +40,27 @@ class _SelectTimesState extends State<SelectTimes> {
       TimeOfDay startTime = toTimeOfDay(widget.classItem?.startTime);
       TimeOfDay endTime = toTimeOfDay(widget.classItem?.endTime);
 
-      var fullstartDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute);
-      var fullendDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute);
+      var fullstartDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, startTime.hour, startTime.minute);
+      var fullendDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, endTime.hour, endTime.minute);
 
       timeFromController.text = _getFormattedTime(fullstartDate);
       timeToController.text = _getFormattedTime(fullendDate);
-    } else {
+    } 
+    else if (widget.xtraItem != null) {
+      TimeOfDay startTime = toTimeOfDay(widget.xtraItem?.startTime);
+      TimeOfDay endTime = toTimeOfDay(widget.xtraItem?.endTime);
+
+      var fullstartDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, startTime.hour, startTime.minute);
+      var fullendDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, endTime.hour, endTime.minute);
+
+      timeFromController.text = _getFormattedTime(fullstartDate);
+      timeToController.text = _getFormattedTime(fullendDate);
+    } 
+    else {
       timeFromController.text = "9:00AM";
       timeToController.text = "10:30AM";
     }
@@ -150,7 +168,7 @@ class _SelectTimesState extends State<SelectTimes> {
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
-       // print(picked.format(context)); //output 10:51 PM
+        // print(picked.format(context)); //output 10:51 PM
         widget.timeSelected(picked, isDateFrom);
       });
     }

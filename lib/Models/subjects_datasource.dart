@@ -63,7 +63,7 @@ class ClassTagItem {
     ClassTagItem(
         title: "Fri", selected: false, isAddNewCard: false, cardIndex: 4),
     ClassTagItem(
-        title: "Sut", selected: false, isAddNewCard: false, cardIndex: 5),
+        title: "Sat", selected: false, isAddNewCard: false, cardIndex: 5),
     ClassTagItem(
         title: "Sun", selected: false, isAddNewCard: false, cardIndex: 6)
   ];

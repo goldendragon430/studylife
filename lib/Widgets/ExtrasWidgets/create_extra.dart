@@ -13,14 +13,15 @@ import '../ClassWidgets/class_days.dart';
 import '../ClassWidgets/select_times.dart';
 import '../HolidayWidgets/holiday_text_imputs.dart';
 import '../add_photo_widget.dart';
-
-// import './task_datetime.dart';
-// import './select_tasktype.dart';
-// import './select_taskOccuring.dart';
-// import './select_repeatOptions.dart';
+import '../../Models/API/xtra.dart';
+import '../switch_row_widget.dart';
+import '../ClassWidgets/select_dates.dart';
+import 'package:intl/intl.dart';
 
 class CreateExtra extends StatefulWidget {
-  const CreateExtra({super.key});
+  final Function saveXtra;
+  final Xtra? xtraItem;
+  const CreateExtra({super.key, required this.saveXtra, this.xtraItem});
 
   @override
   State<CreateExtra> createState() => _CreateExtraState();
@@ -29,49 +30,119 @@ class CreateExtra extends StatefulWidget {
 class _CreateExtraState extends State<CreateExtra> {
   final ScrollController scrollcontroller = ScrollController();
 
-  bool isExamInPerson = true;
-  bool resitOn = false;
+  late Xtra newXtra = Xtra(
+    occurs: "once",
+  );
+  bool isEditing = false;
+  bool isOccurringOnce = true;
+  bool addStartEndDates = false;
 
-  void _classRepetitionSelected(ClassTagItem repetition) {
-    print("Selected repetitionMode: ${repetition.title}");
+  @override
+  void initState() {
+    checkForEditedXtra();
+    super.initState();
   }
 
-  void _extraTypeSelected(ClassTagItem taskType) {
-    print("Selected task: ${taskType.title}");
+  @override
+  void dispose() {
+    newXtra = Xtra(
+      occurs: "once",
+    );
+    newXtra.days = [];
+    isEditing = false;
+    isOccurringOnce = true;
+    addStartEndDates = false;
+
+    super.dispose();
   }
 
-  void _TextInputAdded(String input) {
-    print("Selected subject: ${input}");
+  void checkForEditedXtra() {
+    if (widget.xtraItem != null) {
+      isEditing = true;
+      newXtra = widget.xtraItem!;
+
+      if (newXtra.occurs != "once") {
+        isOccurringOnce = false;
+      }
+    }
   }
 
-  void _taskOccuringSelected(ClassTagItem occuring) {
-    print("Selected repetitionMode: ${occuring.title}");
-  }
-
-  void _switchChangedState(bool isOn) {
+  void _switchChangedState(bool isOn, int index) {
     setState(() {
-      resitOn = isOn;
-      print("Swithc isOn : $isOn");
+      addStartEndDates = isOn;
     });
   }
 
+  void _xtraOccuringSelected(ClassTagItem repetition) {
+    setState(() {
+      if (repetition.title == "Once") {
+        isOccurringOnce = true;
+        newXtra.occurs = "once";
+      }
+      if (repetition.title == "Repeating") {
+        isOccurringOnce = false;
+        newXtra.occurs = "repeating";
+      }
+      if (repetition.title == "Rotational") {
+        isOccurringOnce = false;
+        newXtra.occurs = "rotational";
+      }
+    });
+  }
+
+  void _extraTypeSelected(ClassTagItem taskType) {
+    newXtra.eventType = taskType.title.toLowerCase();
+    // print("Selected task1: ${taskType.title}");
+  }
+
+  void _selectedDates(DateTime date, bool isDateFrom) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    if (isDateFrom) {
+      newXtra.startDate = formattedDate;
+    } else {
+      newXtra.endDate = formattedDate;
+    }
+  }
+
+  void _textInputAdded(String input) {
+    newXtra.name = input;
+    //print("Selected subject6: ${input}");
+  }
+
+  void _photoAdded(String path) {
+    newXtra.newImagePath = path;
+  }
+
   void _classDaysSelected(List<ClassTagItem> days) {
-    print("Selected repetitionMode: ${days}");
+    List<String> daysList = [];
+    for (var dayItem in days) {
+      if (dayItem.selected) {
+        daysList.add(dayItem.title.toLowerCase());
+      }
+      //print("Selected repetitionMode: ${dayItem.selected}");
+    }
+    newXtra.days = daysList;
+    // print("Selected repetitionMode3: ${days}");
   }
 
-  void _taskRepeatOptionSelected(ClassTagItem repeatOption) {
-    print("Selected task: ${repeatOption.title}");
+  void _selectedTimes(TimeOfDay time, bool isTimeFrom) {
+    final localizations = MaterialLocalizations.of(context);
+    final formattedTimeOfDay =
+        localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
+
+    if (isTimeFrom) {
+      newXtra.startTime = formattedTimeOfDay;
+    } else {
+      newXtra.endTime = formattedTimeOfDay;
+    }
   }
 
-  void _tasRepeatDateSelect(DateTime date) {}
-
-  void _selectedTimes(DateTime timtimeFromeTo, DateTime timeTo) {
-    //print("Selected repetitionMode: ${repetition.title}");
+  void _saveClass() {
+    widget.saveXtra(newXtra);
   }
-  void _saveClass() {}
 
   void _cancel() {
-   // Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override
@@ -110,7 +181,7 @@ class _CreateExtraState extends State<CreateExtra> {
                     if (index == 1) ...[
                       // Switch Start dates
                       HolidayTextImputs(
-                        formsFilled: _TextInputAdded,
+                        formsFilled: _textInputAdded,
                         hintText: 'Name',
                         labelTitle: 'Name*',
                       )
@@ -118,22 +189,92 @@ class _CreateExtraState extends State<CreateExtra> {
                     if (index == 2) ...[
                       // Select Ocurring
                       ClassRepetition(
-                        subjectSelected: _classRepetitionSelected,
+                        subjectSelected: _xtraOccuringSelected,
                       )
                     ],
                     if (index == 3) ...[
                       // Select Week days
-                      ClassWeekDays(
-                        subjectSelected: _classDaysSelected,
-                      )
+                      // ClassWeekDays(
+                      //   subjectSelected: _classDaysSelected,
+                      // ),
+
+                      if (!isOccurringOnce) ...[
+                        // Select Week days
+                        ClassWeekDays(
+                          xtraItem: newXtra,
+                          subjectSelected: _classDaysSelected,
+                        )
+                      ],
+                      if (isOccurringOnce) ...[
+                        SelectTimes(
+                          xtraItem: newXtra,
+                          timeSelected: _selectedTimes,
+                        )
+                      ],
                     ],
                     if (index == 4) ...[
                       // Select Time From/To
-                      SelectTimes(
-                        timeSelected: _selectedTimes,
-                      )
+                      // SelectTimes(
+                      //   timeSelected: _selectedTimes,
+                      // )
+                      if (!isOccurringOnce) ...[
+                        // Select Time From/To
+                        SelectTimes(
+                          xtraItem: newXtra,
+                          timeSelected: _selectedTimes,
+                        )
+                      ],
+                      if (isOccurringOnce) ...[
+                        // Switch Start dates
+                        RowSwitch(
+                          title: "Add Start/end dates?",
+                          isOn: isOccurringOnce ? true : addStartEndDates,
+                          changedState: _switchChangedState,
+                          index: 0,
+                        )
+                      ]
                     ],
-                    if (index == 5) ...[AddPhotoWidget(photoAdded: () => {},)],
+                    if (index == 5) ...[
+                      if (!isOccurringOnce) ...[
+                        // Switch Start dates
+                        RowSwitch(
+                          title: "Add Start/end dates?",
+                          isOn: isOccurringOnce ? true : addStartEndDates,
+                          changedState: _switchChangedState,
+                          index: 0,
+                        )
+                      ],
+                      // if (isOccurringOnce) ...[
+                      //   if (isOccurringOnce || addStartEndDates) ...[
+                      //     if (index == 7) ...[
+                      //       SelectDates(
+                      //         xtraItem: newXtra,
+                      //         dateSelected: _selectedDates,
+                      //         shouldDisableEndDate: isOccurringOnce,
+                      //       ),
+                      //     ],
+                      //   ]
+                      // ]
+                      // AddPhotoWidget(
+                      //   photoAdded: () => {},
+                      // )
+                    ],
+                    if (index == 6) ...[
+                      if (isOccurringOnce || addStartEndDates) ...[
+                        SelectDates(
+                          xtraItem: newXtra,
+                          dateSelected: _selectedDates,
+                          shouldDisableEndDate: isOccurringOnce,
+                        ),
+                      ],
+                      if (!isOccurringOnce || !addStartEndDates) ...[
+                        AddPhotoWidget(
+                          imageUrl: newXtra.newImagePath ?? newXtra.imageUrl,
+                          photoAdded: _photoAdded,
+                        )
+                      ],
+                    ],
+
                     // if (index == 5) ...[
                     //   // Select Subject
                     //   SelectTaskRepeatOptions(

@@ -82,7 +82,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                 )),
                 Tab(
                     child: Text(
-                  "Extra",
+                  "Xtra",
                   style: theme == ThemeMode.light
                       ? Constants.lightThemeTabBarTextStyle
                       : Constants.darkThemeTabBarTextStyle,

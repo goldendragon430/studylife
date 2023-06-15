@@ -12,18 +12,22 @@ import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
 import '../../Models/API/classmodel.dart';
 import '../../Models/API/holiday.dart';
+import '../../Models/API/xtra.dart';
 
 class SelectDates extends StatefulWidget {
   final Function dateSelected;
   final bool shouldDisableEndDate;
   final ClassModel? classItem;
   final Holiday? holidayItem;
+  final Xtra? xtraItem;
+
   const SelectDates(
       {super.key,
       required this.dateSelected,
       required this.shouldDisableEndDate,
       this.classItem,
-      this.holidayItem});
+      this.holidayItem,
+      this.xtraItem});
 
   @override
   State<SelectDates> createState() => _SelectDatesState();
@@ -51,7 +55,13 @@ class _SelectDatesState extends State<SelectDates> {
           widget.holidayItem?.getFormattedStartDate() ?? "Fri, 4 Mar 2023";
       dateToController.text =
           widget.holidayItem?.getFormattedEndDate() ?? "Fri, 4 Mar 2023";
-    } else {
+    } 
+    else if (widget.xtraItem != null) {
+      dateFromController.text =
+          widget.xtraItem?.getFormattedStartDate() ?? "Fri, 4 Mar 2023";
+      dateToController.text =
+          widget.xtraItem?.getFormattedEndDate() ?? "Fri, 4 Mar 2023";
+    }else {
       dateFromController.text = "Fri, 4 Mar 2023";
       dateToController.text = "Fri, 4 Mar 2023";
     }

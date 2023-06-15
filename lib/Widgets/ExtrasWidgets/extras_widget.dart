@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Extensions/extensions.dart';
 import 'package:intl/intl.dart';
+import 'package:group_list_view/group_list_view.dart';
 
 import '../../app.dart';
 import '../../Models/holidays_datasource.dart';
 import '../../Utilities/constants.dart';
+import '../../Models/API/xtra.dart';
 
 class ExtrasWidget extends ConsumerWidget {
-  final int cardIndex;
+  final IndexPath cardIndex;
   final bool upNext;
 
-  final HolidayItem holidayItem;
+  final Xtra xtraItem;
   final Function cardselected;
 
   const ExtrasWidget(
       {super.key,
-      required this.holidayItem,
+      required this.xtraItem,
       required this.cardIndex,
       required this.upNext,
       required this.cardselected});
@@ -55,7 +57,7 @@ class ExtrasWidget extends ConsumerWidget {
       child: InkWell(
         onTap: _cardTapped,
         child: Container(
-          height: holidayItem.holidayImage != null ? 93 : 73,
+          height: xtraItem.imageUrl != null ? 103 : 73,
           child: Stack(
             children: [
               Container(
@@ -67,7 +69,7 @@ class ExtrasWidget extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        holidayItem.title,
+                        xtraItem.name ?? "",
                         maxLines: 4,
                         style: TextStyle(
                             fontSize: 15,
@@ -79,9 +81,9 @@ class ExtrasWidget extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      holidayItem.dateTo != null
-                          ? '${_getFormattedTime(holidayItem.dateFrom)} - ${_getFormattedTime(holidayItem.dateTo ?? DateTime.now())}'
-                          : _getFormattedTime(holidayItem.dateFrom),
+                      xtraItem.endDate != null
+                          ? '${_getFormattedTime(xtraItem.getStartDate())} - ${_getFormattedTime(xtraItem.getEndDate())}'
+                          : _getFormattedTime(xtraItem.getStartDate()),
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
                           : Constants.darkTHemeClassDateTextStyle,
@@ -89,7 +91,7 @@ class ExtrasWidget extends ConsumerWidget {
                   ],
                 ),
               ),
-              if (holidayItem.holidayImage != null) ...[
+              if (xtraItem.imageUrl != null) ...[
                 Positioned(
                   right: 20,
                   top: 11,
@@ -105,7 +107,7 @@ class ExtrasWidget extends ConsumerWidget {
                         fit: BoxFit.fill,
                         // clipBehavior: Clip.hardEdge,
                         child: Image.asset(
-                          holidayItem.holidayImage ?? "",
+                          xtraItem.imageUrl ?? "",
                         ),
                       ),
                     ),

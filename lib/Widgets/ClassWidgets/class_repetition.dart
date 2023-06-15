@@ -31,6 +31,14 @@ class _ClassRepetitionState extends State<ClassRepetition> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    for (var repetition in _repetitions) {
+      repetition.selected = false;
+    }
+    super.dispose();
+  }
+
   int selectedTabIndex = 0;
 
   void _selectTab(int index) {

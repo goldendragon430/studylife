@@ -33,19 +33,23 @@ import '../Models/API/exam.dart';
 import '../Models/API/task.dart';
 import '../Models/API/result.dart';
 import '../Models/API/event.dart';
+import '../Models/API/xtra.dart';
+import '../Networking/xtras_service.dart';
 
 class CreateScreen extends StatefulWidget {
   final ClassModel? classItem;
   final Exam? examItem;
   final Task? taskItem;
   final Holiday? holidayItem;
+  final Xtra? xtraItem;
 
   const CreateScreen(
       {super.key,
       this.classItem,
       this.examItem,
       this.taskItem,
-      this.holidayItem});
+      this.holidayItem,
+      this.xtraItem});
 
   @override
   State<CreateScreen> createState() => _CreateScreenState();
@@ -125,23 +129,18 @@ class _CreateScreenState extends State<CreateScreen>
     }
 
     if (response is SuccessState) {
-   
-
       // Get Events from storage
       var eventsData = await _storageService.readSecureData("user_events");
 
       List<dynamic> decodedDataEvents = jsonDecode(eventsData ?? "");
 
       setState(() {
-        
-
         var events = List<Event>.from(
           decodedDataEvents
               .map((x) => Event.fromJson(x as Map<String, dynamic>)),
         );
 
         for (var eventEntry in events) {
-
           var newCalendarEntry = CalendarEventData(
             date: eventEntry.getFormattedStartingDate(),
             event: eventEntry,
@@ -160,7 +159,9 @@ class _CreateScreenState extends State<CreateScreen>
                 eventEntry.endTime != null
                     ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").hour
                     : eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
-                eventEntry.endTime != null ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").minute : eventEntry.duration ?? 60),
+                eventEntry.endTime != null
+                    ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").minute
+                    : eventEntry.duration ?? 60),
           );
 
           _events.add(newCalendarEntry);
@@ -171,9 +172,7 @@ class _CreateScreenState extends State<CreateScreen>
             .controller
             .addAll(_events);
 
-         Navigator.pop(context);
-
-
+        Navigator.pop(context);
       });
     }
   }
@@ -236,7 +235,6 @@ class _CreateScreenState extends State<CreateScreen>
         Navigator.pop(context);
       } catch (error) {
         if (error is DioError) {
-
           LoadingDialog.hide(context);
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
               error.response?.data.toString() ?? "", true);
@@ -497,6 +495,88 @@ class _CreateScreenState extends State<CreateScreen>
     }
   }
 
+  void _saveXtra(Xtra xtraItem) async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+
+    if (xtraItem.occurs == "once") {
+      if (xtraItem.name == null ||
+          xtraItem.startDate == null ||
+          xtraItem.eventType == null ||
+          xtraItem.occurs == null ||
+          xtraItem.startTime == null ||
+          xtraItem.endTime == null) {
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            "Please fill in all fields.", true);
+        return;
+      }
+      xtraItem.days = [];
+      xtraItem.endDate = null;
+    }
+
+    if (xtraItem.occurs == "repeating" || xtraItem.occurs == "rotational") {
+      if (xtraItem.name == null ||
+          xtraItem.days == null ||
+          xtraItem.eventType == null ||
+          xtraItem.occurs == null ||
+          xtraItem.startTime == null ||
+          xtraItem.endTime == null) {
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            "Please fill in all fields.", true);
+        return;
+      }
+    }
+
+    if (isEditing) {
+      LoadingDialog.show(context);
+
+      try {
+        var response = await XtrasService().updateXtra(xtraItem);
+        var sync = await _syncController.syncAll();
+
+        if (!contextMain.mounted) return;
+
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    } else {
+      LoadingDialog.show(context);
+
+      try {
+        var response = await XtrasService().createXtra(xtraItem);
+        var sync = await _syncController.syncAll();
+
+        if (!contextMain.mounted) return;
+
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
@@ -587,13 +667,15 @@ class _CreateScreenState extends State<CreateScreen>
                       editedExam: widget.examItem,
                       saveExam: _saveExam,
                     ),
-                    CreateTask(saveTask: _saveTask,
-                    taskitem: widget.taskItem),
+                    CreateTask(saveTask: _saveTask, taskitem: widget.taskItem),
                     CreateHoliday(
                       holidayItem: widget.holidayItem,
                       saveHoliday: _saveHoliday,
                     ),
-                    CreateExtra(),
+                    CreateExtra(
+                      saveXtra: _saveXtra,
+                      xtraItem: widget.xtraItem,
+                    ),
                   ],
                 ),
                 // child: Container(

@@ -33,6 +33,14 @@ class _SelectExtraTypeState extends State<SelectExtraType> {
     });
   }
 
+  // @override
+  // void dispose() {
+  //   for (var item in _types) {
+  //     item.selected = false;
+  //   }
+  //   super.dispose();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
@@ -49,7 +57,9 @@ class _SelectExtraTypeState extends State<SelectExtraType> {
           children: [
             Text(
               'Event Type*',
-              style: theme == ThemeMode.light ? Constants.lightThemeSubtitleTextStyle : Constants.darkThemeSubtitleTextStyle,
+              style: theme == ThemeMode.light
+                  ? Constants.lightThemeSubtitleTextStyle
+                  : Constants.darkThemeSubtitleTextStyle,
               textAlign: TextAlign.left,
             ),
             Container(
@@ -74,6 +84,3 @@ class _SelectExtraTypeState extends State<SelectExtraType> {
     });
   }
 }
-
-
-

@@ -197,7 +197,7 @@ class _CreateClassState extends State<CreateClass> {
     newClass.days = daysList;
   }
 
-  void _switchChangedState(bool isOn) {
+  void _switchChangedState(bool isOn, int index) {
     setState(() {
       addStartEndDates = isOn;
       print("Swithc isOn : $isOn");
