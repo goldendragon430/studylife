@@ -67,7 +67,14 @@ class _ActivitiesExtrasScreenState extends State<ActivitiesExtrasScreen> {
     });
   }
 
-  void _selectedCard(int index) {}
+  void _selectedCard(IndexPath index, Xtra xtraItem) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                HolidayXtraDetailScreen(item: null, xtraItem: xtraItem),
+            fullscreenDialog: true));
+  }
 
   void _selectedTabWithIndex(int index) {
     setState(() {

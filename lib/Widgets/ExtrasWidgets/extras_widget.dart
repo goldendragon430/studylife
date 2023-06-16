@@ -24,7 +24,7 @@ class ExtrasWidget extends ConsumerWidget {
       required this.cardselected});
 
   void _cardTapped() {
-    cardselected(cardIndex);
+    cardselected(cardIndex, xtraItem);
   }
 
   String _getFormattedTime(DateTime time) {

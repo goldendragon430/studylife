@@ -37,9 +37,9 @@ class XtrasService {
         'startTime': xtraItem.startTime,
         'occurs': xtraItem.occurs,
         'endTime': xtraItem.endTime,
-       // 'days': days,
+        'days': days,
         'eventType': xtraItem.eventType,
-      });
+      }..removeWhere((dynamic key, dynamic value) => value == null));
 
       var response = await Api().dio.post('/api/xtra', data: formData);
 
@@ -54,18 +54,18 @@ class XtrasService {
         'startTime': xtraItem.startTime,
         'occurs': xtraItem.occurs,
         'endTime': xtraItem.endTime,
-       // 'days': days,
+        'days': days,
         'eventType': xtraItem.eventType,
         "image": await MultipartFile.fromFile(xtraItem.newImagePath!,
             filename: fileName),
-      });
-       var response = await Api().dio.post('/api/xtra', data: formData);
-       return response;
+      }..removeWhere((dynamic key, dynamic value) => value == null));
+      var response = await Api().dio.post('/api/xtra', data: formData);
+      return response;
     }
   }
 
   Future<Response> updateXtra(Xtra xtraItem) async {
-      String? days = null;
+    String? days = null;
     days = xtraItem.days?.join(",");
 
     if (xtraItem.newImagePath == null) {
@@ -78,9 +78,10 @@ class XtrasService {
         'endTime': xtraItem.endTime,
         'days': days,
         'eventType': xtraItem.eventType,
-      });
+      }..removeWhere((dynamic key, dynamic value) => value == null));
 
-      var response = await Api().dio.put('/api/xtra/${xtraItem.id}', data: formData);
+      var response =
+          await Api().dio.put('/api/xtra/${xtraItem.id}', data: formData);
 
       return response;
     } else {
@@ -97,9 +98,10 @@ class XtrasService {
         'eventType': xtraItem.eventType,
         "image": await MultipartFile.fromFile(xtraItem.newImagePath!,
             filename: fileName),
-      });
-      var response = await Api().dio.put('/api/xtra/${xtraItem.id}', data: formData);
-       return response;
+      }..removeWhere((dynamic key, dynamic value) => value == null));
+      var response =
+          await Api().dio.put('/api/xtra/${xtraItem.id}', data: formData);
+      return response;
     }
   }
 }

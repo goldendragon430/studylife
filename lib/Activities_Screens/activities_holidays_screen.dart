@@ -70,7 +70,10 @@ class _ActivitiesHolidaysScreenState extends State<ActivitiesHolidaysScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => HolidayXtraDetailScreen(item: item),
+            builder: (context) => HolidayXtraDetailScreen(
+                  item: item,
+                  xtraItem: null,
+                ),
             fullscreenDialog: true));
   }
 

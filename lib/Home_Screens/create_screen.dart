@@ -110,6 +110,12 @@ class _CreateScreenState extends State<CreateScreen>
         initialTabIndex = 3;
       });
     }
+    if (widget.xtraItem != null) {
+      setState(() {
+        isEditing = true;
+        initialTabIndex = 4;
+      });
+    }
   }
 
   // API

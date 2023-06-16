@@ -8,15 +8,18 @@ import '../Extensions/extensions.dart';
 import '../Models/holidays_datasource.dart';
 import '../../app.dart';
 import '../Models/API/holiday.dart';
+import '../Models/API/xtra.dart';
 
 class HolidayXtraInfoInfoCard extends ConsumerWidget {
-  final Holiday item;
-  const HolidayXtraInfoInfoCard(this.item, {super.key});
+  final Holiday? item;
+  final Xtra? xtraItem;
+  const HolidayXtraInfoInfoCard(this.item, this.xtraItem, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    final startDateString = DateFormat('EEE, dd, MMM').format(item.getStartDate());
+    final startDateString =
+        DateFormat('EEE, dd, MMM').format(item != null ? item!.getStartDate() : xtraItem!.getStartDate());
 
     return Container(
       //  height: 154,
@@ -41,7 +44,7 @@ class HolidayXtraInfoInfoCard extends ConsumerWidget {
         ],
       ),
       child: Container(
-        margin: EdgeInsets.only(left: 20, right: 20, top: 20,bottom: 40),
+        margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -51,7 +54,7 @@ class HolidayXtraInfoInfoCard extends ConsumerWidget {
             Container(
               child: Expanded(
                 child: Text(
-                  item.title ?? "",
+                  item != null ? item!.title ?? "" : xtraItem!.name ?? "",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -70,7 +73,7 @@ class HolidayXtraInfoInfoCard extends ConsumerWidget {
             Container(
               height: 18,
               child: Text(
-                "Holiday",
+                item != null ? "Holiday" : "Xtra",
                 style: TextStyle(
                   fontSize: 15,
                   fontFamily: 'Roboto',

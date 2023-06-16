@@ -11,12 +11,15 @@ import '../../app.dart';
 import '../Models/holidays_datasource.dart';
 import '../Widgets/holiday_xtra_info_card.dart';
 import '../Models/API/holiday.dart';
+import '../Models/API/xtra.dart';
+
 import '../Home_Screens/create_screen.dart';
 
 class HolidayXtraDetailScreen extends StatefulWidget {
-  final Holiday item;
+  final Holiday? item;
+  final Xtra? xtraItem;
 
-  const HolidayXtraDetailScreen({super.key, required this.item});
+  const HolidayXtraDetailScreen({super.key, required this.item, this.xtraItem});
 
   @override
   State<HolidayXtraDetailScreen> createState() =>
@@ -31,7 +34,7 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
     bottomSheetForSignIn(context);
   }
 
-   bottomSheetForSignIn(BuildContext context) {
+  bottomSheetForSignIn(BuildContext context) {
     showModalBottomSheet(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -44,7 +47,10 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
         // transitionAnimationController: controller,
         enableDrag: false,
         builder: (context) {
-          return CreateScreen(holidayItem: widget.item);
+          return CreateScreen(
+            holidayItem: widget.item,
+            xtraItem: widget.xtraItem,
+          );
         });
   }
 
@@ -53,7 +59,7 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
   }
 
   void _addButtonPressed(context) {
-        bottomSheetForSignIn(context);
+    bottomSheetForSignIn(context);
 
     //_showOptions(context);
   }
@@ -88,7 +94,7 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
 
     setState(() {
       _path = file?.path;
-    //  print(file!.path);
+      //  print(file!.path);
     });
   }
 
@@ -124,130 +130,264 @@ class _HolidayXtraDetailScreenState extends State<HolidayXtraDetailScreen> {
           height: double.infinity,
           child: Stack(
             children: [
-              if (widget.item.imageUrl == null) ...[
-                if (_path == null) ...[
-                  Container(
-                    height: screenHeight - 290,
-                    alignment: Alignment.topCenter,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: ExactAssetImage(
-                            'assets/images/BackgroundForBlur.png'),
-                        fit: BoxFit.cover,
+              if (widget.item != null) ...[
+                // Holiday
+                if (widget.item?.imageUrl == null) ...[
+                  if (_path == null) ...[
+                    Container(
+                      height: screenHeight - 290,
+                      alignment: Alignment.topCenter,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: ExactAssetImage(
+                              'assets/images/BackgroundForBlur.png'),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.6),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.6),
+                          ),
                         ),
                       ),
                     ),
+                  ],
+                  if (_path != null) ...[
+                    Container(
+                      height: screenHeight - 290,
+                      alignment: Alignment.topCenter,
+                      child: Image.file(
+                        File(_path!),
+                        alignment: Alignment.center,
+                        height: double.infinity,
+                        width: double.infinity,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ],
+                  Container(
+                    margin: EdgeInsets.only(top: 251),
+                    alignment: Alignment.topCenter,
+                    child: MaterialButton(
+                      splashColor: Colors.transparent,
+                      elevation: 0.0,
+                      onPressed: () => _addButtonPressed(context),
+                      child: Container(
+                        height: 57,
+                        width: 57,
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/AddButtonImage.png'),
+                                fit: BoxFit.fill)),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 322),
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      'Personalize With A Photo',
+                      style: TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white),
+                    ),
                   ),
                 ],
-                if (_path != null) ...[
+                if (widget.item?.imageUrl != null) ...[
                   Container(
                     height: screenHeight - 290,
                     alignment: Alignment.topCenter,
-                    child: Image.file(
-                      File(_path!),
-                      alignment: Alignment.center,
-                      height: double.infinity,
-                      width: double.infinity,
-                      fit: BoxFit.fill,
+                    child: Image.network(
+                      widget.item?.imageUrl ?? "",
+                      height: screenHeight - 290,
+                      fit: BoxFit.fitHeight,
                     ),
                   ),
                 ],
                 Container(
-                  margin: EdgeInsets.only(top: 251),
-                  alignment: Alignment.topCenter,
+                  height: 36,
+                  width: 75,
+                  margin: const EdgeInsets.only(left: 20, top: 50),
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all(0.0),
+                          shape:
+                              MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          )),
+                          minimumSize:
+                              MaterialStateProperty.all(const Size((75), 45)),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.black),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          textStyle: MaterialStateProperty.all(const TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white))),
+                      onPressed: () => _editButtonPressed(context),
+                      child: Text("Edit")),
+                ),
+                Positioned(
+                  right: -10,
+                  top: 45,
                   child: MaterialButton(
                     splashColor: Colors.transparent,
                     elevation: 0.0,
-                    onPressed: () => _addButtonPressed(context),
+                    // ),
+                    onPressed: () => _closeButtonPressed(context),
                     child: Container(
-                      height: 57,
-                      width: 57,
+                      height: 36,
+                      width: 36,
                       decoration: const BoxDecoration(
                           image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/AddButtonImage.png'),
+                              image:
+                                  AssetImage('assets/images/CloseButtonX.png'),
                               fit: BoxFit.fill)),
                     ),
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 322),
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    'Personalize With A Photo',
-                    style: TextStyle(
-                        fontFamily: "Roboto",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white),
-                  ),
+                  width: screenWidth,
+                  margin: EdgeInsets.only(top: (screenHeight - 290) - 100),
+                  child: HolidayXtraInfoInfoCard(widget.item, null),
                 ),
               ],
-              if (widget.item.imageUrl != null) ...[
-                Container(
-                  height: screenHeight - 290,
-                  alignment: Alignment.topCenter,
-                  child: Image.network(
-                    widget.item.imageUrl ?? "",
-                                      height: screenHeight - 290,
-                    fit: BoxFit.fitHeight,
-                  ),
-                ),
-              ],
-              Container(
-                height: 36,
-                width: 75,
-                margin: const EdgeInsets.only(left: 20, top: 50),
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                        elevation: MaterialStateProperty.all(0.0),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        )),
-                        minimumSize:
-                            MaterialStateProperty.all(const Size((75), 45)),
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.black),
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        textStyle: MaterialStateProperty.all(const TextStyle(
-                            fontFamily: "Roboto",
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white))),
-                    onPressed: () => _editButtonPressed(context),
-                    child: Text("Edit")),
-              ),
-              Positioned(
-                right: -10,
-                top: 45,
-                child: MaterialButton(
-                  splashColor: Colors.transparent,
-                  elevation: 0.0,
-                  // ),
-                  onPressed: () => _closeButtonPressed(context),
-                  child: Container(
-                    height: 36,
-                    width: 36,
-                    decoration: const BoxDecoration(
+              if (widget.xtraItem != null) ...[
+                // Xtra
+                if (widget.xtraItem?.imageUrl == null) ...[
+                  if (_path == null) ...[
+                    Container(
+                      height: screenHeight - 290,
+                      alignment: Alignment.topCenter,
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage('assets/images/CloseButtonX.png'),
-                            fit: BoxFit.fill)),
+                          image: ExactAssetImage(
+                              'assets/images/BackgroundForBlur.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.6),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (_path != null) ...[
+                    Container(
+                      height: screenHeight - 290,
+                      alignment: Alignment.topCenter,
+                      child: Image.file(
+                        File(_path!),
+                        alignment: Alignment.center,
+                        height: double.infinity,
+                        width: double.infinity,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ],
+                  Container(
+                    margin: EdgeInsets.only(top: 251),
+                    alignment: Alignment.topCenter,
+                    child: MaterialButton(
+                      splashColor: Colors.transparent,
+                      elevation: 0.0,
+                      onPressed: () => _addButtonPressed(context),
+                      child: Container(
+                        height: 57,
+                        width: 57,
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/AddButtonImage.png'),
+                                fit: BoxFit.fill)),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 322),
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      'Personalize With A Photo',
+                      style: TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white),
+                    ),
+                  ),
+                ],
+                if (widget.xtraItem?.imageUrl != null) ...[
+                  Container(
+                    height: screenHeight - 290,
+                    alignment: Alignment.topCenter,
+                    child: Image.network(
+                      widget.xtraItem?.imageUrl ?? "",
+                      height: screenHeight - 290,
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                ],
+                Container(
+                  height: 36,
+                  width: 75,
+                  margin: const EdgeInsets.only(left: 20, top: 50),
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all(0.0),
+                          shape:
+                              MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          )),
+                          minimumSize:
+                              MaterialStateProperty.all(const Size((75), 45)),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.black),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          textStyle: MaterialStateProperty.all(const TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white))),
+                      onPressed: () => _editButtonPressed(context),
+                      child: Text("Edit")),
+                ),
+                Positioned(
+                  right: -10,
+                  top: 45,
+                  child: MaterialButton(
+                    splashColor: Colors.transparent,
+                    elevation: 0.0,
+                    // ),
+                    onPressed: () => _closeButtonPressed(context),
+                    child: Container(
+                      height: 36,
+                      width: 36,
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image:
+                                  AssetImage('assets/images/CloseButtonX.png'),
+                              fit: BoxFit.fill)),
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                width: screenWidth,
-                margin: EdgeInsets.only(top: (screenHeight - 290) - 100),
-                child: HolidayXtraInfoInfoCard(widget.item),
-              ),
+                Container(
+                  width: screenWidth,
+                  margin: EdgeInsets.only(top: (screenHeight - 290) - 100),
+                  child: HolidayXtraInfoInfoCard(null, widget.xtraItem),
+                ),
+              ],
             ],
           ),
         );
