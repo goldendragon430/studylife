@@ -39,7 +39,7 @@ class TasksCurrentList extends ConsumerWidget {
     // });
 
     return Container(
-      margin: const EdgeInsets.only(top: 164),
+      margin: const EdgeInsets.only(top: 130),
       child: GroupListView(
         sectionsCount: groupByDate.keys.toList().length,
         countOfItemInSection: (int section) {

@@ -38,8 +38,8 @@ class _TaskDateTimeState extends State<TaskDateTime> {
   @override
   void initState() {
     if (widget.taskItem != null) {
-      dateController.text =
-          widget.taskItem?.getTaskDueFormattedDate() ?? "Fri, 4 Mar 2023";
+      dateController.text = widget.taskItem?.getTaskDueFormattedDate() ??
+          DateFormat('EEE, d MMM, yyyy').format(DateTime.now());
       //   TimeOfDay startTime = toTimeOfDay(widget.taskItem?.ti);
 
       // var fullstartDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute);
@@ -48,8 +48,9 @@ class _TaskDateTimeState extends State<TaskDateTime> {
       timeController.text =
           _getFormattedTime(widget.taskItem!.getTaskDueDateTime());
     } else {
-      dateController.text = "Fri, 4 Mar 2023";
-      timeController.text = "10:30 AM";
+      dateController.text =
+          DateFormat('EEE, d MMM, yyyy').format(DateTime.now());
+      timeController.text = DateFormat('HH:mm').format(date);
     }
     super.initState();
   }
@@ -215,11 +216,17 @@ class _TaskDateTimeState extends State<TaskDateTime> {
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
-        widget.timeSelected(picked);
+        // widget.timeSelected(picked);
+
+        var fullDate = DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, picked.hour, picked.minute);
+        String formattedDate = DateFormat('HH:mm').format(fullDate);
+        timeController.text = formattedDate;
+        widget.timeSelected(fullDate);
 
         // print(picked.format(context)); //output 10:51 PM
         //  DateTime parsedTime =
-      //  DateFormat.jm().parse(picked.format(context).toString());
+        //  DateFormat.jm().parse(picked.format(context).toString());
         //converting to DateTime so that we can further format on different pattern.
         //   print(parsedTime); //output 1970-01-01 22:53:00.000
         // String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
@@ -230,16 +237,16 @@ class _TaskDateTimeState extends State<TaskDateTime> {
 
   void _showTimePicker(ThemeMode theme, bool isDateFrom) {
     Platform.isAndroid
-        ? _showAndroidTimeSelectionDialog
-        : _showiOSDateSelectionDialog(CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.hm,
-            minuteInterval: 1,
-            initialTimerDuration: Duration.zero,
-            onTimerDurationChanged: (Duration changeTimer) {
+        ? _showAndroidDateSelectionDialog
+        : _showiOSDateSelectionDialog(CupertinoDatePicker(
+            initialDateTime: DateTime.now(),
+            mode: CupertinoDatePickerMode.time,
+            use24hFormat: true,
+            onDateTimeChanged: (DateTime newDate) {
               setState(() {
-                pickedTimeFrom = minutesToTimeOfDay(changeTimer);
-                widget.timeSelected(pickedTimeFrom);
-                timeController.text = pickedTimeFrom.format(context);
+                String formattedDate = DateFormat('HH:mm').format(newDate);
+                timeController.text = formattedDate;
+                widget.timeSelected(newDate);
               });
             },
           ));

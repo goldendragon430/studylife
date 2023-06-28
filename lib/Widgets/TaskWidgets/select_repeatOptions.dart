@@ -33,7 +33,7 @@ class _SelectTaskRepeatOptionsState extends State<SelectTaskRepeatOptions> {
 
   @override
   void initState() {
-    dateController.text = "Fri, 4 Mar 2023";
+    dateController.text = DateFormat('EEE, d MMM, yyyy').format(DateTime.now());
     super.initState();
   }
 

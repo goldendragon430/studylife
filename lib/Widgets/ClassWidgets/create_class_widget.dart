@@ -164,15 +164,18 @@ class _CreateClassState extends State<CreateClass> {
     });
   }
 
-  void _selectedTimes(TimeOfDay time, bool isTimeFrom) {
-    final localizations = MaterialLocalizations.of(context);
-    final formattedTimeOfDay =
-        localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
+  void _selectedTimes(DateTime time, bool isTimeFrom) {
+    // final localizations = MaterialLocalizations.of(context);
+    // final formattedTimeOfDay =
+    //     localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
+
+            String formattedDate = DateFormat('HH:mm').format(time);
+
 
     if (isTimeFrom) {
-      newClass.startTime = formattedTimeOfDay;
+      newClass.startTime = formattedDate;
     } else {
-      newClass.endTime = formattedTimeOfDay;
+      newClass.endTime = formattedDate;
     }
   }
 
@@ -230,8 +233,8 @@ class _CreateClassState extends State<CreateClass> {
               itemBuilder: (context, index) {
                 if (index == 10) {
                   // Save/Cancel Buttons
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 32, bottom: 32),
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 32, bottom: 32),
                     // child: RoundedElevatedButton(
                     //     getAllTextInputs, widget.saveButtonTitle, 28),
                   );

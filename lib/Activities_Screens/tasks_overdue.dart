@@ -32,7 +32,7 @@ class TasksOverdueList extends ConsumerWidget {
     final theme = ref.watch(themeModeProvider);
 
     return Container(
-      margin: const EdgeInsets.only(top: 164),
+      margin: const EdgeInsets.only(top: 130),
       child: ListView.builder(
           // controller: widget._controller,
           itemCount: tasks.length,

@@ -41,18 +41,19 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
   void initState() {
     if (widget.examItem != null) {
       dateController.text =
-          widget.examItem?.getExamStartFormattedDate() ?? "Fri, 4 Mar 2023";
+          widget.examItem?.getExamStartFormattedDate() ?? DateFormat('EEE, d MMM, yyyy').format(date);
 
       TimeOfDay startTime = toTimeOfDay(widget.examItem?.startTime);
 
       var fullstartDate = DateTime(DateTime.now().year, DateTime.now().month,
           DateTime.now().day, startTime.hour, startTime.minute);
       timeController.text = _getFormattedTime(fullstartDate);
-      var firstDurationIndex = _durations.indexWhere((element) => element.duration == widget.examItem?.duration);
+      var firstDurationIndex = _durations.indexWhere(
+          (element) => element.duration == widget.examItem?.duration);
       selectedDuration = _durations[firstDurationIndex].title;
     } else {
-      dateController.text = "Fri, 4 Mar 2023";
-      timeController.text = "10:30";
+      dateController.text = DateFormat('EEE, d MMM, yyyy').format(date);
+      timeController.text = DateFormat('HH:mm').format(date);
     }
 
     super.initState();
@@ -219,7 +220,11 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
-        widget.timeSelected(picked);
+        var fullDate = DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, picked.hour, picked.minute);
+        String formattedDate = DateFormat('HH:mm').format(fullDate);
+        timeController.text = formattedDate;
+        widget.timeSelected(fullDate);
         // print(picked.format(context)); //output 10:51 PM
         // DateTime parsedTime =
         //     DateFormat.jm().parse(picked.format(context).toString());
@@ -231,18 +236,35 @@ class _ExamDateTimeDurationState extends State<ExamDateTimeDuration> {
     }
   }
 
+  // void _showTimePicker(ThemeMode theme, bool isDateFrom) {
+  //   Platform.isAndroid
+  //       ? _showAndroidTimeSelectionDialog
+  //       : _showiOSDateSelectionDialog(CupertinoTimerPicker(
+  //           mode: CupertinoTimerPickerMode.hm,
+  //           minuteInterval: 1,
+  //           initialTimerDuration: Duration.zero,
+  //           onTimerDurationChanged: (Duration changeTimer) {
+  //             setState(() {
+  //               pickedTimeFrom = minutesToTimeOfDay(changeTimer);
+  //               widget.timeSelected(pickedTimeFrom);
+  //               timeController.text = pickedTimeFrom.format(context);
+  //             });
+  //           },
+  //         ));
+  // }
+
   void _showTimePicker(ThemeMode theme, bool isDateFrom) {
     Platform.isAndroid
-        ? _showAndroidTimeSelectionDialog
-        : _showiOSDateSelectionDialog(CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.hm,
-            minuteInterval: 1,
-            initialTimerDuration: Duration.zero,
-            onTimerDurationChanged: (Duration changeTimer) {
+        ? _showAndroidDateSelectionDialog
+        : _showiOSDateSelectionDialog(CupertinoDatePicker(
+            initialDateTime: DateTime.now(),
+            mode: CupertinoDatePickerMode.time,
+            use24hFormat: true,
+            onDateTimeChanged: (DateTime newDate) {
               setState(() {
-                pickedTimeFrom = minutesToTimeOfDay(changeTimer);
-                widget.timeSelected(pickedTimeFrom);
-                timeController.text = pickedTimeFrom.format(context);
+                String formattedDate = DateFormat('HH:mm').format(newDate);
+                timeController.text = formattedDate;
+                widget.timeSelected(newDate);
               });
             },
           ));

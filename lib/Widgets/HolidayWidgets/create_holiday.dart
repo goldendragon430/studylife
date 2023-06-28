@@ -70,74 +70,77 @@ class _CreateHolidayState extends State<CreateHoliday> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
-      return Container(
-        color: theme == ThemeMode.light
-            ? Constants.lightThemeBackgroundColor
-            : Constants.darkThemeBackgroundColor,
-        child: ListView.builder(
-            controller: scrollcontroller,
-            padding: const EdgeInsets.only(top: 30),
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  if (index == 0) ...[
-                    HolidayTextImputs(
-                      holidayName: isEditing ? newHoliday.title : null,
-                      formsFilled: _textInputAdded,
-                      hintText: 'Holiday Name',
-                      labelTitle: 'Name*',
-                    )
-                  ],
-                  if (index == 1) ...[
-                    SelectDates(
-                      holidayItem: isEditing ? newHoliday : null,
-                      dateSelected: _selectedDates,
-                      shouldDisableEndDate: false,
-                    ),
-                  ],
-                  if (index == 2) ...[
-                    AddPhotoWidget(
-                      imageUrl: newHoliday.newImagePath ?? newHoliday.imageUrl,
-                      photoAdded: _photoAdded,
-                    )
-                  ],
-                  if (index == 3) ...[
-                    // Save/Cancel buttons
-                    Container(
-                      height: 68,
-                    ),
-                    Container(
-                      alignment: Alignment.topCenter,
-                      width: double.infinity,
-                      // margin: const EdgeInsets.only(top: 260),
-                      padding: const EdgeInsets.only(left: 106, right: 106),
-                      child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          RoundedElevatedButton(
-                              _saveHoliday,
-                              "Save Holiday",
-                              Constants.lightThemePrimaryColor,
-                              Colors.black,
-                              45),
-                          RoundedElevatedButton(
-                              _cancel,
-                              "Cancel",
-                              Constants.blueButtonBackgroundColor,
-                              Colors.white,
-                              45)
-                        ],
+      return GestureDetector(
+       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Container(
+          color: theme == ThemeMode.light
+              ? Constants.lightThemeBackgroundColor
+              : Constants.darkThemeBackgroundColor,
+          child: ListView.builder(
+              controller: scrollcontroller,
+              padding: const EdgeInsets.only(top: 30),
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    if (index == 0) ...[
+                      HolidayTextImputs(
+                        holidayName: isEditing ? newHoliday.title : null,
+                        formsFilled: _textInputAdded,
+                        hintText: 'Holiday Name',
+                        labelTitle: 'Name*',
+                      )
+                    ],
+                    if (index == 1) ...[
+                      SelectDates(
+                        holidayItem: isEditing ? newHoliday : null,
+                        dateSelected: _selectedDates,
+                        shouldDisableEndDate: false,
                       ),
-                    ),
-                    Container(
-                      height: 88,
-                    ),
+                    ],
+                    if (index == 2) ...[
+                      AddPhotoWidget(
+                        imageUrl: newHoliday.newImagePath ?? newHoliday.imageUrl,
+                        photoAdded: _photoAdded,
+                      )
+                    ],
+                    if (index == 3) ...[
+                      // Save/Cancel buttons
+                      Container(
+                        height: 68,
+                      ),
+                      Container(
+                        alignment: Alignment.topCenter,
+                        width: double.infinity,
+                        // margin: const EdgeInsets.only(top: 260),
+                        padding: const EdgeInsets.only(left: 106, right: 106),
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            RoundedElevatedButton(
+                                _saveHoliday,
+                                "Save Holiday",
+                                Constants.lightThemePrimaryColor,
+                                Colors.black,
+                                45),
+                            RoundedElevatedButton(
+                                _cancel,
+                                "Cancel",
+                                Constants.blueButtonBackgroundColor,
+                                Colors.white,
+                                45)
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 88,
+                      ),
+                    ],
                   ],
-                ],
-              );
-            }),
+                );
+              }),
+        ),
       );
     });
   }

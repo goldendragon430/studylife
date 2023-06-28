@@ -38,7 +38,6 @@ class _SelectDatesState extends State<SelectDates> {
   final dateToController = TextEditingController();
 
   final List<ClassTagItem> _subjects = ClassTagItem.subjectModes;
-
   int selectedTabIndex = 0;
   late DateTime dateFrom = DateTime.now();
   late DateTime dateTo = DateTime.now();
@@ -47,23 +46,23 @@ class _SelectDatesState extends State<SelectDates> {
   void initState() {
     if (widget.classItem != null) {
       dateFromController.text =
-          widget.classItem?.getFormattedStartDate() ?? "Fri, 4 Mar 2023";
+          widget.classItem?.getFormattedStartDate() ?? DateFormat('EEE, d MMM, yyyy').format(dateFrom);
       dateToController.text =
-          widget.classItem?.getFormattedEndDate() ?? "Fri, 4 Mar 2023";
+          widget.classItem?.getFormattedEndDate() ?? DateFormat('EEE, d MMM, yyyy').format(dateFrom);
     } else if (widget.holidayItem != null) {
       dateFromController.text =
-          widget.holidayItem?.getFormattedStartDate() ?? "Fri, 4 Mar 2023";
+          widget.holidayItem?.getFormattedStartDate() ?? DateFormat('EEE, d MMM, yyyy').format(dateFrom);
       dateToController.text =
-          widget.holidayItem?.getFormattedEndDate() ?? "Fri, 4 Mar 2023";
+          widget.holidayItem?.getFormattedEndDate() ?? DateFormat('EEE, d MMM, yyyy').format(dateFrom);
     } 
     else if (widget.xtraItem != null) {
       dateFromController.text =
-          widget.xtraItem?.getFormattedStartDate() ?? "Fri, 4 Mar 2023";
+          widget.xtraItem?.getFormattedStartDate() ?? DateFormat('EEE, d MMM, yyyy').format(dateFrom);
       dateToController.text =
-          widget.xtraItem?.getFormattedEndDate() ?? "Fri, 4 Mar 2023";
+          widget.xtraItem?.getFormattedEndDate() ?? DateFormat('EEE, d MMM, yyyy').format(dateFrom);
     }else {
-      dateFromController.text = "Fri, 4 Mar 2023";
-      dateToController.text = "Fri, 4 Mar 2023";
+      dateFromController.text = DateFormat('EEE, d MMM, yyyy').format(dateFrom);
+      dateToController.text = DateFormat('EEE, d MMM, yyyy').format(dateFrom);
     }
 
     super.initState();

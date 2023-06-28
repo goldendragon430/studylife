@@ -47,8 +47,7 @@ class _SelectTimesState extends State<SelectTimes> {
 
       timeFromController.text = _getFormattedTime(fullstartDate);
       timeToController.text = _getFormattedTime(fullendDate);
-    } 
-    else if (widget.xtraItem != null) {
+    } else if (widget.xtraItem != null) {
       TimeOfDay startTime = toTimeOfDay(widget.xtraItem?.startTime);
       TimeOfDay endTime = toTimeOfDay(widget.xtraItem?.endTime);
 
@@ -59,8 +58,7 @@ class _SelectTimesState extends State<SelectTimes> {
 
       timeFromController.text = _getFormattedTime(fullstartDate);
       timeToController.text = _getFormattedTime(fullendDate);
-    } 
-    else {
+    } else {
       timeFromController.text = "9:00AM";
       timeToController.text = "10:30AM";
     }
@@ -168,29 +166,57 @@ class _SelectTimesState extends State<SelectTimes> {
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
+        var fullDate = DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, picked.hour, picked.minute);
+        String formattedDate = DateFormat('HH:mm').format(fullDate);
+        timeFromController.text = formattedDate;
+
         // print(picked.format(context)); //output 10:51 PM
-        widget.timeSelected(picked, isDateFrom);
+        widget.timeSelected(fullDate, isDateFrom);
       });
     }
   }
 
+  // void _showDatePicker(ThemeMode theme, bool isDateFrom) {
+  //   Platform.isAndroid
+  //       ? _showAndroidDateSelectionDialog
+  //       : _showiOSDateSelectionDialog(CupertinoTimerPicker(
+  //           mode: CupertinoTimerPickerMode.hm,
+  //           minuteInterval: 1,
+  //           initialTimerDuration: Duration.zero,
+  //           onTimerDurationChanged: (Duration changeTimer) {
+  //             setState(() {
+  //               if (isDateFrom) {
+  //                 pickedTimeFrom = minutesToTimeOfDay(changeTimer);
+  //                 widget.timeSelected(pickedTimeFrom, isDateFrom);
+  //                 timeFromController.text = pickedTimeFrom.format(context);
+  //               } else {
+  //                 pickedTimeTo = minutesToTimeOfDay(changeTimer);
+  //                 timeToController.text = pickedTimeTo.format(context);
+  //                 widget.timeSelected(pickedTimeTo, isDateFrom);
+  //               }
+  //             });
+  //           },
+  //         ));
+  // }
+
   void _showDatePicker(ThemeMode theme, bool isDateFrom) {
     Platform.isAndroid
         ? _showAndroidDateSelectionDialog
-        : _showiOSDateSelectionDialog(CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.hm,
-            minuteInterval: 1,
-            initialTimerDuration: Duration.zero,
-            onTimerDurationChanged: (Duration changeTimer) {
+        : _showiOSDateSelectionDialog(CupertinoDatePicker(
+            initialDateTime: DateTime.now(),
+            mode: CupertinoDatePickerMode.time,
+            use24hFormat: true,
+            onDateTimeChanged: (DateTime newDate) {
               setState(() {
                 if (isDateFrom) {
-                  pickedTimeFrom = minutesToTimeOfDay(changeTimer);
-                  widget.timeSelected(pickedTimeFrom, isDateFrom);
-                  timeFromController.text = pickedTimeFrom.format(context);
+                  String formattedDate = DateFormat('HH:mm').format(newDate);
+                  timeFromController.text = formattedDate;
+                  widget.timeSelected(newDate, isDateFrom);
                 } else {
-                  pickedTimeTo = minutesToTimeOfDay(changeTimer);
-                  timeToController.text = pickedTimeTo.format(context);
-                  widget.timeSelected(pickedTimeTo, isDateFrom);
+                  String formattedDate = DateFormat('HH:mm').format(newDate);
+                  timeToController.text = formattedDate;
+                  widget.timeSelected(newDate, isDateFrom);
                 }
               });
             },

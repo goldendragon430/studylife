@@ -33,7 +33,7 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
 
   @override
   void initState() {
-    timeController.text = "10:30 AM";
+    timeController.text = DateFormat('HH:mm').format(DateTime.now());
     super.initState();
   }
 
@@ -111,13 +111,19 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
-        print(picked.format(context)); //output 10:51 PM
-        DateTime parsedTime =
-            DateFormat.jm().parse(picked.format(context).toString());
-        //converting to DateTime so that we can further format on different pattern.
-        print(parsedTime); //output 1970-01-01 22:53:00.000
-        String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
-        print(formattedTime);
+        // print(picked.format(context)); //output 10:51 PM
+        // DateTime parsedTime =
+        //     DateFormat.jm().parse(picked.format(context).toString());
+        // //converting to DateTime so that we can further format on different pattern.
+        // print(parsedTime); //output 1970-01-01 22:53:00.000
+        // String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
+        // print(formattedTime);
+
+           var fullDate = DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, picked.hour, picked.minute);
+        String formattedDate = DateFormat('HH:mm').format(fullDate);
+        timeController.text = formattedDate;
+        widget.timeSelected(fullDate);
       });
     }
   }
@@ -125,14 +131,15 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
   void _showTimePicker(ThemeMode theme, bool isDateFrom) {
     Platform.isAndroid
         ? _showAndroidTimeSelectionDialog
-        : _showiOSDateSelectionDialog(CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.hm,
-            minuteInterval: 1,
-            initialTimerDuration: Duration.zero,
-            onTimerDurationChanged: (Duration changeTimer) {
+        : _showiOSDateSelectionDialog(CupertinoDatePicker(
+            initialDateTime: DateTime.now(),
+            mode: CupertinoDatePickerMode.time,
+            use24hFormat: true,
+            onDateTimeChanged: (DateTime newDate) {
               setState(() {
-                pickedTimeFrom = minutesToTimeOfDay(changeTimer);
-                timeController.text = pickedTimeFrom.format(context);
+                String formattedDate = DateFormat('HH:mm').format(newDate);
+                timeController.text = formattedDate;
+                widget.timeSelected(newDate);
               });
             },
           ));

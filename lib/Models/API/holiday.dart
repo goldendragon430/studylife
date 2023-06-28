@@ -33,7 +33,9 @@ class Holiday {
           DateFormat('EEE, d MMM, yyyy').format(createdAtDate);
       return formattedDate;
     } else {
-      return "Fri, 4 Mar 2023";
+       String formattedDate =
+          DateFormat('EEE, d MMM, yyyy').format(DateTime.now());
+      return formattedDate;
     }
   }
 
@@ -45,7 +47,9 @@ class Holiday {
           DateFormat('EEE, d MMM, yyyy').format(createdAtDate);
       return formattedDate;
     } else {
-      return "Fri, 4 Mar 2023";
+       String formattedDate =
+          DateFormat('EEE, d MMM, yyyy').format(DateTime.now());
+      return formattedDate;
     }
   }
 

@@ -155,13 +155,11 @@ class _CreateExamState extends State<CreateExam> {
   }
 
   void _timeOfExamSelected(
-    TimeOfDay time,
+    DateTime time,
   ) {
-    final localizations = MaterialLocalizations.of(context);
-    final formattedTimeOfDay =
-        localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
+    String formattedDate = DateFormat('HH:mm').format(time);
 
-    newExam.startTime = formattedTimeOfDay;
+    newExam.startTime = formattedDate;
   }
 
   void _classDaysSelected(List<ClassTagItem> days) {
@@ -189,109 +187,114 @@ class _CreateExamState extends State<CreateExam> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
-      return Container(
-        color: theme == ThemeMode.light
-            ? Constants.lightThemeBackgroundColor
-            : Constants.darkThemeBackgroundColor,
-        child: ListView.builder(
-            controller: scrollcontroller,
-            padding: const EdgeInsets.only(top: 30),
-            itemCount: 7,
-            itemBuilder: (context, index) {
-              if (index == 10) {
-                // Save/Cancel Buttons
-                return Padding(
-                  padding: const EdgeInsets.only(top: 32, bottom: 32),
-                  // child: RoundedElevatedButton(
-                  //     getAllTextInputs, widget.saveButtonTitle, 28),
-                );
-              } else {
-                // Add Questions
-                return Column(
-                  children: [
-                    if (index == 0) ...[
-                      //Select Subject
-                      SelectSubject(
-                        subjectSelected: _subjectSelected,
-                        subjects: _subjects,
-                        tagtype: TagType.subjects,
-                      )
-                    ],
-                    Container(
-                      height: 14,
-                    ),
-                    if (index == 1) ...[
-                      // Switch Start dates
-                      RowSwitch(
+      return GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Container(
+          color: theme == ThemeMode.light
+              ? Constants.lightThemeBackgroundColor
+              : Constants.darkThemeBackgroundColor,
+          child: ListView.builder(
+              controller: scrollcontroller,
+              padding: const EdgeInsets.only(top: 30),
+              itemCount: 7,
+              itemBuilder: (context, index) {
+                if (index == 10) {
+                  // Save/Cancel Buttons
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 32, bottom: 32),
+                    // child: RoundedElevatedButton(
+                    //     getAllTextInputs, widget.saveButtonTitle, 28),
+                  );
+                } else {
+                  // Add Questions
+                  return Column(
+                    children: [
+                      if (index == 0) ...[
+                        //Select Subject
+                        SelectSubject(
+                          subjectSelected: _subjectSelected,
+                          subjects: _subjects,
+                          tagtype: TagType.subjects,
+                        )
+                      ],
+                      Container(
+                        height: 14,
+                      ),
+                      if (index == 1) ...[
+                        // Switch Start dates
+                        RowSwitch(
                           title: "Resit",
                           isOn: resitOn,
-                          changedState: _switchChangedState, index: 0,)
-                    ],
-                    if (index == 2) ...[
-                      SelectExamType(
-                          subjectSelected: _examTypeSelected,
-                          type: newExam.type)
-                    ],
-                    if (index == 3) ...[
-                      // Select Mode
-                      SelectClassMode(
-                        subjectSelected: _examModeSelected,
-                        isClassInPerson: isExamInPerson,
-                      )
-                    ],
-                    if (index == 4) ...[
-                      // Add Text Descriptions
-                      ExamTextImputs(
-                        textInputAdded: _textInputAdded,
-                        isExamInPerson: isExamInPerson,
-                        examItem: isEditing ? newExam : null,
-                      )
-                    ],
-                    if (index == 5) ...[
-                      // Select Day,Time, Duration
-                      ExamDateTimeDuration(
+                          changedState: _switchChangedState,
+                          index: 0,
+                        )
+                      ],
+                      if (index == 2) ...[
+                        SelectExamType(
+                            subjectSelected: _examTypeSelected,
+                            type: newExam.type)
+                      ],
+                      if (index == 3) ...[
+                        // Select Mode
+                        SelectClassMode(
+                          subjectSelected: _examModeSelected,
+                          isClassInPerson: isExamInPerson,
+                        )
+                      ],
+                      if (index == 4) ...[
+                        // Add Text Descriptions
+                        ExamTextImputs(
+                          textInputAdded: _textInputAdded,
+                          isExamInPerson: isExamInPerson,
                           examItem: isEditing ? newExam : null,
-                          dateSelected: _dateOfExamSelected,
-                          timeSelected: _timeOfExamSelected,
-                          durationSelected: _durationOfExamSelected),
-                    ],
-                    if (index == 6) ...[
-                      // Save/Cancel buttons
-                      Container(
-                        height: 68,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        width: double.infinity,
-                        // margin: const EdgeInsets.only(top: 260),
-                        padding: const EdgeInsets.only(left: 106, right: 106),
-                        child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            RoundedElevatedButton(
-                                _saveExam,
-                                "Save Exam",
-                                Constants.lightThemePrimaryColor,
-                                Colors.black,
-                                45),
-                            RoundedElevatedButton(
-                                _cancel,
-                                "Cancel",
-                                Constants.blueButtonBackgroundColor,
-                                Colors.white,
-                                45)
-                          ],
+                        )
+                      ],
+                      if (index == 5) ...[
+                        // Select Day,Time, Duration
+                        ExamDateTimeDuration(
+                            examItem: isEditing ? newExam : null,
+                            dateSelected: _dateOfExamSelected,
+                            timeSelected: _timeOfExamSelected,
+                            durationSelected: _durationOfExamSelected),
+                      ],
+                      if (index == 6) ...[
+                        // Save/Cancel buttons
+                        Container(
+                          height: 68,
                         ),
-                      ),
-                      Container(
-                        height: 88,
-                      ),
+                        Container(
+                          alignment: Alignment.topCenter,
+                          width: double.infinity,
+                          // margin: const EdgeInsets.only(top: 260),
+                          padding: const EdgeInsets.only(left: 106, right: 106),
+                          child: Column(
+                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              RoundedElevatedButton(
+                                  _saveExam,
+                                  "Save Exam",
+                                  Constants.lightThemePrimaryColor,
+                                  Colors.black,
+                                  45),
+                              RoundedElevatedButton(
+                                  _cancel,
+                                  "Cancel",
+                                  Constants.blueButtonBackgroundColor,
+                                  Colors.white,
+                                  45)
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 88,
+                        ),
+                      ],
                     ],
-                  ],
-                );
-              }
-            }),
+                  );
+                }
+              }),
+        ),
       );
     });
   }

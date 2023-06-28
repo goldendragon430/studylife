@@ -77,7 +77,7 @@ class TasksPastList extends ConsumerWidget {
     // var groupByDate = groupBy(_tasks, (obj) => obj.date.isToday());
 
     return Container(
-      margin: const EdgeInsets.only(top: 164),
+      margin: const EdgeInsets.only(top: 130),
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
           return ExpandableListView(

@@ -149,176 +149,179 @@ class _CreateExtraState extends State<CreateExtra> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
-      return Container(
-        color: theme == ThemeMode.light
-            ? Constants.lightThemeBackgroundColor
-            : Constants.darkThemeBackgroundColor,
-        child: ListView.builder(
-            controller: scrollcontroller,
-            padding: const EdgeInsets.only(top: 30),
-            itemCount: 7,
-            itemBuilder: (context, index) {
-              if (index == 10) {
-                // Save/Cancel Buttons
-                return Padding(
-                  padding: const EdgeInsets.only(top: 32, bottom: 32),
-                  // child: RoundedElevatedButton(
-                  //     getAllTextInputs, widget.saveButtonTitle, 28),
-                );
-              } else {
-                // Add Questions
-                return Column(
-                  children: [
-                    if (index == 0) ...[
-                      // Select Subject
-                      SelectExtraType(
-                        subjectSelected: _extraTypeSelected,
-                      )
-                    ],
-                    Container(
-                      height: 14,
-                    ),
-                    if (index == 1) ...[
-                      // Switch Start dates
-                      HolidayTextImputs(
-                        formsFilled: _textInputAdded,
-                        hintText: 'Name',
-                        labelTitle: 'Name*',
-                      )
-                    ],
-                    if (index == 2) ...[
-                      // Select Ocurring
-                      ClassRepetition(
-                        subjectSelected: _xtraOccuringSelected,
-                      )
-                    ],
-                    if (index == 3) ...[
-                      // Select Week days
-                      // ClassWeekDays(
-                      //   subjectSelected: _classDaysSelected,
-                      // ),
-
-                      if (!isOccurringOnce) ...[
+      return GestureDetector(
+       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Container(
+          color: theme == ThemeMode.light
+              ? Constants.lightThemeBackgroundColor
+              : Constants.darkThemeBackgroundColor,
+          child: ListView.builder(
+              controller: scrollcontroller,
+              padding: const EdgeInsets.only(top: 30),
+              itemCount: 7,
+              itemBuilder: (context, index) {
+                if (index == 10) {
+                  // Save/Cancel Buttons
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 32, bottom: 32),
+                    // child: RoundedElevatedButton(
+                    //     getAllTextInputs, widget.saveButtonTitle, 28),
+                  );
+                } else {
+                  // Add Questions
+                  return Column(
+                    children: [
+                      if (index == 0) ...[
+                        // Select Subject
+                        SelectExtraType(
+                          subjectSelected: _extraTypeSelected,
+                        )
+                      ],
+                      Container(
+                        height: 14,
+                      ),
+                      if (index == 1) ...[
+                        // Switch Start dates
+                        HolidayTextImputs(
+                          formsFilled: _textInputAdded,
+                          hintText: 'Name',
+                          labelTitle: 'Name*',
+                        )
+                      ],
+                      if (index == 2) ...[
+                        // Select Ocurring
+                        ClassRepetition(
+                          subjectSelected: _xtraOccuringSelected,
+                        )
+                      ],
+                      if (index == 3) ...[
                         // Select Week days
-                        ClassWeekDays(
-                          xtraItem: newXtra,
-                          subjectSelected: _classDaysSelected,
-                        )
+                        // ClassWeekDays(
+                        //   subjectSelected: _classDaysSelected,
+                        // ),
+      
+                        if (!isOccurringOnce) ...[
+                          // Select Week days
+                          ClassWeekDays(
+                            xtraItem: newXtra,
+                            subjectSelected: _classDaysSelected,
+                          )
+                        ],
+                        if (isOccurringOnce) ...[
+                          SelectTimes(
+                            xtraItem: newXtra,
+                            timeSelected: _selectedTimes,
+                          )
+                        ],
                       ],
-                      if (isOccurringOnce) ...[
-                        SelectTimes(
-                          xtraItem: newXtra,
-                          timeSelected: _selectedTimes,
-                        )
-                      ],
-                    ],
-                    if (index == 4) ...[
-                      // Select Time From/To
-                      // SelectTimes(
-                      //   timeSelected: _selectedTimes,
-                      // )
-                      if (!isOccurringOnce) ...[
+                      if (index == 4) ...[
                         // Select Time From/To
-                        SelectTimes(
-                          xtraItem: newXtra,
-                          timeSelected: _selectedTimes,
-                        )
+                        // SelectTimes(
+                        //   timeSelected: _selectedTimes,
+                        // )
+                        if (!isOccurringOnce) ...[
+                          // Select Time From/To
+                          SelectTimes(
+                            xtraItem: newXtra,
+                            timeSelected: _selectedTimes,
+                          )
+                        ],
+                        if (isOccurringOnce) ...[
+                          // Switch Start dates
+                          RowSwitch(
+                            title: "Add Start/end dates?",
+                            isOn: isOccurringOnce ? true : addStartEndDates,
+                            changedState: _switchChangedState,
+                            index: 0,
+                          )
+                        ]
                       ],
-                      if (isOccurringOnce) ...[
-                        // Switch Start dates
-                        RowSwitch(
-                          title: "Add Start/end dates?",
-                          isOn: isOccurringOnce ? true : addStartEndDates,
-                          changedState: _switchChangedState,
-                          index: 0,
-                        )
-                      ]
-                    ],
-                    if (index == 5) ...[
-                      if (!isOccurringOnce) ...[
-                        // Switch Start dates
-                        RowSwitch(
-                          title: "Add Start/end dates?",
-                          isOn: isOccurringOnce ? true : addStartEndDates,
-                          changedState: _switchChangedState,
-                          index: 0,
-                        )
+                      if (index == 5) ...[
+                        if (!isOccurringOnce) ...[
+                          // Switch Start dates
+                          RowSwitch(
+                            title: "Add Start/end dates?",
+                            isOn: isOccurringOnce ? true : addStartEndDates,
+                            changedState: _switchChangedState,
+                            index: 0,
+                          )
+                        ],
+                        // if (isOccurringOnce) ...[
+                        //   if (isOccurringOnce || addStartEndDates) ...[
+                        //     if (index == 7) ...[
+                        //       SelectDates(
+                        //         xtraItem: newXtra,
+                        //         dateSelected: _selectedDates,
+                        //         shouldDisableEndDate: isOccurringOnce,
+                        //       ),
+                        //     ],
+                        //   ]
+                        // ]
+                        // AddPhotoWidget(
+                        //   photoAdded: () => {},
+                        // )
                       ],
-                      // if (isOccurringOnce) ...[
-                      //   if (isOccurringOnce || addStartEndDates) ...[
-                      //     if (index == 7) ...[
-                      //       SelectDates(
-                      //         xtraItem: newXtra,
-                      //         dateSelected: _selectedDates,
-                      //         shouldDisableEndDate: isOccurringOnce,
-                      //       ),
-                      //     ],
-                      //   ]
-                      // ]
-                      // AddPhotoWidget(
-                      //   photoAdded: () => {},
-                      // )
-                    ],
-                    if (index == 6) ...[
-                      if (isOccurringOnce || addStartEndDates) ...[
-                        SelectDates(
-                          xtraItem: newXtra,
-                          dateSelected: _selectedDates,
-                          shouldDisableEndDate: isOccurringOnce,
+                      if (index == 6) ...[
+                        if (isOccurringOnce || addStartEndDates) ...[
+                          SelectDates(
+                            xtraItem: newXtra,
+                            dateSelected: _selectedDates,
+                            shouldDisableEndDate: isOccurringOnce,
+                          ),
+                        ],
+                        if (!isOccurringOnce || !addStartEndDates) ...[
+                          AddPhotoWidget(
+                            imageUrl: newXtra.newImagePath ?? newXtra.imageUrl,
+                            photoAdded: _photoAdded,
+                          )
+                        ],
+                      ],
+      
+                      // if (index == 5) ...[
+                      //   // Select Subject
+                      //   SelectTaskRepeatOptions(
+                      //     repeatOptionSelected: _taskRepeatOptionSelected,
+                      //     dateSelected: _tasRepeatDateSelect,
+                      //   )
+                      // ],
+                      if (index == 6) ...[
+                        // Save/Cancel buttons
+                        Container(
+                          height: 68,
+                        ),
+                        Container(
+                          alignment: Alignment.topCenter,
+                          width: double.infinity,
+                          // margin: const EdgeInsets.only(top: 260),
+                          padding: const EdgeInsets.only(left: 106, right: 106),
+                          child: Column(
+                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              RoundedElevatedButton(
+                                  _saveClass,
+                                  "Save Task",
+                                  Constants.lightThemePrimaryColor,
+                                  Colors.black,
+                                  45),
+                              RoundedElevatedButton(
+                                  _cancel,
+                                  "Cancel",
+                                  Constants.blueButtonBackgroundColor,
+                                  Colors.white,
+                                  45)
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 88,
                         ),
                       ],
-                      if (!isOccurringOnce || !addStartEndDates) ...[
-                        AddPhotoWidget(
-                          imageUrl: newXtra.newImagePath ?? newXtra.imageUrl,
-                          photoAdded: _photoAdded,
-                        )
-                      ],
                     ],
-
-                    // if (index == 5) ...[
-                    //   // Select Subject
-                    //   SelectTaskRepeatOptions(
-                    //     repeatOptionSelected: _taskRepeatOptionSelected,
-                    //     dateSelected: _tasRepeatDateSelect,
-                    //   )
-                    // ],
-                    if (index == 6) ...[
-                      // Save/Cancel buttons
-                      Container(
-                        height: 68,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        width: double.infinity,
-                        // margin: const EdgeInsets.only(top: 260),
-                        padding: const EdgeInsets.only(left: 106, right: 106),
-                        child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            RoundedElevatedButton(
-                                _saveClass,
-                                "Save Task",
-                                Constants.lightThemePrimaryColor,
-                                Colors.black,
-                                45),
-                            RoundedElevatedButton(
-                                _cancel,
-                                "Cancel",
-                                Constants.blueButtonBackgroundColor,
-                                Colors.white,
-                                45)
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 88,
-                      ),
-                    ],
-                  ],
-                );
-              }
-            }),
+                  );
+                }
+              }),
+        ),
       );
     });
   }
