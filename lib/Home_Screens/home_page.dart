@@ -404,7 +404,7 @@ class _HomePageState extends State<HomePage> {
                     makeHeader(theme),
                     if (selectedTabIndex == 0) ...[
                       SliverFixedExtentList(
-                          itemExtent: 130,
+                          itemExtent: 148,
                           delegate: SliverChildBuilderDelegate(
                               (BuildContext context, int index) {
                             return ClassWidget(

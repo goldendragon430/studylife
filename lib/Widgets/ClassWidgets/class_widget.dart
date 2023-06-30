@@ -30,7 +30,49 @@ class ClassWidget extends ConsumerWidget {
     cardselected(cardIndex);
   }
 
-  String _getFormattedTime(DateTime time) {
+  String _getFormattedTime() {
+    if (classItem != null) {
+      TimeOfDay startTime = toTimeOfDay(classItem!.startTime);
+      TimeOfDay endTime = toTimeOfDay(classItem!.endTime);
+
+      var fullStartDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, startTime.hour, startTime.minute);
+
+      var fullEndDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, endTime.hour, endTime.minute);
+
+      var outputFormat = DateFormat('HH:mm');
+      var outputDateStart = outputFormat.format(fullStartDate);
+      var outputDateEnd = outputFormat.format(fullEndDate);
+
+      return "${outputDateStart.toString()} - ${outputDateEnd.toString()}";
+    } else {
+      TimeOfDay startTime = toTimeOfDay(eventItem!.startTime);
+      TimeOfDay endTime = toTimeOfDay(eventItem!.endTime);
+
+      var fullStartDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, startTime.hour, startTime.minute);
+
+      var fullEndDate = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, endTime.hour, endTime.minute);
+
+      var outputFormat = DateFormat('HH:mm');
+      var outputDateStart = outputFormat.format(fullStartDate);
+      var outputDateEnd = outputFormat.format(fullEndDate);
+
+      return "${outputDateStart.toString()} - ${outputDateEnd.toString()}";
+    }
+
+    // var localDate = time.toLocal();
+    // var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    // var inputDate = inputFormat.parse(localDate.toString());
+
+    // var outputFormat = DateFormat('HH:mm');
+    // var outputDate = outputFormat.format(inputDate);
+    // return outputDate.toString();
+  }
+
+  String _getFormattedDates(DateTime time) {
     var localDate = time.toLocal();
     var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
     var inputDate = inputFormat.parse(localDate.toString());
@@ -46,64 +88,56 @@ class ClassWidget extends ConsumerWidget {
     }
   }
 
-  String _getStartEndTimes() {
+  String _getStartEndDates() {
     if (classItem != null) {
-      TimeOfDay startTime = toTimeOfDay(classItem!.startTime);
-      TimeOfDay endTime = toTimeOfDay(classItem!.endTime);
+      // TimeOfDay startTime = toTimeOfDay(classItem!.startTime);
+      // TimeOfDay endTime = toTimeOfDay(classItem!.endTime);
 
-      var fullStartDate = DateTime(
-          classItem!.getFormattedStartingDate().year,
-          classItem!.getFormattedStartingDate().month,
-          classItem!.getFormattedStartingDate().day,
-          startTime.hour,
-          startTime.minute);
-
-      if (classItem!.endDate != null) {
-        var fullEndDate = DateTime(
-            classItem!.getFormattedEndingDate().year,
-            classItem!.getFormattedEndingDate().month,
-            classItem!.getFormattedEndingDate().day,
-            endTime.hour,
-            endTime.minute);
-
-        return '${_getFormattedTime(fullStartDate)} - ${_getFormattedTime(fullEndDate)}';
-      } else {
-        var fullEndDate = DateTime(
+      if (classItem!.occurs == "once") {
+        var fullStartDate = DateTime(
             classItem!.getFormattedStartingDate().year,
             classItem!.getFormattedStartingDate().month,
             classItem!.getFormattedStartingDate().day,
-            endTime.hour,
-            endTime.minute);
-        return '${_getFormattedTime(fullStartDate)} - ${_getFormattedTime(fullEndDate)}';
+            DateTime.now().hour,
+            DateTime.now().minute);
+
+        var outputFormat = DateFormat('EEE, d MMM');
+        var outputDate = outputFormat.format(fullStartDate);
+        return outputDate.toString();
+      } else if (classItem!.occurs == 'repeating' ||
+          classItem!.occurs == 'rotational') {
+        //var allDays = classItem!.days!;
+        // for (var i = 0; i < allDays.length; i++) {
+        //   var day = allDays[i];
+        //   day.toTitleCase();
+        //   print("ASDADADADDA $day");
+        //   allDays[i] = day;
+        // }
+        var stringList = classItem!.days!.join(", ").toTitleCase();
+
+        return stringList;
+      } else {
+        return "";
       }
     } else if (eventItem != null) {
-      TimeOfDay startTime = toTimeOfDay(eventItem!.startTime);
-      TimeOfDay endTime = toTimeOfDay(eventItem!.endTime);
-
-      var fullStartDate = DateTime(
-          eventItem!.getFormattedStartingDate().year,
-          eventItem!.getFormattedStartingDate().month,
-          eventItem!.getFormattedStartingDate().day,
-          startTime.hour,
-          startTime.minute);
-
-      if (eventItem!.endDate != null) {
-        var fullEndDate = DateTime(
-            eventItem!.getFormattedEndingDate().year,
-            eventItem!.getFormattedEndingDate().month,
-            eventItem!.getFormattedEndingDate().day,
-            endTime.hour,
-            endTime.minute);
-
-        return '${_getFormattedTime(fullStartDate)} - ${_getFormattedTime(fullEndDate)}';
-      } else {
-        var fullEndDate = DateTime(
+      if (eventItem!.occurs == "once") {
+        var fullStartDate = DateTime(
             eventItem!.getFormattedStartingDate().year,
             eventItem!.getFormattedStartingDate().month,
             eventItem!.getFormattedStartingDate().day,
-            endTime.hour,
-            endTime.minute);
-        return '${_getFormattedTime(fullStartDate)} - ${_getFormattedTime(fullEndDate)}';
+            DateTime.now().hour,
+            DateTime.now().minute);
+
+        var outputFormat = DateFormat('EEE, d MMM');
+        var outputDate = outputFormat.format(fullStartDate);
+        return outputDate.toString();
+      } else if (eventItem!.occurs == 'repeating' ||
+          eventItem!.occurs == 'rotational') {
+        var stringList = eventItem!.days!.join(", ").toTitleCase();
+
+        return stringList;
+      } else {
+        return "";
       }
     } else {
       return "";
@@ -135,7 +169,7 @@ class ClassWidget extends ConsumerWidget {
       child: InkWell(
         onTap: _cardTapped,
         child: Container(
-          height: 114,
+          height: 132,
           child: Stack(
             children: [
               Container(
@@ -177,10 +211,29 @@ class ClassWidget extends ConsumerWidget {
                     Text(
                       // eventItem == null ?
                       // '${_getFormattedTime(classItem.startDate)} - ${_getFormattedTime(classItem.dateTo)}',
-                      _getStartEndTimes(),
+                      _getFormattedTime(),
                       style: theme == ThemeMode.light
                           ? Constants.lightTHemeClassDateTextStyle
                           : Constants.darkTHemeClassDateTextStyle,
+                    ),
+                    Container(
+                      height: 4,
+                    ),
+                    Text(
+                      // eventItem == null ?
+                      // '${_getFormattedTime(classItem.startDate)} - ${_getFormattedTime(classItem.dateTo)}',
+                      _getStartEndDates(),
+                      style: theme == ThemeMode.light
+                          ? TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black.withOpacity(0.7))
+                          : TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white.withOpacity(0.7)),
                     ),
                   ],
                 ),
@@ -191,7 +244,7 @@ class ClassWidget extends ConsumerWidget {
                 top: 0,
                 child: Container(
                   margin: EdgeInsets.all(0),
-                  height: 114,
+                  height: 132,
                   width: 143,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10), // Image border
@@ -211,7 +264,7 @@ class ClassWidget extends ConsumerWidget {
                 bottom: 0,
                 top: 0,
                 child: Container(
-                  height: 114.0,
+                  height: 132.0,
                   width: 98,
                   decoration: BoxDecoration(
                     color: Colors.white,

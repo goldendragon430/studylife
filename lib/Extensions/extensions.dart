@@ -29,6 +29,13 @@ extension ValidationString on String {
     final phoneRegExp = RegExp(r"^\+?0[0-9]{10}$");
     return phoneRegExp.hasMatch(this);
   }
+
+  String toCapitalized() =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
+      .split(' ')
+      .map((str) => str.toCapitalized())
+      .join(' ');
 }
 
 extension Utility on BuildContext {
