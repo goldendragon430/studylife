@@ -30,6 +30,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'dart:io';
 import '../Networking/user_service.dart';
+import '../Models/API/practicedSubject.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -51,6 +52,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String email = '';
   String imageUrl = '';
   UserModel? editedUser;
+  int tasksCompleted = 0;
+  int yourStreak = 0;
+  int mostPracticedSubjectTasksCount = 0;
+  int leastPracticedSubjectTasksCount = 0;
+  PracticedSubject mostPracticedSubject = PracticedSubject();
+  PracticedSubject leastPracticedSubject = PracticedSubject();
 
   @override
   void initState() {
@@ -62,6 +69,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _getData() async {
     var userString = await _storageService.readSecureData("activeUser");
+
+    // var mostPracticedSubjecterString = await _storageService.readSecureData("most_practiced_subject");
+    // var leastPracticedSubjecterString = await _storageService.readSecureData("least_practiced_subject");
 
     // Get Tasks from storage
     var tasksData = await _storageService.readSecureData("user_tasks");
@@ -78,15 +88,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     List<dynamic> decodedDataTasksOverdue = jsonDecode(taskDataOverdue ?? "");
 
+  //  var tasksCompletedString =  await _storageService.readSecureData("tasks_completed");
+  //  tasksCompleted = int.parse(tasksCompletedString ?? "0");
+  //     var yourStreakString =  await _storageService.readSecureData("your_streak");
+  //  yourStreak = int.parse(yourStreakString ?? "0");
+  //  var mostPracticedSubjectTasksCountString =  await _storageService.readSecureData("most_practiced_tasks_count");
+  //  mostPracticedSubjectTasksCount = int.parse(mostPracticedSubjectTasksCountString ?? "0");
+  //      var leastPracticedSubjectTasksCountString =  await _storageService.readSecureData("least_practiced_tasks_count");
+  //  leastPracticedSubjectTasksCount = int.parse(leastPracticedSubjectTasksCountString ?? "0");
+
     if (userString != null && userString.isNotEmpty) {
       Map<String, dynamic> userMap = jsonDecode(userString);
 
       var user = UserModel.fromJson(userMap);
       editedUser = user;
+
+      // Map<String, dynamic> mostPracticedSubjectMap = jsonDecode(mostPracticedSubjecterString ?? "");
+      // Map<String, dynamic> leastPracticedSubjectMap = jsonDecode(leastPracticedSubjecterString ?? "");
+      // mostPracticedSubject = PracticedSubject.fromJson(mostPracticedSubjectMap);
+      // leastPracticedSubject = PracticedSubject.fromJson(leastPracticedSubjectMap);
+
+
+
       setState(() {
         userName = "${user.firstName} ${user.lastName}";
         email = user.email ?? "";
-        imageUrl = user.profileImageUrl?? "";
+        imageUrl = user.profileImageUrl ?? "";
 
         _tasks = List<Task>.from(
           decodedDataTasks.map((x) => Task.fromJson(x as Map<String, dynamic>)),
@@ -104,36 +131,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void userUpdated() async {
-   // LoadingDialog.show(context);
+    // LoadingDialog.show(context);
 
     try {
       var response = await UserService().getUser();
-      print("user ${response.statusMessage}");
 
-    // if (!context.mounted) return;
+      // if (!context.mounted) return;
 
-     // var userString = await _storageService.readSecureData("activeUser");
-       var user = UserModel.fromJson(response.data['user']);
+      // var userString = await _storageService.readSecureData("activeUser");
+      var user = UserModel.fromJson(response.data['user']);
+      tasksCompleted = response.data['tasksCompleted'];
+      yourStreak = response.data['streak'];
+      mostPracticedSubjectTasksCount =
+          response.data['mostPracticedSubjectTasksThisMonth'];
+      leastPracticedSubjectTasksCount =
+          response.data['leastPracticedSubjectTasksThisMonth'];
+       var mostPracticed = PracticedSubject.fromJson(response.data['most_practiced_subject']);
+       var leastPracticed = PracticedSubject.fromJson(response.data['least_practiced_subject']);
 
       editedUser = user;
+      mostPracticedSubject = mostPracticed;
+      leastPracticedSubject = leastPracticed;
 
-     setState(() {
+      setState(() {
         userName = "${user.firstName} ${user.lastName}";
         email = user.email ?? "";
         imageUrl = user.profileImageUrl ?? "";
         Navigator.pop(context);
 
-       // LoadingDialog.hide(context);
+        // LoadingDialog.hide(context);
         // CustomSnackBar.show(context, CustomSnackBarType.success,
         //     response.data['message'], true);
-     });
+      });
     } catch (error) {
       if (error is DioError) {
-     //   LoadingDialog.hide(context);
+        //   LoadingDialog.hide(context);
         CustomSnackBar.show(context, CustomSnackBarType.error,
             error.response?.data['message'], true);
       } else {
-       // LoadingDialog.hide(context);
+        // LoadingDialog.hide(context);
         CustomSnackBar.show(context, CustomSnackBarType.error,
             "Oops, something went wrong", true);
       }
@@ -365,7 +401,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 cardIndex: i,
                                 cardselected: _selectedGridCard,
                                 subtitle: "Last 7 days",
-                                numberFirst: 9,
+                                numberFirst: tasksCompleted,
                                 isOverdue: false,
                                 isPending: false,
                                 isTasksOrStreak: true,
@@ -376,7 +412,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 cardIndex: i,
                                 cardselected: _selectedGridCard,
                                 subtitle: "Days with no tasks\ngoing late",
-                                numberFirst: 9,
+                                numberFirst: yourStreak,
                                 isOverdue: false,
                                 isPending: false,
                                 isTasksOrStreak: true,
@@ -400,10 +436,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         cardselected: () => {},
                         mostPracticedSubject: "MATHS",
                         mostPracticedSubjectColor: Colors.blue,
-                        mostPracticedSubjectTasksCount: 39,
+                        mostPracticedSubjectTasksCount:
+                            mostPracticedSubjectTasksCount,
                         leastPracticedSubject: "BIOLOGY",
                         leastPracticedSubjectColor: Colors.green,
-                        leastPracticedSubjectTasksCount: 7);
+                        leastPracticedSubjectTasksCount:
+                            leastPracticedSubjectTasksCount);
                   case 5:
                     return Container(
                       margin: EdgeInsets.only(top: 33, bottom: 28),

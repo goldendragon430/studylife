@@ -238,10 +238,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _logOut(BuildContext context, WidgetRef ref) {
-    ref.read(loginStateProvider).loggedIn = false;
-    // context.beamToNamed('/login');
-    //context.go(Constants.homeRouteName);
+  void _openSearch(BuildContext context, WidgetRef ref) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SearchPage(),
+            fullscreenDialog: false));
   }
 
   void _selectedCard(int index) {
@@ -331,7 +333,7 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 // Navigate to the Search Screen
                 IconButton(
-                  onPressed: () => _logOut(context, ref),
+                  onPressed: () => _openSearch(context, ref),
                   icon: theme == ThemeMode.light
                       ? Image.asset('assets/images/SearchIconLightTheme.png')
                       : Image.asset('assets/images/SearchIconDarkTheme.png'),

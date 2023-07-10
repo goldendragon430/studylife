@@ -10,14 +10,27 @@ import '../../Models/subjects_datasource.dart';
 
 class DarkModeSettingh extends StatefulWidget {
   final Function daySelected;
-  const DarkModeSettingh({super.key, required this.daySelected});
+  final int selectedIndex;
+  final List<ClassTagItem> modes;
+  const DarkModeSettingh(
+      {super.key,
+      required this.daySelected,
+      required this.selectedIndex,
+      required this.modes});
 
   @override
   State<DarkModeSettingh> createState() => _DarkModeSettinghState();
 }
 
 class _DarkModeSettinghState extends State<DarkModeSettingh> {
-  final List<ClassTagItem> _modes = ClassTagItem.lightDarkMode;
+   List<ClassTagItem> _modes = [];
+
+  @override
+  void initState() {
+    _modes = widget.modes;
+
+    super.initState();
+  }
 
   void _selectTab(int index) {
     setState(() {
@@ -27,8 +40,6 @@ class _DarkModeSettinghState extends State<DarkModeSettingh> {
 
       _modes[index].selected = true;
       widget.daySelected(_modes[index]);
-
-      
     });
   }
 

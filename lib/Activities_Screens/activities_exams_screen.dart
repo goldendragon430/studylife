@@ -6,6 +6,7 @@ import '../Models/Services/storage_service.dart';
 import 'dart:convert';
 import "package:collection/collection.dart";
 import 'package:intl/intl.dart';
+import 'package:group_list_view/group_list_view.dart';
 
 import '../../app.dart';
 import '../Home_Screens/exam_details_screen.dart';
@@ -17,6 +18,7 @@ import '../Networking/exam_service.dart';
 import 'package:dio/dio.dart';
 import '../Widgets/loaderIndicator.dart';
 import '../Widgets/custom_snack_bar.dart';
+import '.././Widgets/exam_widget.dart';
 
 class ActivitiesExamsScreen extends StatefulWidget {
   const ActivitiesExamsScreen({super.key});
@@ -35,6 +37,7 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
   List<Subject> _subjects = [];
   Map<int, List<Exam>> groupedByDate = {};
   List<int> groupedKeys = [];
+  final todaysDate = DateTime.now();
 
   int selectedTabIndex = 0;
 
@@ -182,7 +185,7 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
       if (selectedTabIndex == 1) {
         _getFilteredExams("current");
       }
-       if (selectedTabIndex == 2) {
+      if (selectedTabIndex == 2) {
         _getFilteredExams("past");
       }
     });
@@ -202,6 +205,14 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
+
+      final startOfWeek = todaysDate.findFirstDateOfTheWeek(todaysDate);
+      final endOfWeek = todaysDate.findLastDateOfTheWeek(todaysDate);
+
+      var groupByDateExams = groupBy(
+          _exams,
+          (obj) =>
+              obj.getExamStartdateDateTime().isBetween(startOfWeek, endOfWeek));
 
       return Stack(
         children: [
@@ -227,7 +238,6 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
               },
             ),
           ),
-
           Container(
             height: 45,
             width: double.infinity,
@@ -264,23 +274,79 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
               ),
             ),
           ),
-          // Exams
-          Container(
-            alignment: Alignment.topCenter,
-            height: double.infinity,
-            margin: const EdgeInsets.only(top: 156),
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return ExpandableListView(
-                  period: getMonthName(groupedKeys.reversed.toList()[index]),
-                  numberOfItems:
-                      "${groupedByDate[groupedKeys.toList()[index]]?.length}",
-                  exams: groupedByDate[groupedKeys[index]],
-                );
-              },
-              itemCount: groupedKeys.reversed.length,
+          if (selectedTabIndex == 2) ...[
+            // Past Exams
+            Container(
+              alignment: Alignment.topCenter,
+              height: double.infinity,
+              margin: const EdgeInsets.only(top: 156),
+              child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  return ExpandableListView(
+                    period: getMonthName(groupedKeys.reversed.toList()[index]),
+                    numberOfItems:
+                        "${groupedByDate[groupedKeys.toList()[index]]?.length}",
+                    exams: groupedByDate[groupedKeys[index]],
+                  );
+                },
+                itemCount: groupedKeys.reversed.length,
+              ),
             ),
-          ),
+          ],
+          if (selectedTabIndex == 1) ...[
+            // Current Exams
+            Container(
+              alignment: Alignment.topCenter,
+              height: double.infinity,
+              margin: const EdgeInsets.only(top: 156),
+              child: GroupListView(
+                sectionsCount: groupByDateExams.keys.toList().length, 
+                countOfItemInSection: (int section) {
+                  return groupByDateExams.values.toList()[section].length;
+                },
+                itemBuilder: (BuildContext context, IndexPath index) {
+                  return ExamWidget(
+                            examItem: groupByDateExams.values.toList()[index.section]
+                            [index.index],
+                            cardIndex: index.index,
+                            upNext: true,
+                            cardselected: _selectedExamCard);
+                },
+                groupHeaderBuilder: (BuildContext context, int section) {
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: section == 0
+                        ? Text(
+                            'This week (${groupByDateExams.values.toList()[section].length})',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.bold,
+                              color: theme == ThemeMode.light
+                                  ? Colors.black.withOpacity(0.6)
+                                  : Colors.white.withOpacity(0.6),
+                            ),
+                          )
+                        : Text(
+                            'This month (${groupByDateExams.values.toList()[section].length})',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.bold,
+                              color: theme == ThemeMode.light
+                                  ? Colors.black.withOpacity(0.6)
+                                  : Colors.white.withOpacity(0.6),
+                            ),
+                          ),
+                  );
+                },
+                separatorBuilder: (context, index) => SizedBox(height: 10),
+                sectionSeparatorBuilder: (context, section) =>
+                    SizedBox(height: 10),
+              ),
+            ),
+          ],
         ],
       );
     });

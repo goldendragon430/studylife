@@ -26,8 +26,8 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
         length: 5,
         child: Scaffold(
           backgroundColor: theme == ThemeMode.light
-                ? Constants.lightThemeBackgroundColor
-                : Constants.darkThemeBackgroundColor,
+              ? Constants.lightThemeBackgroundColor
+              : Constants.darkThemeBackgroundColor,
           appBar: AppBar(
             backgroundColor: theme == ThemeMode.light
                 ? Constants.lightThemeBackgroundColor
@@ -39,57 +39,79 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             title: Text(
               "Activities",
               style: TextStyle(
-                fontSize: 17,
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w500,
-                color: theme == ThemeMode.light ? Colors.black : Colors.white),
+                  fontSize: 17,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w500,
+                  color:
+                      theme == ThemeMode.light ? Colors.black : Colors.white),
             ),
             bottom: TabBar(
               indicatorWeight: 4,
               indicatorColor: theme == ThemeMode.light
                   ? Constants.blueButtonBackgroundColor
                   : Constants.darkThemePrimaryColor,
+              labelColor: theme == ThemeMode.light
+                  ? Constants.blueButtonBackgroundColor
+                  : Constants.darkThemePrimaryColor,
+              labelStyle: theme == ThemeMode.light
+                  ? Constants.lightThemeTabBarTextStyle
+                  : Constants.darkThemeTabBarTextStyle,
+              unselectedLabelColor: theme == ThemeMode.light ? Colors.black.withOpacity(0.6) : Colors.white,
+              unselectedLabelStyle: const TextStyle(
+                fontSize: 14,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
               isScrollable: true,
-              tabs: [
+              tabs: const [
                 Tab(
-                  child: Text(
-                    "Class",
-                    style: theme == ThemeMode.light
-                        ? Constants.lightThemeTabBarTextStyle
-                        : Constants.darkThemeTabBarTextStyle,
-                  ),
+                  text: "Class",
+                  // child: Text(
+                  //   "Class",
+                  //   style: theme == ThemeMode.light
+                  //       ? Constants.lightThemeTabBarTextStyle
+                  //       : Constants.darkThemeTabBarTextStyle,
+                  // ),
                 ),
                 Tab(
-                    child: Text(
-                  "Exam",
-                  style: theme == ThemeMode.light
-                      ? Constants.lightThemeTabBarTextStyle
-                      : Constants.darkThemeTabBarTextStyle,
-                )),
+                  text: "Exam",
+                  // child: Text(
+                  //   "Exam",
+                  //   style: theme == ThemeMode.light
+                  //       ? Constants.lightThemeTabBarTextStyle
+                  //       : Constants.darkThemeTabBarTextStyle,
+                  // ),
+                ),
                 Tab(
-                    child: Text(
-                  "Task",
-                  style: theme == ThemeMode.light
-                      ? Constants.lightThemeTabBarTextStyle
-                      : Constants.darkThemeTabBarTextStyle,
-                )),
+                  text: "Task",
+                  //     child: Text(
+                  //   "Task",
+                  //   style: theme == ThemeMode.light
+                  //       ? Constants.lightThemeTabBarTextStyle
+                  //       : Constants.darkThemeTabBarTextStyle,
+                  // ),
+                ),
                 Tab(
-                    child: Text(
-                  "Holiday",
-                  style: theme == ThemeMode.light
-                      ? Constants.lightThemeTabBarTextStyle
-                      : Constants.darkThemeTabBarTextStyle,
-                )),
+                  text: "Holiday",
+                  // child: Text(
+                  //   "Holiday",
+                  //   style: theme == ThemeMode.light
+                  //       ? Constants.lightThemeTabBarTextStyle
+                  //       : Constants.darkThemeTabBarTextStyle,
+                  // ),
+                ),
                 Tab(
-                    child: Text(
-                  "Xtra",
-                  style: theme == ThemeMode.light
-                      ? Constants.lightThemeTabBarTextStyle
-                      : Constants.darkThemeTabBarTextStyle,
-                )),
+                  text: "Xtra",
+                  // child: Text(
+                  //   "Xtra",
+                  //   style: theme == ThemeMode.light
+                  //       ? Constants.lightThemeTabBarTextStyle
+                  //       : Constants.darkThemeTabBarTextStyle,
+                  // ),
+                ),
               ],
             ),
-         
           ),
           body: const TabBarView(
             children: [

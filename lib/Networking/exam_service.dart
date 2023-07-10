@@ -79,4 +79,31 @@ class ExamService {
 
     return response;
   }
+
+  Future<Response> pinExam(int examItemId, bool pinned) async {
+    String body;
+
+    body = jsonEncode({
+      'pinned': pinned,
+    });
+
+    var response = await Api().dio.put('/api/exam/$examItemId/pin', data: body);
+    print(response);
+
+    return response;
+  }
+
+   Future<Response> addExamScore(int examItemId, int score, String scoreType) async {
+    String body;
+
+    body = jsonEncode({
+      'score': score,
+      'scoreType': scoreType
+    });
+
+    var response = await Api().dio.put('/api/exam/$examItemId/score', data: body);
+    print(response);
+
+    return response;
+  }
 }

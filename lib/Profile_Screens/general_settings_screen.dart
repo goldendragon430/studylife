@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Models/exam_datasource.dart';
+import '../Models/Services/storage_service.dart';
+import '../Models/Services/storage_item.dart';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
@@ -28,13 +30,40 @@ class GeneralSettingsScreen extends StatefulWidget {
 
 class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   final ScrollController scrollcontroller = ScrollController();
+  final StorageService _storageService = StorageService();
+  final List<ClassTagItem> _modes = ClassTagItem.lightDarkMode;
 
   RotationSchedule rotation = RotationSchedule.fixed;
   bool addStartEndDates = false;
-
+  int selectedThemeIndex = 1;
   // void _rotationSelected(RotationSchedule rotationItem) {
   //   print("Selected subject: ${rotationItem}");
   // }
+
+  @override
+  void initState() {
+    checkSelectedThemeOption();
+    super.initState();
+  }
+
+  void checkSelectedThemeOption() async {
+    var appTheme = await _storageService.readSecureData("app_theme");
+
+      if (appTheme == "light") {
+        selectedThemeIndex = 2;
+      } else if (appTheme == "dark") {
+        selectedThemeIndex = 1;
+      } else if (appTheme == "system") {
+        selectedThemeIndex = 0;
+      }
+
+    setState(() {
+              _modes[selectedThemeIndex].selected = true;
+
+             // print("UDJE LI OVDE NEKAD $selectedThemeIndex");
+
+    });
+  }
 
   void _firstDaySelected(ClassTagItem day) {
     print("Selected mode: ${day.title}");
@@ -259,30 +288,38 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                     ],
                     if (index == 4) ...[
                       // Select Week days
-                      DarkModeSettingh(daySelected: (value) {
-                        var mode = value.cardIndex;
-                        switch (mode) {
-                          case 0:
-                            var brightness = WidgetsBinding
-                                .instance.window.platformBrightness;
-
-                            if (brightness == Brightness.dark) {
+                      DarkModeSettingh(
+                        daySelected: (value) {
+                          var mode = value.cardIndex;
+                          switch (mode) {
+                            case 0:
+                              var brightness = WidgetsBinding
+                                  .instance.window.platformBrightness;
+                              _storageService.writeSecureData(
+                                  StorageItem("app_theme", "system"));
+                              if (brightness == Brightness.dark) {
+                                ref.read(themeModeProvider.notifier).state =
+                                    ThemeMode.dark;
+                              } else {
+                                ref.read(themeModeProvider.notifier).state =
+                                    ThemeMode.light;
+                              }
+                              break;
+                            case 1:
+                              _storageService.writeSecureData(
+                                  StorageItem("app_theme", "dark"));
                               ref.read(themeModeProvider.notifier).state =
                                   ThemeMode.dark;
-                            } else {
+                              break;
+                            case 2:
+                              _storageService.writeSecureData(
+                                  StorageItem("app_theme", "light"));
                               ref.read(themeModeProvider.notifier).state =
                                   ThemeMode.light;
-                            }
-                            break;
-                          case 1:
-                            ref.read(themeModeProvider.notifier).state =
-                                ThemeMode.dark;
-                            break;
-                          case 2:
-                            ref.read(themeModeProvider.notifier).state =
-                                ThemeMode.light;
-                        }
-                      })
+                          }
+                        },
+                        selectedIndex: selectedThemeIndex, modes: _modes,
+                      )
                     ],
                   ],
                 );

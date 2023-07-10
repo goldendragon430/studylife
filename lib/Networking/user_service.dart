@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import './api_service.dart';
 import 'dart:convert';
 import '../Models/user.model.dart';
+import '../Models/API/practicedSubject.dart';
 
 class UserService {
   static UserService? _instance;
@@ -48,8 +49,26 @@ class UserService {
 
       // var token = AccessToken.fromJson(tokenData);
       var user = UserModel.fromJson(response.data['user']);
+      // var tasksCompleted = response.data['tasksCompleted'];
+      // var yourStreak = response.data['streak'];
+      // var mostPracticedSubjectTasksCount =
+      //     response.data['mostPracticedSubjectTasksThisMonth'];
+      // var leastPracticedSubjectTasksCount =
+      //     response.data['leastPracticedSubjectTasksThisMonth'];
+      // var mostPracticedSubject =
+      //     PracticedSubject.fromJson(response.data['mostPracticedSubject']);
+      // var leastPracticedSubject =
+      //     PracticedSubject.fromJson(response.data['leastPracticedSubject']);
 
-      await _storage.write(key: "access_token", value: tokenString);
+       await _storage.write(key: "access_token", value: tokenString);
+
+      // await _storage.write(key: "tasks_completed", value: tasksCompleted.toString());
+      // await _storage.write(key: "your_streak", value: yourStreak.toString());
+      // await _storage.write(key: "most_practiced_tasks_count", value: mostPracticedSubjectTasksCount.toString());
+      // await _storage.write(key: "least_practiced_tasks_count", value: leastPracticedSubjectTasksCount.toString());
+      // await _storage.write(key: "most_practiced_subject", value: jsonEncode(mostPracticedSubject.toJson()));
+      // await _storage.write(key: "least_practiced_subject", value: jsonEncode(leastPracticedSubject.toJson()));
+
       await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
     }
 
@@ -138,8 +157,7 @@ class UserService {
     if (response.statusCode == 200) {
       var user = UserModel.fromJson(response.data['user']);
 
-      await _storage.write(
-          key: "activeUser", value: jsonEncode(user.toJson()));
+      await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
     }
 
     return response;
@@ -148,9 +166,7 @@ class UserService {
   Future<Response> updateUser(String body) async {
     // final map = <String, dynamic>{};
     // map.putIfAbsent('Content-Type', () => "application/json");
-    var response = await Api()
-        .dio
-        .put('/api/user', data: body);
+    var response = await Api().dio.put('/api/user', data: body);
 
     // if (response.statusCode == 201 || response.statusCode == 200) {
     //   var user = UserModel.fromJson(response.data['data']);

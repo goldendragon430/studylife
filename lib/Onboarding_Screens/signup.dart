@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       autofocus: true,
                                     ),
                                     RegularTextField(
-                                      "New Password",
+                                      "Password",
                                       (value) {
                                       //  FocusScope.of(context).nextFocus();
                                       },
@@ -255,7 +255,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       autofocus: true,
                                     ),
                                     RegularTextField(
-                                      "New Password",
+                                      "Password",
                                       (value) {
                                        // FocusScope.of(context).nextFocus();
                                       },

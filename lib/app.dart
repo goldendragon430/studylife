@@ -19,7 +19,8 @@ import './Widgets/custom_snack_bar.dart';
 import './Services/navigation_service.dart';
 import 'Models/API/event.dart';
 import '../Models/API/result.dart';
-
+import '../Models/Services/storage_service.dart';
+import '../Models/Services/storage_item.dart';
 import './Networking/sync_controller.dart';
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) {
@@ -46,10 +47,26 @@ class App extends ConsumerStatefulWidget {
 class AppState extends ConsumerState<App>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   late final _routerDelegate;
+  final StorageService _storageService = StorageService();
+
   final eventController = EventController<Event>();
+
+  void checkAppTheme() async {
+    var appTheme = await _storageService.readSecureData("app_theme");
+
+    if (appTheme == "light") {
+      ref.read(themeModeProvider.notifier).state = ThemeMode.light;
+    }
+
+    if (appTheme == "dark") {
+      ref.read(themeModeProvider.notifier).state = ThemeMode.dark;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    checkAppTheme();
     _routerDelegate = BeamerDelegate(
       guards: [
         /// if the user is authenticated
@@ -119,7 +136,7 @@ class AppState extends ConsumerState<App>
     final theme = ref.watch(themeModeProvider);
 
     final signInState = ref.watch(authProvider);
-   // print("object ${signInState.status}");
+    // print("object ${signInState.status}");
 
     return BeamerProvider(
       routerDelegate: _routerDelegate,

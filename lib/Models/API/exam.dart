@@ -21,6 +21,9 @@ class Exam {
   String? building;
   String? teacher;
   String? occurs;
+  bool? pinned;
+  int? score;
+  String? scoreType;
 
   Exam(
       {this.id,
@@ -41,7 +44,10 @@ class Exam {
       this.subject,
       this.building,
       this.teacher,
-      this.occurs});
+      this.occurs,
+      this.pinned,
+      this.score,
+      this.scoreType});
 
   // Calculated
 
@@ -49,15 +55,14 @@ class Exam {
     DateTime? createdAtDate = DateTime.tryParse(startDate ?? "");
 
     if (createdAtDate != null) {
-      String formattedDate =
-          DateFormat('EEE, dd MMM').format(createdAtDate);
+      String formattedDate = DateFormat('EEE, dd MMM').format(createdAtDate);
       return formattedDate;
     } else {
       return "";
     }
   }
 
-   DateTime getExamStartdateDateTime() {
+  DateTime getExamStartdateDateTime() {
     return DateTime.tryParse(startDate ?? "") ?? DateTime.now();
   }
 
@@ -80,6 +85,9 @@ class Exam {
     building = json['building'];
     teacher = json['teacher'];
     occurs = json['occurs'];
+    pinned = json['pinned'];
+    score = json['score'];
+    scoreType = json['scoreType'];
     subject =
         json['subject'] != null ? Subject.fromJson(json['subject']) : null;
   }
@@ -104,6 +112,9 @@ class Exam {
     data['updatedAt'] = updatedAt;
     data['teacher'] = teacher;
     data['occurs'] = occurs;
+    data['pinned'] = pinned;
+    data['score'] = score;
+    data['scoreType'] = scoreType;
     if (subject != null) {
       data['subject'] = subject!.toJson();
     }

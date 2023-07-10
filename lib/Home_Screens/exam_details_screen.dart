@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../Utilities/constants.dart';
 import '../Extensions/extensions.dart';
+import '../Models/Services/storage_service.dart';
+import '../../Widgets/loaderIndicator.dart';
+import '../../Widgets/custom_snack_bar.dart';
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'dart:io';
+import '../Networking/sync_controller.dart';
+
 
 import '../../app.dart';
 import '../Widgets/class_exam_details_info_card.dart';
@@ -12,6 +20,7 @@ import '../Widgets/custom_alert.dart';
 import './add_exam_score.dart';
 import '../Models/API/exam.dart';
 import '../Home_Screens/create_screen.dart';
+import '../Networking/exam_service.dart';
 
 class ExamDetailsScreen extends StatefulWidget {
   final Exam examItem;
@@ -22,6 +31,9 @@ class ExamDetailsScreen extends StatefulWidget {
 }
 
 class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
+
+  final SyncController _syncController = SyncController();
+
   void _editButtonPressed(BuildContext context) {
     bottomSheetForSignIn(context);
   }
@@ -70,6 +82,44 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
         builder: (context) {
           return const AddScoreScreen();
         });
+  }
+
+  // API
+  void pinUnpinExam() async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+    var examItem = widget.examItem;
+
+    var pinned = examItem.pinned;
+
+    if (pinned != null) {
+      pinned = !pinned;
+    }
+
+    LoadingDialog.show(context);
+
+     try {
+        var response = await ExamService().pinExam(examItem.id ?? 0, pinned ?? false);
+        var sync = await _syncController.syncAll();
+
+        print("EOOO GAAAA $response");
+
+        if (!contextMain.mounted) return;
+
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+            response.data['message'], true);
+        Navigator.pop(context);
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
   }
 
   @override
@@ -140,7 +190,7 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white))),
-              onPressed: () {},
+              onPressed: () => pinUnpinExam(),
               icon: Image.asset('assets/images/PinIconWhite.png'),
               label: Text('Pin'),
             ),
