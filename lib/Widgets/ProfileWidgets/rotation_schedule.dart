@@ -3,23 +3,26 @@ import 'package:flutter/material.dart';
 import '../../Utilities/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../Extensions/extensions.dart';
+import '../../Profile_Screens/general_settings_screen.dart';
 
 import '../../app.dart';
 import '../tag_card.dart';
-import '../../Profile_Screens/general_settings_screen.dart';
 import '../../Models/class_datasource.dart';
 
 class RotationScheduleSelector extends StatefulWidget {
   final Function rotationSelected;
-  RotationScheduleSelector({super.key, required this.rotationSelected});
+  final RotationSchedule rotation;
+  const RotationScheduleSelector(
+      {super.key, required this.rotationSelected, required this.rotation});
 
   @override
-  State<RotationScheduleSelector> createState() => _RotationScheduleSelectorState();
+  State<RotationScheduleSelector> createState() =>
+      _RotationScheduleSelectorState();
 }
 
 class _RotationScheduleSelectorState extends State<RotationScheduleSelector> {
-
-  static List<RotationScheduleItem> _rotationItems = RotationScheduleItem.rotationItems;
+  final List<RotationScheduleItem> _rotationItems =
+      RotationScheduleItem.rotationItems;
 
   int selectedTabIndex = 0;
 
@@ -37,6 +40,23 @@ class _RotationScheduleSelectorState extends State<RotationScheduleSelector> {
   }
 
   @override
+  void initState() {
+    for (var item in _rotationItems) {
+      if (item.rotation.name == widget.rotation.name) {
+        item.selected = true;
+      }
+    }
+    super.initState();
+  }
+
+  void dispose() {
+    for (var rotation in _rotationItems) {
+      rotation.selected = false;
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
@@ -51,7 +71,9 @@ class _RotationScheduleSelectorState extends State<RotationScheduleSelector> {
           children: [
             Text(
               'Rotation Schedule',
-              style: theme == ThemeMode.light ? Constants.lightThemeSubtitleTextStyle : Constants.darkThemeSubtitleTextStyle,
+              style: theme == ThemeMode.light
+                  ? Constants.lightThemeSubtitleTextStyle
+                  : Constants.darkThemeSubtitleTextStyle,
               textAlign: TextAlign.left,
             ),
             Container(

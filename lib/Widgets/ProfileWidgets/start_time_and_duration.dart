@@ -15,9 +15,7 @@ class StartTimeAndDuration extends StatefulWidget {
   final Function durationSelected;
 
   const StartTimeAndDuration(
-      {super.key,
-      required this.timeSelected,
-      required this.durationSelected});
+      {super.key, required this.timeSelected, required this.durationSelected});
 
   @override
   State<StartTimeAndDuration> createState() => _StartTimeAndDurationState();
@@ -53,7 +51,6 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
               ),
             ));
   }
-
 
   // Time pickers
 
@@ -119,7 +116,7 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
         // String formattedTime = DateFormat('HH:mm:ss').format(parsedTime);
         // print(formattedTime);
 
-           var fullDate = DateTime(DateTime.now().year, DateTime.now().month,
+        var fullDate = DateTime(DateTime.now().year, DateTime.now().month,
             DateTime.now().day, picked.hour, picked.minute);
         String formattedDate = DateFormat('HH:mm').format(fullDate);
         timeController.text = formattedDate;
@@ -148,6 +145,14 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
   TimeOfDay minutesToTimeOfDay(duration) {
     List<String> parts = duration.toString().split(':');
     return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+  }
+
+  void durationSelected(String? newValue) {
+
+    setState(() => {
+          selectedDuration = newValue ?? "",
+          widget.durationSelected(selectedDuration)
+        });
   }
 
   @override
@@ -231,8 +236,7 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
                   alignedDropdown: true,
                   child: DropdownButton(
                     value: selectedDuration,
-                    onChanged: (String? newValue) =>
-                        setState(() => selectedDuration = newValue ?? ""),
+                    onChanged: (String? newValue) => durationSelected(newValue),
                     items: _durations
                         .map<DropdownMenuItem<String>>(
                             (ExamDuration durationItem) =>

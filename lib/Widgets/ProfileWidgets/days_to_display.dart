@@ -19,6 +19,14 @@ class DaysToDisplay extends StatefulWidget {
 class _DaysToDisplayState extends State<DaysToDisplay> {
   final List<ClassTagItem> _days = ClassTagItem.settingsDyasToDisplay;
 
+  // @override
+  // void initState() {
+  //   for (var item in _days) {
+  //     item.selected = false;
+  //   }
+  //   super.initState();
+  // }
+
   void _selectTab(int index) {
     setState(() {
       for (var item in _days) {

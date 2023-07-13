@@ -24,6 +24,40 @@ class ClassModel {
   List<Task>? tasks;
   bool? upNext;
 
+  // {
+  //           "id": 59,
+  //           "userId": 3,
+  //           "subjectId": "2",
+  //           "module": "Basics",
+  //           "mode": "online",
+  //           "room": "15b",
+  //           "building": "University Of Physics, London",
+  //           "onlineUrl": null,
+  //           "teacher": "John Doe",
+  //           "teachersEmail": null,
+  //           "occurs": "repeating",
+  //           "days": null,
+  //           "startDate": null,
+  //           "endDate": null,
+  //           "startTime": "11:00:00",
+  //           "endTime": "12:00:00",
+  //           "timestamp": null,
+  //           "createdAt": "2023-07-11T08:13:44.931Z",
+  //           "updatedAt": "2023-07-11T08:13:44.932Z",
+  //           "subject": {
+  //               "imageUrl": "https://nyc3.digitaloceanspaces.com/mystudylifeobjects/subjects/3/02b5e8d32b6091a77f61d94b5984dded.jpg",
+  //               "id": 2,
+  //               "userId": 3,
+  //               "subject": "Math",
+  //               "color": null,
+  //               "image": "02b5e8d32b6091a77f61d94b5984dded.jpg",
+  //               "createdAt": "2023-05-12T07:59:34.563Z",
+  //               "updatedAt": "2023-05-12T07:59:34.630Z"
+  //           },
+  //           "tasks": [],
+  //           "classTimes": []
+  //       },
+
   // Calculated
 
   String getFormattedStartDate() {

@@ -1,19 +1,5 @@
 import 'package:equatable/equatable.dart';
-
-// class UserModel extends Equatable {
-//   final String token;
-//   final String username;
-
-//   const UserModel({required this.token, required this.username});
-
-//   @override
-//   List<Object> get props => [token, username];
-
-//   @override
-//   String toString() => "username: $username, token: $token";
-
-//   static const empty = UserModel(token: "-", username: "-");
-// }
+import 'package:intl/intl.dart';
 
 enum UserRole { student, admin, teacher }
 
@@ -33,6 +19,23 @@ class UserModel extends Equatable {
   final String? status;
   final String? lastActiveAt;
   final String? lastLoginAt;
+  final int? settingsDateFormat;
+  final bool? settingsIs24Hour;
+  final String? settingsAcademicInterval;
+  final String? settingsSession;
+  final String? settingsDaysOff;
+  final String? country;
+  final int? settingsFirstDayOfWeek;
+  final String? settingsDefaultStartTime;
+  final int? settingsDefaultDuration;
+  final bool? settingsIsRotationScheduleLettered;
+  final String? settingsRotationalSchedule;
+  final int? settingsDaysToDisplayOnDashboard;
+  final int? settingsRotationalScheduleNumberOfWeeks;
+  final String? settingsRotationalScheduleStartWeek;
+  final int? settingsRotationalScheduleNumberOfDays;
+  final String? settingsRotationalScheduleStartDay;
+  final List<String>? settingsRotationalScheduleDays;
 
   // Calculated
   UserRole calculatedVerifiedStatus() {
@@ -49,7 +52,19 @@ class UserModel extends Equatable {
     return UserRole.student;
   }
 
-  const UserModel(
+  DateFormat prefferedDateFormat() {
+    switch (settingsDateFormat) {
+      case 0:
+      return DateFormat('MMM dd, yyyy');
+      case 1:
+      return DateFormat('dd MMM, yyyy');
+      case 2:
+      return DateFormat('yyyy, MMM dd');
+      default:  return DateFormat('MMM dd, yyyy');
+    }
+  }
+
+  const UserModel( 
       {required this.id,
       required this.email,
       required this.firstName,
@@ -65,9 +80,37 @@ class UserModel extends Equatable {
       this.lastActiveAt,
       this.lastLoginAt,
       required this.createdAt,
-      required this.updatedAt});
+      required this.updatedAt,
+      this.settingsDateFormat,
+      this.settingsIs24Hour,
+      this.settingsAcademicInterval,
+      this.settingsSession,
+      this.settingsDaysOff,
+      this.country,
+      this.settingsFirstDayOfWeek,
+      this.settingsDefaultStartTime,
+      this.settingsDefaultDuration,
+      this.settingsIsRotationScheduleLettered,
+      this.settingsRotationalSchedule,
+      this.settingsDaysToDisplayOnDashboard,
+      this.settingsRotationalScheduleNumberOfWeeks,
+      this.settingsRotationalScheduleStartWeek,
+      this.settingsRotationalScheduleNumberOfDays,
+      this.settingsRotationalScheduleStartDay,
+      this.settingsRotationalScheduleDays});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+      List<String> dayStrings = [];
+
+    if (json['days'] != null) {
+      List<dynamic> rawDays = json['days'];
+      dayStrings = rawDays.map(
+        (item) {
+          return item as String;
+        },
+      ).toList();
+    }
+
     return UserModel(
       id: json['id'],
       profileImageUrl: json['profileImageUrl'],
@@ -84,6 +127,23 @@ class UserModel extends Equatable {
       profileImage: json['profileImage'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
+      settingsDateFormat: json['settingsDateFormat'],
+      settingsIs24Hour: json['settingsIs24Hour'],
+      settingsAcademicInterval: json['settingsAcademicInterval'],
+      settingsSession: json['settingsSession'],
+      settingsDaysOff: json['settingsDaysOff'],
+      country: json['country'],
+      settingsFirstDayOfWeek: json['settingsFirstDayOfWeek'],
+      settingsDefaultStartTime: json['settingsDefaultStartTime'],
+      settingsDefaultDuration: json['settingsDefaultDuration'],
+      settingsIsRotationScheduleLettered: json['settingsIsRotationScheduleLettered'],
+      settingsRotationalSchedule: json['settingsRotationalSchedule'],
+      settingsDaysToDisplayOnDashboard: json['settingsDaysToDisplayOnDashboard'],
+      settingsRotationalScheduleNumberOfWeeks: json['settingsRotationalScheduleNumberOfWeeks'],
+      settingsRotationalScheduleStartWeek: json['settingsRotationalScheduleStartWeek'],
+      settingsRotationalScheduleNumberOfDays: json['settingsRotationalScheduleNumberOfDays'],
+      settingsRotationalScheduleStartDay: json['settingsRotationalScheduleStartDay'],
+      settingsRotationalScheduleDays: dayStrings
     );
   }
 
@@ -103,6 +163,23 @@ class UserModel extends Equatable {
         'profileImage': profileImage,
         'createdAt': createdAt,
         'updatedAt': updatedAt,
+        'settingsDateFormat': settingsDateFormat,
+        'settingsIs24Hour': settingsIs24Hour,
+        'settingsAcademicInterval': settingsAcademicInterval,
+        'settingsSession': settingsSession,
+        'settingsDaysOff': settingsDaysOff,
+        'country': country,
+        'settingsFirstDayOfWeek': settingsFirstDayOfWeek,
+        'settingsDefaultStartTime': settingsDefaultStartTime,
+        'settingsDefaultDuration': settingsDefaultDuration,
+        'settingsIsRotationScheduleLettered': settingsIsRotationScheduleLettered,
+        'settingsRotationalSchedule': settingsRotationalSchedule,
+        'settingsDaysToDisplayOnDashboard': settingsDaysToDisplayOnDashboard,
+        'settingsRotationalScheduleNumberOfWeeks': settingsRotationalScheduleNumberOfWeeks,
+        'settingsRotationalScheduleStartWeek': settingsRotationalScheduleStartWeek,
+        'settingsRotationalScheduleNumberOfDays': settingsRotationalScheduleNumberOfDays,
+        'settingsRotationalScheduleStartDay': settingsRotationalScheduleStartDay,
+        'settingsRotationalScheduleDays': settingsRotationalScheduleDays
       }..removeWhere(
           (dynamic key, dynamic value) => key == null || value == null);
 

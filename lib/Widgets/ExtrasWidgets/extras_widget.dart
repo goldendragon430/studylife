@@ -106,8 +106,9 @@ class ExtrasWidget extends ConsumerWidget {
                       child: FittedBox(
                         fit: BoxFit.fill,
                         // clipBehavior: Clip.hardEdge,
-                        child: Image.asset(
+                        child: Image.network(
                           xtraItem.imageUrl ?? "",
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

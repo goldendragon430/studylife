@@ -70,8 +70,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _getData() async {
     var userString = await _storageService.readSecureData("activeUser");
 
-    // var mostPracticedSubjecterString = await _storageService.readSecureData("most_practiced_subject");
-    // var leastPracticedSubjecterString = await _storageService.readSecureData("least_practiced_subject");
+    var mostPracticedSubjecterString =
+        await _storageService.readSecureData("most_practiced_subject");
+    var leastPracticedSubjecterString =
+        await _storageService.readSecureData("least_practiced_subject");
 
     // Get Tasks from storage
     var tasksData = await _storageService.readSecureData("user_tasks");
@@ -88,14 +90,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     List<dynamic> decodedDataTasksOverdue = jsonDecode(taskDataOverdue ?? "");
 
-  //  var tasksCompletedString =  await _storageService.readSecureData("tasks_completed");
-  //  tasksCompleted = int.parse(tasksCompletedString ?? "0");
-  //     var yourStreakString =  await _storageService.readSecureData("your_streak");
-  //  yourStreak = int.parse(yourStreakString ?? "0");
-  //  var mostPracticedSubjectTasksCountString =  await _storageService.readSecureData("most_practiced_tasks_count");
-  //  mostPracticedSubjectTasksCount = int.parse(mostPracticedSubjectTasksCountString ?? "0");
-  //      var leastPracticedSubjectTasksCountString =  await _storageService.readSecureData("least_practiced_tasks_count");
-  //  leastPracticedSubjectTasksCount = int.parse(leastPracticedSubjectTasksCountString ?? "0");
+    var tasksCompletedString =
+        await _storageService.readSecureData("tasks_completed");
+    tasksCompleted = int.parse(tasksCompletedString ?? "0");
+    var yourStreakString = await _storageService.readSecureData("your_streak");
+    yourStreak = int.parse(yourStreakString ?? "0");
+    var mostPracticedSubjectTasksCountString =
+        await _storageService.readSecureData("most_practiced_tasks_count");
+    mostPracticedSubjectTasksCount =
+        int.parse(mostPracticedSubjectTasksCountString ?? "0");
+    var leastPracticedSubjectTasksCountString =
+        await _storageService.readSecureData("least_practiced_tasks_count");
+    leastPracticedSubjectTasksCount =
+        int.parse(leastPracticedSubjectTasksCountString ?? "0");
 
     if (userString != null && userString.isNotEmpty) {
       Map<String, dynamic> userMap = jsonDecode(userString);
@@ -103,12 +110,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       var user = UserModel.fromJson(userMap);
       editedUser = user;
 
-      // Map<String, dynamic> mostPracticedSubjectMap = jsonDecode(mostPracticedSubjecterString ?? "");
-      // Map<String, dynamic> leastPracticedSubjectMap = jsonDecode(leastPracticedSubjecterString ?? "");
-      // mostPracticedSubject = PracticedSubject.fromJson(mostPracticedSubjectMap);
-      // leastPracticedSubject = PracticedSubject.fromJson(leastPracticedSubjectMap);
-
-
+      Map<String, dynamic> mostPracticedSubjectMap =
+          jsonDecode(mostPracticedSubjecterString ?? "");
+      Map<String, dynamic> leastPracticedSubjectMap =
+          jsonDecode(leastPracticedSubjecterString ?? "");
+      mostPracticedSubject = PracticedSubject.fromJson(mostPracticedSubjectMap);
+      leastPracticedSubject =
+          PracticedSubject.fromJson(leastPracticedSubjectMap);
 
       setState(() {
         userName = "${user.firstName} ${user.lastName}";
@@ -146,8 +154,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           response.data['mostPracticedSubjectTasksThisMonth'];
       leastPracticedSubjectTasksCount =
           response.data['leastPracticedSubjectTasksThisMonth'];
-       var mostPracticed = PracticedSubject.fromJson(response.data['most_practiced_subject']);
-       var leastPracticed = PracticedSubject.fromJson(response.data['least_practiced_subject']);
+      var mostPracticed =
+          PracticedSubject.fromJson(response.data['most_practiced_subject']);
+      var leastPracticed =
+          PracticedSubject.fromJson(response.data['least_practiced_subject']);
 
       editedUser = user;
       mostPracticedSubject = mostPracticed;
@@ -199,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const GeneralSettingsScreen(),
+              builder: (context) =>  GeneralSettingsScreen(currentUser: editedUser),
               fullscreenDialog: false));
     }
     if (index == 3) {
@@ -434,12 +444,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     return MostLeastPracticedSubject(
                         cardIndex: 0,
                         cardselected: () => {},
-                        mostPracticedSubject: "MATHS",
-                        mostPracticedSubjectColor: Colors.blue,
+                        mostPracticedSubject:
+                            mostPracticedSubject.subject?.subjectName ?? "",
+                        mostPracticedSubjectColor:
+                            mostPracticedSubject.subject?.colorHex != null
+                                ? HexColor.fromHex(
+                                    mostPracticedSubject.subject!.colorHex!)
+                                : Colors.red,
                         mostPracticedSubjectTasksCount:
                             mostPracticedSubjectTasksCount,
-                        leastPracticedSubject: "BIOLOGY",
-                        leastPracticedSubjectColor: Colors.green,
+                        leastPracticedSubject:
+                            leastPracticedSubject.subject?.subjectName ?? "",
+                        leastPracticedSubjectColor:
+                            leastPracticedSubject.subject?.colorHex != null
+                                ? HexColor.fromHex(
+                                    leastPracticedSubject.subject!.colorHex!)
+                                : Colors.red,
                         leastPracticedSubjectTasksCount:
                             leastPracticedSubjectTasksCount);
                   case 5:

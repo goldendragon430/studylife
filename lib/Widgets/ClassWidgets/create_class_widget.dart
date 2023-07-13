@@ -103,7 +103,6 @@ class _CreateClassState extends State<CreateClass> {
         newClass.subject = savedSubject;
       }
     }
-    // print("Selected subject: ${subject.subjectName}");
   }
 
   void _textInputAdded(String text, TextFieldType type) {

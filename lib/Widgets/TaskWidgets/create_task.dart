@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
@@ -13,6 +14,8 @@ import './select_tasktype.dart';
 import './select_taskOccuring.dart';
 import './select_repeatOptions.dart';
 import '../../Models/API/task.dart';
+import '../../Models/API/subject.dart';
+import '../../Models/Services/storage_service.dart';
 
 class CreateTask extends StatefulWidget {
   final Function saveTask;
@@ -25,14 +28,18 @@ class CreateTask extends StatefulWidget {
 
 class _CreateTaskState extends State<CreateTask> {
   final ScrollController scrollcontroller = ScrollController();
-
+  static List<Subject> _subjects = [];
   late Task newTask = Task();
   bool isEditing = false;
+  final StorageService _storageService = StorageService();
 
   @override
   void initState() {
-    checkForEditedTask();
     super.initState();
+    checkForEditedTask();
+    Future.delayed(Duration.zero, () {
+      getSubjects();
+    });
   }
 
   @override
@@ -40,6 +47,35 @@ class _CreateTaskState extends State<CreateTask> {
     newTask = Task();
     isEditing = false;
     super.dispose();
+  }
+
+   void getSubjects() async {
+    var subjectsData = await _storageService.readSecureData("user_subjects");
+
+    List<dynamic> decodedData = jsonDecode(subjectsData ?? "");
+
+    setState(() {
+      _subjects = List<Subject>.from(
+        decodedData.map((x) => Subject.fromJson(x as Map<String, dynamic>)),
+      );
+      if (isEditing) {
+        var selectedSubjectIndex = _subjects.indexWhere(
+            (element) => element.id == widget.taskitem?.subject?.id);
+        var selectedSubject = _subjects[selectedSubjectIndex];
+        selectedSubject.selected = true;
+        _subjects[selectedSubjectIndex] = selectedSubject;
+      }
+    });
+  }
+
+    void _subjectSelected(Subject subject) {
+    for (var savedSubject in _subjects) {
+      savedSubject.selected = false;
+      if (savedSubject.id == subject.id) {
+        savedSubject.selected = true;
+        newTask.subject = savedSubject;
+      }
+    }
   }
 
   void checkForEditedTask() {
@@ -149,11 +185,13 @@ class _CreateTaskState extends State<CreateTask> {
                   // Add Questions
                   return Column(
                     children: [
-                      if (index == 0) ...[
+                       if (index == 0) ...[
                         // Select Subject
-                        // SelectSubject(
-                        //   subjectSelected: _subjectSelected,
-                        // )
+                        SelectSubject(
+                          subjectSelected: _subjectSelected,
+                          subjects: _subjects,
+                          tagtype: TagType.subjects,
+                        )
                       ],
                       Container(
                         height: 14,

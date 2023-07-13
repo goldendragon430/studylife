@@ -36,10 +36,14 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
   List<Exam> _allExams = [];
   List<Subject> _subjects = [];
   Map<int, List<Exam>> groupedByDate = {};
+  Map<bool, List<Exam>> groupedByWeekDate = {};
+
   List<int> groupedKeys = [];
+  List<bool> groupedKeysWeek = [];
+
   final todaysDate = DateTime.now();
 
-  int selectedTabIndex = 0;
+  int selectedTabIndex = 1;
 
   @override
   void initState() {
@@ -67,7 +71,12 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
       );
 
       _exams = _allExams;
-      groupExamsByDate();
+
+      if (selectedTabIndex == 1) {
+        groupExamsByWeekDate();
+      } else {
+        groupExamsByDate();
+      }
 
       _subjects = List<Subject>.from(
         decodedDataSubjects
@@ -98,7 +107,16 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
       setState(() {
         final examList = (examsResponse.data['exams']) as List;
         _exams = examList.map((i) => Exam.fromJson(i)).toList();
-        groupExamsByDate();
+
+        // for (var exam in _exams) {
+        //   print("EXAAAM BRE ${exam.toJson()}");
+        // }
+
+        if (selectedTabIndex == 1) {
+          groupExamsByWeekDate();
+        } else {
+          groupExamsByDate();
+        }
       });
     } catch (error) {
       if (error is DioError) {
@@ -162,10 +180,18 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
 
         return subject == selectedSubject;
       }).toList();
-      groupExamsByDate();
+      if (selectedTabIndex == 1) {
+        groupExamsByWeekDate();
+      } else {
+        groupExamsByDate();
+      }
     } else {
       _exams = _allExams;
-      groupExamsByDate();
+      if (selectedTabIndex == 1) {
+        groupExamsByWeekDate();
+      } else {
+        groupExamsByDate();
+      }
     }
   }
 
@@ -176,6 +202,23 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
     groupedByDate.forEach((date, list) {
       // Header
       groupedKeys.add(date);
+    });
+  }
+
+  void groupExamsByWeekDate() {
+    groupedKeysWeek = [];
+
+    final startOfWeek = todaysDate.findFirstDateOfTheWeek(todaysDate);
+    final endOfWeek = todaysDate.findLastDateOfTheWeek(todaysDate);
+
+    groupedByWeekDate = groupBy(
+        _exams,
+        (obj) =>
+            obj.getExamStartdateDateTime().isBetween(startOfWeek, endOfWeek));
+
+    groupedByWeekDate.forEach((date, list) {
+      // Header
+      groupedKeysWeek.add(date);
     });
   }
 
@@ -191,12 +234,16 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
     });
   }
 
-  void _selectedExamCard(int index) {
+  void _selectedExamCard(IndexPath indexPath) {
+    var examItem = Exam();
+    examItem = groupedByWeekDate.values.toList()[indexPath.section]
+                        [indexPath.index];
+
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ExamDetailsScreen(
-                  examItem: Exam(),
+                  examItem: examItem,
                 ),
             fullscreenDialog: true));
   }
@@ -205,14 +252,6 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
-
-      final startOfWeek = todaysDate.findFirstDateOfTheWeek(todaysDate);
-      final endOfWeek = todaysDate.findLastDateOfTheWeek(todaysDate);
-
-      var groupByDateExams = groupBy(
-          _exams,
-          (obj) =>
-              obj.getExamStartdateDateTime().isBetween(startOfWeek, endOfWeek));
 
       return Stack(
         children: [
@@ -300,17 +339,19 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
               height: double.infinity,
               margin: const EdgeInsets.only(top: 156),
               child: GroupListView(
-                sectionsCount: groupByDateExams.keys.toList().length, 
+                sectionsCount: groupedByWeekDate.keys.toList().length,
                 countOfItemInSection: (int section) {
-                  return groupByDateExams.values.toList()[section].length;
+                  return groupedByWeekDate.values.toList()[section].length;
                 },
                 itemBuilder: (BuildContext context, IndexPath index) {
                   return ExamWidget(
-                            examItem: groupByDateExams.values.toList()[index.section]
-                            [index.index],
-                            cardIndex: index.index,
-                            upNext: true,
-                            cardselected: _selectedExamCard);
+                    examItem: groupedByWeekDate.values.toList()[index.section]
+                        [index.index],
+                    indexPath: index,
+                    upNext: true,
+                    cardselected: _selectedExamCard,
+                    cardIndex: index.index,
+                  );
                 },
                 groupHeaderBuilder: (BuildContext context, int section) {
                   return Padding(
@@ -318,7 +359,7 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
                         const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                     child: section == 0
                         ? Text(
-                            'This week (${groupByDateExams.values.toList()[section].length})',
+                            'This week (${groupedByWeekDate.values.toList()[section].length})',
                             style: TextStyle(
                               fontSize: 14,
                               fontFamily: 'Roboto',
@@ -329,7 +370,7 @@ class _ActivitiesExamsScreenState extends State<ActivitiesExamsScreen> {
                             ),
                           )
                         : Text(
-                            'This month (${groupByDateExams.values.toList()[section].length})',
+                            'This month (${groupedByWeekDate.values.toList()[section].length})',
                             style: TextStyle(
                               fontSize: 14,
                               fontFamily: 'Roboto',

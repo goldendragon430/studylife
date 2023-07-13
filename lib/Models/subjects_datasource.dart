@@ -97,6 +97,25 @@ class ClassTagItem {
         title: " 7 ", selected: false, isAddNewCard: false, cardIndex: 6)
   ];
 
+  static List<ClassTagItem> settingsWeeksToDisplay = [
+    ClassTagItem(
+        title: " 1 ", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: " 2 ", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: " 3 ", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: " 4 ", selected: false, isAddNewCard: false, cardIndex: 3),
+    ClassTagItem(
+        title: " 5 ", selected: false, isAddNewCard: false, cardIndex: 4),
+    ClassTagItem(
+        title: " 6 ", selected: false, isAddNewCard: false, cardIndex: 5),
+    ClassTagItem(
+        title: " 7 ", selected: false, isAddNewCard: false, cardIndex: 6),
+    ClassTagItem(
+        title: " 8 ", selected: false, isAddNewCard: false, cardIndex: 7),
+  ];
+
   static List<ClassTagItem> startWeek = [
     ClassTagItem(
         title: " A ", selected: false, isAddNewCard: false, cardIndex: 0),
@@ -111,7 +130,9 @@ class ClassTagItem {
     ClassTagItem(
         title: " F", selected: false, isAddNewCard: false, cardIndex: 5),
     ClassTagItem(
-        title: " G ", selected: false, isAddNewCard: false, cardIndex: 6)
+        title: " G ", selected: false, isAddNewCard: false, cardIndex: 6),
+    ClassTagItem(
+        title: " H ", selected: false, isAddNewCard: false, cardIndex: 7)
   ];
 
   static List<ClassTagItem> examTypes = [
@@ -248,7 +269,7 @@ class ClassTagItem {
         title: "Letter Grade",
         selected: false,
         isAddNewCard: false,
-        cardIndex: 1),
+        cardIndex: 2),
   ];
 
   static List<ClassTagItem> dateTypes = [
@@ -283,44 +304,23 @@ class ClassTagItem {
 
   static List<ClassTagItem> academicIntervals = [
     ClassTagItem(
-        title: "Semesters",
-        selected: true,
-        isAddNewCard: false,
-        cardIndex: 0),
+        title: "Semesters", selected: true, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
-        title: "Terms",
-        selected: false,
-        isAddNewCard: false,
-        cardIndex: 1),
+        title: "Terms", selected: false, isAddNewCard: false, cardIndex: 1),
   ];
   static List<ClassTagItem> taughtSessions = [
     ClassTagItem(
-        title: "Lessons",
-        selected: true,
-        isAddNewCard: false,
-        cardIndex: 0),
+        title: "Lessons", selected: true, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
-        title: "Classes",
-        selected: false,
-        isAddNewCard: false,
-        cardIndex: 1),
+        title: "Classes", selected: false, isAddNewCard: false, cardIndex: 1),
   ];
   static List<ClassTagItem> taughtSedaysOffssions = [
     ClassTagItem(
-        title: "Holidays",
-        selected: true,
-        isAddNewCard: false,
-        cardIndex: 0),
+        title: "Holidays", selected: true, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
-        title: "Vacations",
-        selected: false,
-        isAddNewCard: false,
-        cardIndex: 1),
-         ClassTagItem(
-        title: "Days Off",
-        selected: false,
-        isAddNewCard: false,
-        cardIndex: 1),
+        title: "Vacations", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: "Days Off", selected: false, isAddNewCard: false, cardIndex: 1),
   ];
 }
 

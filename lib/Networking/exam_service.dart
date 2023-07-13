@@ -93,7 +93,7 @@ class ExamService {
     return response;
   }
 
-   Future<Response> addExamScore(int examItemId, int score, String scoreType) async {
+   Future<Response> addExamScore(int examItemId, String score, String scoreType) async {
     String body;
 
     body = jsonEncode({

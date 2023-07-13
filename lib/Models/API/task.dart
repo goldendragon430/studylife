@@ -8,7 +8,7 @@ class Task {
   String? title;
   String? subjectId;
   int? examId;
-  int? classId;
+  String? classId;
   String? details;
   String? type;
   int? progress;
@@ -23,6 +23,29 @@ class Task {
   String? updatedAt;
   Subject? subject;
   Exam? exam;
+
+  // {
+  //           "id": 3,
+  //           "userId": 3,
+  //           "subjectId": "1002",
+  //           "examId": null,
+  //           "classId": "50002",
+  //           "title": "Title test",
+  //           "details": "This is a new task.",
+  //           "type": "task",
+  //           "progress": 0,
+  //           "category": "project",
+  //           "occurs": "once",
+  //           "days": [
+  //               ""
+  //           ],
+  //           "dueDate": "2023-05-22T00:00:00.000Z",
+  //           "completedAt": "2023-05-01T00:00:00.000Z",
+  //           "createdAt": "2023-07-11T08:12:08.793Z",
+  //           "updatedAt": "2023-07-11T08:12:08.793Z",
+  //           "subject": null,
+  //           "exam": null
+  //       },
 
   Task(
       {this.id,

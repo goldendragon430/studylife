@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Extensions/extensions.dart';
 import 'package:intl/intl.dart';
+import 'package:group_list_view/group_list_view.dart';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -16,17 +17,23 @@ class ExamWidget extends ConsumerWidget {
   final Exam? examItem;
   final Event? eventItem;
   final Function cardselected;
+  final IndexPath? indexPath;
 
   const ExamWidget(
       {super.key,
       this.examItem,
       this.eventItem,
+      this.indexPath,
       required this.cardIndex,
       required this.upNext,
       required this.cardselected});
 
   void _cardTapped() {
-    cardselected(cardIndex);
+    if (indexPath != null) {
+      cardselected(indexPath);
+    } else {
+      cardselected(cardIndex);
+    }
   }
 
   String _getFormattedTime(DateTime time) {

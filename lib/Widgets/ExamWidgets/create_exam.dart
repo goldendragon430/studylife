@@ -9,8 +9,6 @@ import '../ClassWidgets/select_subject.dart';
 import '../../Models/subjects_datasource.dart';
 import '../ClassWidgets/select_class_mode.dart';
 import '../ClassWidgets/class_text_imputs.dart';
-import '../ClassWidgets/select_times.dart';
-import '../ClassWidgets/class_days.dart';
 import '../rounded_elevated_button.dart';
 import '../switch_row_widget.dart';
 import '../ClassWidgets/select_exam_type.dart';

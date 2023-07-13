@@ -60,7 +60,7 @@ class UserService {
       // var leastPracticedSubject =
       //     PracticedSubject.fromJson(response.data['leastPracticedSubject']);
 
-       await _storage.write(key: "access_token", value: tokenString);
+      await _storage.write(key: "access_token", value: tokenString);
 
       // await _storage.write(key: "tasks_completed", value: tasksCompleted.toString());
       // await _storage.write(key: "your_streak", value: yourStreak.toString());
@@ -174,6 +174,56 @@ class UserService {
     //   await _storage.write(
     //       key: "activeUser", value: jsonEncode(user.toJson()));
     // }
+
+    return response;
+  }
+
+  Future<Response> updatePersonalization(
+      String country,
+      int settingsDateFormat,
+      String timeFormat,
+      String settingsAcademicInterval,
+      String settingsSession,
+      String settingsDaysOff) async {
+    String body;
+
+    body = jsonEncode({
+      'country': country,
+      'settingsDateFormat': settingsDateFormat,
+      'timeFormat': timeFormat,
+      'settingsAcademicInterval': settingsAcademicInterval,
+      'settingsSession': settingsSession,
+      'settingsDaysOff': settingsDaysOff
+    });
+    var response = await Api().dio.put('/api/user/personalization', data: body);
+
+    // if (response.statusCode == 201 || response.statusCode == 200) {
+    //   var user = UserModel.fromJson(response.data['data']);
+
+    //   await _storage.write(
+    //       key: "activeUser", value: jsonEncode(user.toJson()));
+    // }
+
+    return response;
+  }
+
+  Future<Response> updateGeneralSettings(
+      int settingsFirstDayOfWeek,
+      String settingsDefaultStartTime,
+      int settingsDefaultDuration,
+      String settingsRotationalSchedule,
+      String settingsDaysToDisplayOnDashboard) async {
+    String body;
+
+    body = jsonEncode({
+      'settingsFirstDayOfWeek': settingsFirstDayOfWeek,
+      'settingsDefaultStartTime': settingsDefaultStartTime,
+      'settingsDefaultDuration': settingsDefaultDuration,
+      'settingsRotationalSchedule': settingsRotationalSchedule,
+      'settingsDaysToDisplayOnDashboard': settingsDaysToDisplayOnDashboard,
+    });
+    var response =
+        await Api().dio.put('/api/user/general-settings', data: body);
 
     return response;
   }

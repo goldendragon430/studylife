@@ -1,8 +1,8 @@
 import './subject.dart';
 
 class PracticedSubject {
-  int? subjectId;
-  int? count;
+  String? subjectId;
+  String? count;
   Subject? subject;
 
   PracticedSubject({this.subjectId, this.count, this.subject});

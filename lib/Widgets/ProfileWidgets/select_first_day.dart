@@ -10,24 +10,32 @@ import '../../Models/subjects_datasource.dart';
 
 class SelectFirstDay extends StatefulWidget {
   final Function subjectSelected;
-  SelectFirstDay({super.key, required this.subjectSelected});
+  final List<ClassTagItem> days;
+  const SelectFirstDay({super.key, required this.subjectSelected, required this.days});
 
   @override
   State<SelectFirstDay> createState() => _SelectFirstDayState();
 }
 
 class _SelectFirstDayState extends State<SelectFirstDay> {
-  final List<ClassTagItem> _days = ClassTagItem.classDays;
+
+  @override
+  void initState() {
+     for (var item in widget.days) {
+        print("STTE ${item.selected}");
+      }
+    super.initState();
+  }
 
 
   void _selectTab(int index) {
     setState(() {
-      for (var item in _days) {
+      for (var item in widget.days) {
         item.selected = false;
       }
 
-      _days[index].selected = true;
-      widget.subjectSelected(_days[index]);
+      widget.days[index].selected = true;
+      widget.subjectSelected(widget.days[index]);
       print("CARD SELECTED $index");
     });
   }
@@ -56,7 +64,7 @@ class _SelectFirstDayState extends State<SelectFirstDay> {
             Wrap(
               direction: Axis.horizontal,
               alignment: WrapAlignment.start,
-              children: _days
+              children: widget.days
                   .mapIndexed((e, i) => TagCard(
                         title: e.title,
                         selected: e.selected,

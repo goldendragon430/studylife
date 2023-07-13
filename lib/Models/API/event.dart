@@ -124,7 +124,7 @@ class Event {
       ).toList();
     }
 
-    eventTypeRaw = json['eventType'];
+    eventTypeRaw = json['eventTypeGlobal'];
     id = json['id'];
     module = json['module'];
     mode = json['mode'];
@@ -149,7 +149,7 @@ class Event {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['eventType'] = this.eventTypeRaw;
+    data['eventTypeGlobal'] = this.eventTypeRaw;
     data['id'] = this.id;
     data['module'] = this.module;
     data['mode'] = this.mode;

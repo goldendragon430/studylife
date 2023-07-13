@@ -382,7 +382,7 @@ class _CreateScreenState extends State<CreateScreen>
     //     print(examItem.seat);
     //     print(examItem.duration);
 
-    if (taskItem.title == null ||
+    if (taskItem.subject == null || taskItem.title == null ||
         taskItem.dueDate == null ||
         taskItem.type == null) {
       CustomSnackBar.show(contextMain, CustomSnackBarType.error,

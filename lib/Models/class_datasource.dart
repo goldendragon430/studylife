@@ -65,7 +65,7 @@ class RotationScheduleItem {
 
   static List<RotationScheduleItem> rotationItems = [
     RotationScheduleItem(rotation: RotationSchedule.fixed, selected: true, cardIndex: 0),
-    RotationScheduleItem(rotation: RotationSchedule.weekly, selected: true, cardIndex: 1),
-    RotationScheduleItem(rotation: RotationSchedule.lettered, selected: true, cardIndex: 2),
+    RotationScheduleItem(rotation: RotationSchedule.weekly, selected: false, cardIndex: 1),
+    RotationScheduleItem(rotation: RotationSchedule.lettered, selected: false, cardIndex: 2),
   ];
 }

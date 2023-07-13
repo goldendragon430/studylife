@@ -17,7 +17,7 @@ class NumberOfWeeks extends StatefulWidget {
 }
 
 class _NumberOfWeeksState extends State<NumberOfWeeks> {
-  final List<ClassTagItem> _days = ClassTagItem.settingsDyasToDisplay;
+  final List<ClassTagItem> _days = ClassTagItem.settingsWeeksToDisplay;
 
   void _selectTab(int index) {
     setState(() {
@@ -27,7 +27,6 @@ class _NumberOfWeeksState extends State<NumberOfWeeks> {
 
       _days[index].selected = true;
       widget.daySelected(_days[index]);
-      print("CARD SELECTED $index");
     });
   }
 

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_study_life_flutter/Models/exam_datasource.dart';
 import '../Models/Services/storage_service.dart';
 import '../Models/Services/storage_item.dart';
+import '../Widgets/rounded_elevated_button.dart';
+import 'package:intl/intl.dart';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
@@ -18,11 +20,14 @@ import '../Widgets/ProfileWidgets/start_week.dart';
 import '../Widgets/ProfileWidgets/start_day.dart';
 import '../Widgets/ProfileWidgets/number_of_days.dart';
 import '../Widgets/ClassWidgets/class_days.dart';
+import '../Models/user.model.dart';
+import '../Models/API/general_settings_model.dart';
 
 enum RotationSchedule { fixed, weekly, lettered }
 
 class GeneralSettingsScreen extends StatefulWidget {
-  const GeneralSettingsScreen({super.key});
+  final UserModel? currentUser;
+  const GeneralSettingsScreen({super.key, this.currentUser});
 
   @override
   State<GeneralSettingsScreen> createState() => _GeneralSettingsScreenState();
@@ -36,119 +41,137 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   RotationSchedule rotation = RotationSchedule.fixed;
   bool addStartEndDates = false;
   int selectedThemeIndex = 1;
+  final List<ClassTagItem> _days = ClassTagItem.classDays;
+  GeneralSettingsModel generalSettings = GeneralSettingsModel();
+
   // void _rotationSelected(RotationSchedule rotationItem) {
   //   print("Selected subject: ${rotationItem}");
   // }
 
   @override
   void initState() {
+    setCurrentData();
     checkSelectedThemeOption();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    rotation = RotationSchedule.fixed;
+    super.dispose();
   }
 
   void checkSelectedThemeOption() async {
     var appTheme = await _storageService.readSecureData("app_theme");
 
-      if (appTheme == "light") {
-        selectedThemeIndex = 2;
-      } else if (appTheme == "dark") {
-        selectedThemeIndex = 1;
-      } else if (appTheme == "system") {
-        selectedThemeIndex = 0;
-      }
+    if (appTheme == "light") {
+      selectedThemeIndex = 2;
+    } else if (appTheme == "dark") {
+      selectedThemeIndex = 1;
+    } else if (appTheme == "system") {
+      selectedThemeIndex = 0;
+    }
 
     setState(() {
-              _modes[selectedThemeIndex].selected = true;
-
-             // print("UDJE LI OVDE NEKAD $selectedThemeIndex");
-
+      _modes[selectedThemeIndex].selected = true;
     });
   }
 
+  void setCurrentData() {
+    if (widget.currentUser != null) {
+      _days[widget.currentUser?.settingsFirstDayOfWeek ?? 0].selected = true;
+
+      if (widget.currentUser?.settingsRotationalSchedule != null) {
+        setState(() {
+          if (widget.currentUser?.settingsRotationalSchedule == "fixed") {
+            rotation = RotationSchedule.fixed;
+          }
+          if (widget.currentUser?.settingsRotationalSchedule == "weekly") {
+            rotation = RotationSchedule.weekly;
+          }
+          if (widget.currentUser?.settingsRotationalSchedule == "lettered") {
+            rotation = RotationSchedule.lettered;
+          }
+        });
+      }
+    }
+  }
+
   void _firstDaySelected(ClassTagItem day) {
-    print("Selected mode: ${day.title}");
-
-    // setState(() {
-
-    // });
+    generalSettings.settingsFirstDayOfWeek = day.cardIndex;
   }
 
   void _dayToDisplaySelected(ClassTagItem day) {
-    print("Selected day: ${day.title}");
-
-    // setState(() {
-
-    // });
+    generalSettings.settingsDaysToDisplayOnDashboard = int.parse(day.title);
   }
 
   void _numberOfWeeksSelected(ClassTagItem day) {
-    print("Selected week: ${day.title}");
-
-    // setState(() {
-
-    // });
+    generalSettings.settingsRotationalScheduleNumberOfWeeks =
+        int.parse(day.title);
   }
 
   void _startWeekSelected(ClassTagItem day) {
-    print("Selected start week: ${day.title}");
-
-    // setState(() {
-
-    // });
+    generalSettings.settingsRotationalScheduleStartWeek = day.title;
   }
 
   void _numberOfDaysSelected(ClassTagItem day) {
-    print("Selected week: ${day.title}");
-
-    // setState(() {
-
-    // });
+    generalSettings.settingsRotationalScheduleNumberOfDays =
+        int.parse(day.title);
   }
 
   void _startDaySelected(ClassTagItem day) {
-    print("Selected start day: ${day.title}");
-
-    // setState(() {
-
-    // });
+    generalSettings.settingsRotationalScheduleStartDay = day.title;
   }
 
   void _switchedDarkMode(ClassTagItem day, WidgetRef ref) {
-    print("Selected mode: ${day.title}");
-
-    // setState(() {
-
-    // });
     ref.read(themeModeProvider.notifier).state = ThemeMode.light;
   }
 
   void _classDaysSelected(List<ClassTagItem> days) {
-    print("Selected repetitionMode: ${days}");
+    List<String> daysList = [];
+    for (var dayItem in days) {
+      if (dayItem.selected) {
+        daysList.add(dayItem.title.toLowerCase());
+      }
+    }
+    generalSettings.days = daysList;
   }
 
   void _classRepetitionSelected(RotationScheduleItem repetition) {
     setState(() {
       rotation = repetition.rotation;
+      generalSettings.settingsRotationalSchedule = repetition.rotation.name;
     });
-    print("Selected repetitionMode: ${repetition.rotation.name}");
   }
 
   void _selectedTime(DateTime time) {
-    //print("Selected repetitionMode: ${repetition.title}");
+    if (widget.currentUser?.settingsIs24Hour != null &&
+        widget.currentUser?.settingsIs24Hour == true) {
+      final DateFormat formatter = DateFormat('HH:mm');
+      final String formatted = formatter.format(time);
+      generalSettings.settingsDefaultStartTime = formatted;
+      print("Selected repetitionMode: ${formatted}");
+    } else {
+      final DateFormat formatter = DateFormat('hh:mm');
+      final String formatted = formatter.format(time);
+      print("Selected repetitionMode: ${formatted}");
+      generalSettings.settingsDefaultStartTime = formatted;
+    }
   }
 
-  void _selectedDuration(ExamDuration duration) {
-    //print("Selected repetitionMode: ${repetition.title}");
+  void _selectedDuration(String duration) {
+    int intValue = int.parse(duration.replaceAll(RegExp('[^0-9]'), ''));
+    generalSettings.settingsDefaultDuration = intValue;
   }
 
   // void _aysSelected(List<ClassTagItem> days) {
   //   print("Selected repetitionMode: ${days}");
   // }
 
-  void _saveClass() {}
+  void _saveSettings() {}
 
   void _cancel() {
-    // Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override
@@ -182,10 +205,10 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               controller: scrollcontroller,
               padding: const EdgeInsets.only(top: 8),
               itemCount: rotation == RotationSchedule.weekly
-                  ? 7
+                  ? 8
                   : rotation == RotationSchedule.lettered
-                      ? 8
-                      : 6,
+                      ? 9
+                      : 7,
               itemBuilder: (context, index) {
                 // Add Questions
                 return Column(
@@ -194,6 +217,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                       // Select First day
                       SelectFirstDay(
                         subjectSelected: _firstDaySelected,
+                        days: _days,
                       )
                     ],
                     Container(
@@ -209,7 +233,9 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                     if (index == 2) ...[
                       // Add Rotation
                       RotationScheduleSelector(
-                          rotationSelected: _classRepetitionSelected),
+                        rotationSelected: _classRepetitionSelected,
+                        rotation: rotation,
+                      ),
                       if (rotation == RotationSchedule.fixed) ...[
                         Container(
                           height: 8,
@@ -318,8 +344,42 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                                   ThemeMode.light;
                           }
                         },
-                        selectedIndex: selectedThemeIndex, modes: _modes,
+                        selectedIndex: selectedThemeIndex,
+                        modes: _modes,
                       )
+                    ],
+                    if (index == 5) ...[
+                      // Save/Cancel buttons
+                      Container(
+                        height: 68,
+                      ),
+                      Container(
+                        alignment: Alignment.topCenter,
+                        width: double.infinity,
+                        // margin: const EdgeInsets.only(top: 260),
+                        padding: const EdgeInsets.only(left: 106, right: 106),
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            RoundedElevatedButton(
+                                _saveSettings,
+                                "Save Task",
+                                Constants.lightThemePrimaryColor,
+                                Colors.black,
+                                45),
+                            RoundedElevatedButton(
+                                _cancel,
+                                "Cancel",
+                                Constants.blueButtonBackgroundColor,
+                                Colors.white,
+                                45)
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 88,
+                      ),
                     ],
                   ],
                 );

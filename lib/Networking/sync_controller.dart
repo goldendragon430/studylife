@@ -15,6 +15,7 @@ import '../Networking/home_service.dart';
 import '../Networking/calendar_event_service.dart';
 import '../Networking/holiday_Service.dart';
 import '../Networking/xtras_service.dart';
+import '../Networking/user_service.dart';
 
 // Models
 import '../Models/API/subject.dart';
@@ -25,6 +26,8 @@ import '../Models/API/task.dart';
 import '../Models/API/event.dart';
 import '../Models/API/holiday.dart';
 import '../Models/API/xtra.dart';
+import '../Models/user.model.dart';
+import '../Models/API/practicedSubject.dart';
 
 class SyncController {
   final StorageService _storageService = StorageService();
@@ -40,6 +43,7 @@ class SyncController {
     // ErrorState error = ErrorState("Opps");
     Result finalResult = Result.loading("Loading");
     await Future.wait([
+      _getUser(),
       _getSubjects(),
       _getHomeData(),
       _getExams(),
@@ -242,6 +246,7 @@ class SyncController {
 
       final eventList = (calendarEventssResponse.data['events']) as List;
       events = eventList.map((i) => Event.fromJson(i)).toList();
+
       _storageService
           .writeSecureData(StorageItem("user_events", jsonEncode(events)));
 
@@ -298,6 +303,47 @@ class SyncController {
         _storageService.writeSecureData(
             StorageItem("user_xtras_nonacademic", jsonEncode(xtras)));
       }
+    } catch (error) {
+      if (error is DioError) {
+        throw Result.error(error.response?.data['message']);
+      } else {
+        throw Result.error(error.toString());
+      }
+    }
+  }
+
+  Future _getUser() async {
+    try {
+      var response = await UserService().getUser();
+
+      var user = UserModel.fromJson(response.data['user']);
+
+      var tasksCompleted = response.data['tasksCompleted'];
+      var yourStreak = response.data['streak'];
+      var mostPracticedSubjectTasksCount =
+          response.data['mostPracticedSubjectTasksThisMonth'];
+      var leastPracticedSubjectTasksCount =
+          response.data['leastPracticedSubjectTasksThisMonth'];
+      var mostPracticedSubject =
+          PracticedSubject.fromJson(response.data['mostPracticedSubject']);
+      var leastPracticedSubject =
+          PracticedSubject.fromJson(response.data['leastPracticedSubject']);
+
+      _storageService.writeSecureData(
+          StorageItem("activeUser", jsonEncode(user.toJson())));
+      _storageService
+          .writeSecureData(StorageItem("tasks_completed", tasksCompleted.toString()));
+      _storageService.writeSecureData(StorageItem("user_streak", yourStreak.toString()));
+      _storageService.writeSecureData(StorageItem(
+          "most_practiced_tasks_count", mostPracticedSubjectTasksCount.toString()));
+      _storageService.writeSecureData(StorageItem(
+          "least_practiced_tasks_count", leastPracticedSubjectTasksCount.toString()));
+      _storageService.writeSecureData(StorageItem(
+          "most_practiced_subject", jsonEncode(mostPracticedSubject.toJson())));
+      _storageService.writeSecureData(StorageItem("least_practiced_subject",
+          jsonEncode(leastPracticedSubject.toJson())));
+
+
     } catch (error) {
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);

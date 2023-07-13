@@ -22,7 +22,7 @@ class Exam {
   String? teacher;
   String? occurs;
   bool? pinned;
-  int? score;
+  String? score;
   String? scoreType;
 
   Exam(
