@@ -20,12 +20,14 @@ class SelectPeronalizeOptions extends StatefulWidget {
   final Function selectedEntry;
   final String? preselectedtype;
   final PersonalizeType selectionType;
+  final int? preselectedDateFormatIndex;
 
   SelectPeronalizeOptions(
       {super.key,
       this.preselectedtype,
       required this.selectedEntry,
-      required this.selectionType});
+      required this.selectionType,
+      this.preselectedDateFormatIndex});
 
   @override
   State<SelectPeronalizeOptions> createState() =>
@@ -100,6 +102,13 @@ class _SelectPeronalizeOptionsState extends State<SelectPeronalizeOptions> {
         _daysOffssions[firstIndex].selected = true;
       }
     }
+      if (widget.preselectedDateFormatIndex != null) {
+        print("IMAIMDIAMDSAD");
+        // setState(() {
+        // });
+                  _dateTypes[widget.preselectedDateFormatIndex!].selected = true;
+
+      }
   }
 
   void _selectTab(int index) {

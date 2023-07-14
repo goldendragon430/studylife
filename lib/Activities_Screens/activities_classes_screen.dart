@@ -40,13 +40,14 @@ class _ActivitiesClassesScreenState extends State<ActivitiesClassesScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(Duration(milliseconds: 700), () {
       getData();
     });
   }
 
   void getData() async {
     var classesData = await _storageService.readSecureData("user_classes_all");
+_isFirstLoadRunning = true;
 
     List<dynamic> decodedDataClasses = jsonDecode(classesData ?? "");
 

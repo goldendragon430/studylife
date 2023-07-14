@@ -43,13 +43,13 @@ class SyncController {
     // ErrorState error = ErrorState("Opps");
     Result finalResult = Result.loading("Loading");
     await Future.wait([
-      _getUser(),
+     // _getUser(),
       _getSubjects(),
       _getHomeData(),
-      _getExams(),
-      _getCalendarEvents(),
       _getClasses(),
+      _getCalendarEvents(),
       _getTasksCurrent(),
+      _getExams(),
       _getTasksPast(),
       _getTasksOverdue(),
       _getHolidays("upcoming"),

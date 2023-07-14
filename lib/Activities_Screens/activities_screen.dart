@@ -114,6 +114,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             ),
           ),
           body: const TabBarView(
+    
             children: [
               ActivitiesClassesScreen(),
               ActivitiesExamsScreen(),

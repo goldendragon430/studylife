@@ -161,7 +161,6 @@ class _HomePageState extends State<HomePage> {
         );
 
         for (var eventEntry in events) {
-
           var newCalendarEntry = CalendarEventData(
             date: eventEntry.getFormattedStartingDate(),
             event: eventEntry,
@@ -180,7 +179,9 @@ class _HomePageState extends State<HomePage> {
                 eventEntry.endTime != null
                     ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").hour
                     : eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
-                eventEntry.endTime != null ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").minute : eventEntry.duration ?? 60),
+                eventEntry.endTime != null
+                    ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").minute
+                    : eventEntry.duration ?? 60),
           );
 
           // print("DATE START : ${newCalendarEntry.date}");
@@ -242,8 +243,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => SearchPage(),
-            fullscreenDialog: false));
+            builder: (context) => SearchPage(), fullscreenDialog: false));
   }
 
   void _selectedCard(int index) {
@@ -316,7 +316,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
-     // final sync = ref.watch(syncControllerProvider);
+      // final sync = ref.watch(syncControllerProvider);
 
       return ScaffoldMessenger(
         child: Scaffold(

@@ -36,6 +36,7 @@ class UserModel extends Equatable {
   final int? settingsRotationalScheduleNumberOfDays;
   final String? settingsRotationalScheduleStartDay;
   final List<String>? settingsRotationalScheduleDays;
+  final String? timeFormat;
 
   // Calculated
   UserRole calculatedVerifiedStatus() {
@@ -97,13 +98,14 @@ class UserModel extends Equatable {
       this.settingsRotationalScheduleStartWeek,
       this.settingsRotationalScheduleNumberOfDays,
       this.settingsRotationalScheduleStartDay,
-      this.settingsRotationalScheduleDays});
+      this.settingsRotationalScheduleDays,
+      this.timeFormat});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
       List<String> dayStrings = [];
 
-    if (json['days'] != null) {
-      List<dynamic> rawDays = json['days'];
+    if (json['settingsRotationalScheduleDays'] != null) {
+      List<dynamic> rawDays = json['settingsRotationalScheduleDays'];
       dayStrings = rawDays.map(
         (item) {
           return item as String;
@@ -143,7 +145,8 @@ class UserModel extends Equatable {
       settingsRotationalScheduleStartWeek: json['settingsRotationalScheduleStartWeek'],
       settingsRotationalScheduleNumberOfDays: json['settingsRotationalScheduleNumberOfDays'],
       settingsRotationalScheduleStartDay: json['settingsRotationalScheduleStartDay'],
-      settingsRotationalScheduleDays: dayStrings
+      settingsRotationalScheduleDays: dayStrings,
+      timeFormat: json['timeFormat']
     );
   }
 
@@ -179,7 +182,8 @@ class UserModel extends Equatable {
         'settingsRotationalScheduleStartWeek': settingsRotationalScheduleStartWeek,
         'settingsRotationalScheduleNumberOfDays': settingsRotationalScheduleNumberOfDays,
         'settingsRotationalScheduleStartDay': settingsRotationalScheduleStartDay,
-        'settingsRotationalScheduleDays': settingsRotationalScheduleDays
+        'settingsRotationalScheduleDays': settingsRotationalScheduleDays,
+        'timeFormat': timeFormat
       }..removeWhere(
           (dynamic key, dynamic value) => key == null || value == null);
 

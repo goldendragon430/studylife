@@ -5,6 +5,9 @@ import '../Models/Services/storage_service.dart';
 import '../Models/Services/storage_item.dart';
 import '../Widgets/rounded_elevated_button.dart';
 import 'package:intl/intl.dart';
+import 'package:dio/dio.dart';
+import '../../Widgets/loaderIndicator.dart';
+import '../../Widgets/custom_snack_bar.dart';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
@@ -22,12 +25,15 @@ import '../Widgets/ProfileWidgets/number_of_days.dart';
 import '../Widgets/ClassWidgets/class_days.dart';
 import '../Models/user.model.dart';
 import '../Models/API/general_settings_model.dart';
+import '../Networking/user_service.dart';
 
 enum RotationSchedule { fixed, weekly, lettered }
 
 class GeneralSettingsScreen extends StatefulWidget {
+  final Function userUpdated;
   final UserModel? currentUser;
-  const GeneralSettingsScreen({super.key, this.currentUser});
+  const GeneralSettingsScreen(
+      {super.key, this.currentUser, required this.userUpdated});
 
   @override
   State<GeneralSettingsScreen> createState() => _GeneralSettingsScreenState();
@@ -41,7 +47,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   RotationSchedule rotation = RotationSchedule.fixed;
   bool addStartEndDates = false;
   int selectedThemeIndex = 1;
-  final List<ClassTagItem> _days = ClassTagItem.classDays;
+  final List<ClassTagItem> _days = ClassTagItem.startDays;
   GeneralSettingsModel generalSettings = GeneralSettingsModel();
 
   // void _rotationSelected(RotationSchedule rotationItem) {
@@ -79,10 +85,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
 
   void setCurrentData() {
     if (widget.currentUser != null) {
-      _days[widget.currentUser?.settingsFirstDayOfWeek ?? 0].selected = true;
-
-      if (widget.currentUser?.settingsRotationalSchedule != null) {
-        setState(() {
+      setState(() {
+        if (widget.currentUser?.settingsRotationalSchedule != null) {
           if (widget.currentUser?.settingsRotationalSchedule == "fixed") {
             rotation = RotationSchedule.fixed;
           }
@@ -92,8 +96,63 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
           if (widget.currentUser?.settingsRotationalSchedule == "lettered") {
             rotation = RotationSchedule.lettered;
           }
-        });
-      }
+        }
+
+        if (widget.currentUser?.settingsFirstDayOfWeek != null) {
+          for (var day in _days) {
+            day.selected = false;
+          }
+          _days[widget.currentUser?.settingsFirstDayOfWeek ?? 0].selected =
+              true;
+          generalSettings.settingsFirstDayOfWeek =
+              widget.currentUser?.settingsFirstDayOfWeek;
+        }
+
+        if (widget.currentUser?.settingsDaysToDisplayOnDashboard != null) {
+          generalSettings.settingsDaysToDisplayOnDashboard =
+              widget.currentUser?.settingsDaysToDisplayOnDashboard;
+        }
+
+        if (widget.currentUser?.settingsIs24Hour != null) {
+          generalSettings.settingsIs24Hour =
+              widget.currentUser?.settingsIs24Hour;
+        }
+
+        if (widget.currentUser?.settingsDefaultStartTime != null) {
+          generalSettings.settingsDefaultStartTime =
+              widget.currentUser?.settingsDefaultStartTime;
+        }
+
+        if (widget.currentUser?.settingsDefaultStartTime != null) {
+          generalSettings.settingsDefaultStartTime =
+              widget.currentUser?.settingsDefaultStartTime;
+        }
+
+        if (widget.currentUser?.settingsDefaultDuration != null) {
+          generalSettings.settingsDefaultDuration =
+              widget.currentUser?.settingsDefaultDuration;
+        }
+
+        if (widget.currentUser?.settingsRotationalScheduleNumberOfWeeks !=
+            null) {
+          generalSettings.settingsRotationalScheduleNumberOfWeeks =
+              widget.currentUser?.settingsRotationalScheduleNumberOfWeeks;
+        }
+
+        if (widget.currentUser?.settingsRotationalScheduleStartWeek != null) {
+          generalSettings.settingsRotationalScheduleStartWeek =
+              widget.currentUser?.settingsRotationalScheduleStartWeek;
+        }
+
+        if (widget.currentUser?.settingsRotationalScheduleStartDay != null) {
+          generalSettings.settingsRotationalScheduleStartDay =
+              widget.currentUser?.settingsRotationalScheduleStartDay;
+        }
+        if (widget.currentUser?.settingsRotationalScheduleDays != null) {
+          generalSettings.days =
+              widget.currentUser?.settingsRotationalScheduleDays;
+        }
+      });
     }
   }
 
@@ -164,11 +223,84 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     generalSettings.settingsDefaultDuration = intValue;
   }
 
-  // void _aysSelected(List<ClassTagItem> days) {
-  //   print("Selected repetitionMode: ${days}");
-  // }
+// API
 
-  void _saveSettings() {}
+  void updateGeneralSettings() async {
+    LoadingDialog.show(context);
+
+    try {
+      if (rotation == RotationSchedule.fixed) {
+        var response = await UserService().updateGeneralSettings(
+            generalSettings.settingsFirstDayOfWeek,
+            generalSettings.settingsDefaultStartTime,
+            generalSettings.settingsDefaultDuration,
+            generalSettings.settingsRotationalSchedule,
+            generalSettings.settingsDaysToDisplayOnDashboard.toString(),
+            null,
+            null,
+            null,
+            null,
+            null);
+        if (!context.mounted) return;
+        LoadingDialog.hide(context);
+
+        CustomSnackBar.show(context, CustomSnackBarType.success,
+            response.data['message'], true);
+      }
+      if (rotation == RotationSchedule.weekly) {
+        var response = await UserService().updateGeneralSettings(
+            generalSettings.settingsFirstDayOfWeek,
+            generalSettings.settingsDefaultStartTime,
+            generalSettings.settingsDefaultDuration,
+            generalSettings.settingsRotationalSchedule,
+            generalSettings.settingsDaysToDisplayOnDashboard.toString(),
+            generalSettings.settingsRotationalScheduleNumberOfWeeks,
+            generalSettings.settingsRotationalScheduleStartWeek,
+            null,
+            null,
+            null);
+        if (!context.mounted) return;
+        LoadingDialog.hide(context);
+
+        CustomSnackBar.show(context, CustomSnackBarType.success,
+            response.data['message'], true);
+      }
+      if (rotation == RotationSchedule.lettered) {
+        var response = await UserService().updateGeneralSettings(
+            generalSettings.settingsFirstDayOfWeek,
+            generalSettings.settingsDefaultStartTime,
+            generalSettings.settingsDefaultDuration,
+            generalSettings.settingsRotationalSchedule,
+            generalSettings.settingsDaysToDisplayOnDashboard.toString(),
+            null,
+            null,
+            generalSettings.settingsRotationalScheduleNumberOfDays,
+            generalSettings.settingsRotationalScheduleStartDay,
+            generalSettings.days);
+        if (!context.mounted) return;
+        LoadingDialog.hide(context);
+
+        CustomSnackBar.show(context, CustomSnackBarType.success,
+            response.data['message'], true);
+      }
+
+      widget.userUpdated();
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
+      }
+    }
+  }
+
+  void _saveSettings() {
+    updateGeneralSettings();
+  }
 
   void _cancel() {
     Navigator.pop(context);
@@ -228,6 +360,11 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                       StartTimeAndDuration(
                         timeSelected: _selectedTime,
                         durationSelected: _selectedDuration,
+                        is24hour: generalSettings.settingsIs24Hour ?? true,
+                        selectedStartingTime:
+                            generalSettings.settingsDefaultStartTime,
+                        defaultDuration:
+                            generalSettings.settingsDefaultDuration ?? 30,
                       )
                     ],
                     if (index == 2) ...[
@@ -270,11 +407,19 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                         Container(
                           height: 16,
                         ),
-                        NumberOfWeeks(daySelected: _numberOfWeeksSelected),
+                        NumberOfWeeks(
+                          daySelected: _numberOfWeeksSelected,
+                          selectedNumber: generalSettings
+                              .settingsRotationalScheduleNumberOfWeeks,
+                        ),
                         Container(
                           height: 16,
                         ),
-                        StartWeek(startWeekSelected: _startWeekSelected),
+                        StartWeek(
+                          startWeekSelected: _startWeekSelected,
+                          preselectedWeek: generalSettings
+                              .settingsRotationalScheduleStartWeek,
+                        ),
                       ],
                       if (rotation == RotationSchedule.lettered) ...[
                         Container(
@@ -298,18 +443,25 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                         Container(
                           height: 16,
                         ),
-                        StartDay(startDaySelected: _startDaySelected),
+                        StartDay(
+                            startDaySelected: _startDaySelected,
+                            preselectedDay: generalSettings
+                                .settingsRotationalScheduleStartDay),
                         Container(
                           height: 16,
                         ),
                         ClassWeekDays(
-                          subjectSelected: _classDaysSelected,
-                        )
+                            subjectSelected: _classDaysSelected,
+                            settingsDates: generalSettings.days)
                       ],
                     ],
                     if (index == 3) ...[
                       // if (rotation == RotationSchedule.fixed) ...[
-                      DaysToDisplay(daySelected: _dayToDisplaySelected)
+                      DaysToDisplay(
+                        daySelected: _dayToDisplaySelected,
+                        selectedDay:
+                            generalSettings.settingsDaysToDisplayOnDashboard,
+                      )
                       // ],
                     ],
                     if (index == 4) ...[

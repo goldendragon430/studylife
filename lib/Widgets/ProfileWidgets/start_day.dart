@@ -10,7 +10,11 @@ import '../../Models/subjects_datasource.dart';
 
 class StartDay extends StatefulWidget {
   final Function startDaySelected;
-  const StartDay({super.key, required this.startDaySelected});
+  final String? preselectedDay;
+  const StartDay(
+      {super.key,
+      required this.startDaySelected,
+      required this.preselectedDay});
 
   @override
   State<StartDay> createState() => _StartDayState();
@@ -18,6 +22,26 @@ class StartDay extends StatefulWidget {
 
 class _StartDayState extends State<StartDay> {
   final List<ClassTagItem> _days = ClassTagItem.startWeek;
+
+    @override
+  void initState() {
+    if (widget.preselectedDay != null) {
+      for (var day in _days) {
+        if (day.title == widget.preselectedDay!) {
+          day.selected = true;
+        }
+      }
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    for (var week in _days) {
+      week.selected = false;
+    }
+    super.dispose();
+  }
 
   void _selectTab(int index) {
     setState(() {

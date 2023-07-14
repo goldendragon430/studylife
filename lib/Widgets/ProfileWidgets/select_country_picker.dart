@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+// import 'package:collection/collection.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_study_life_flutter/Extensions/extensions.dart';
 import '../../app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +11,9 @@ import '../../Models/profile_datasource.dart';
 
 class SelectCountryPicker extends StatefulWidget {
   final Function countrySelected;
-  const SelectCountryPicker({super.key, required this.countrySelected});
+  final String? preSelectedCountry;
+  const SelectCountryPicker(
+      {super.key, required this.countrySelected, this.preSelectedCountry});
 
   @override
   State<SelectCountryPicker> createState() => _SelectCountryPickerState();
@@ -21,6 +25,21 @@ class _SelectCountryPickerState extends State<SelectCountryPicker> {
   String selectedCountry = CountryPickerData.countries.first.title;
 
   @override
+  void initState() {
+    if (widget.preSelectedCountry != null) {
+      final firstCountry = CountryPickerData.countries
+          .firstWhereOrNull(
+              (element) => element.title == widget.preSelectedCountry)
+          ?.title;
+
+      if (firstCountry != null) {
+        selectedCountry = firstCountry;
+      }
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
@@ -29,13 +48,11 @@ class _SelectCountryPickerState extends State<SelectCountryPicker> {
         width: double.infinity,
         margin: EdgeInsets.only(left: 22, right: 22),
         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "Which country are you from?",
               textAlign: TextAlign.left,
-
               style: TextStyle(
                   fontSize: 14,
                   fontFamily: 'Roboto',
@@ -87,8 +104,8 @@ class _SelectCountryPickerState extends State<SelectCountryPicker> {
                   child: DropdownButton(
                     value: selectedCountry,
                     onChanged: (String? newValue) => setState(() {
-                       widget.countrySelected(newValue);
-                       selectedCountry = newValue ?? "";
+                      widget.countrySelected(newValue);
+                      selectedCountry = newValue ?? "";
                     }),
                     // setState(() => selectedDuration = newValue ?? ""),
                     items: countries

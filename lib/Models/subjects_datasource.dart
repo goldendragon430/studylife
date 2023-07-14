@@ -68,6 +68,23 @@ class ClassTagItem {
         title: "Sun", selected: false, isAddNewCard: false, cardIndex: 6)
   ];
 
+    static List<ClassTagItem> startDays = [
+    ClassTagItem(
+        title: "Mon", selected: false, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "Tue", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: "Wed", selected: false, isAddNewCard: false, cardIndex: 2),
+    ClassTagItem(
+        title: "Thu", selected: false, isAddNewCard: false, cardIndex: 3),
+    ClassTagItem(
+        title: "Fri", selected: false, isAddNewCard: false, cardIndex: 4),
+    ClassTagItem(
+        title: "Sat", selected: false, isAddNewCard: false, cardIndex: 5),
+    ClassTagItem(
+        title: "Sun", selected: false, isAddNewCard: false, cardIndex: 6)
+  ];
+
   static List<ClassTagItem> lightDarkMode = [
     ClassTagItem(
         title: "Use System default",
@@ -275,7 +292,7 @@ class ClassTagItem {
   static List<ClassTagItem> dateTypes = [
     ClassTagItem(
         title: "Jan 1, 2022",
-        selected: true,
+        selected: false,
         isAddNewCard: false,
         cardIndex: 0),
     ClassTagItem(

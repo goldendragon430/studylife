@@ -14,12 +14,14 @@ class ClassWeekDays extends StatefulWidget {
   final Function subjectSelected;
   final ClassModel? classItem;
   final Xtra? xtraItem;
+  final List<String>? settingsDates;
 
   ClassWeekDays(
       {super.key,
       required this.subjectSelected,
       this.classItem,
-      this.xtraItem});
+      this.xtraItem,
+      this.settingsDates});
 
   @override
   State<ClassWeekDays> createState() => _ClassWeekDaysState();
@@ -48,6 +50,13 @@ class _ClassWeekDaysState extends State<ClassWeekDays> {
           _days[selectedIndex].selected = true;
         }
       }
+    }
+    if (widget.settingsDates != null) {
+        for (var day in widget.settingsDates ?? []) {
+          var selectedIndex = _days.indexWhere(
+              (element) => element.title.toLowerCase() == day.toLowerCase());
+          _days[selectedIndex].selected = true;
+        }
     }
   }
 

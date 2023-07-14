@@ -26,9 +26,7 @@ import './reminder_notifications_screen.dart';
 import './personalize_screen.dart';
 import '../../Widgets/loaderIndicator.dart';
 import '../../Widgets/custom_snack_bar.dart';
-import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'dart:io';
 import '../Networking/user_service.dart';
 import '../Models/API/practicedSubject.dart';
 
@@ -92,17 +90,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     var tasksCompletedString =
         await _storageService.readSecureData("tasks_completed");
-    tasksCompleted = int.parse(tasksCompletedString ?? "0");
+
+    if (tasksCompletedString != null) {
+      tasksCompleted = int.parse(tasksCompletedString);
+    }
     var yourStreakString = await _storageService.readSecureData("your_streak");
-    yourStreak = int.parse(yourStreakString ?? "0");
+    if (yourStreakString != null) {
+      yourStreak = int.parse(yourStreakString);
+    }
     var mostPracticedSubjectTasksCountString =
         await _storageService.readSecureData("most_practiced_tasks_count");
-    mostPracticedSubjectTasksCount =
-        int.parse(mostPracticedSubjectTasksCountString ?? "0");
+
+    if (mostPracticedSubjectTasksCountString != null) {
+      mostPracticedSubjectTasksCount =
+          int.parse(mostPracticedSubjectTasksCountString);
+    }
+
     var leastPracticedSubjectTasksCountString =
         await _storageService.readSecureData("least_practiced_tasks_count");
-    leastPracticedSubjectTasksCount =
-        int.parse(leastPracticedSubjectTasksCountString ?? "0");
+    if (leastPracticedSubjectTasksCountString != null) {
+      leastPracticedSubjectTasksCount =
+          int.parse(leastPracticedSubjectTasksCountString);
+    }
 
     if (userString != null && userString.isNotEmpty) {
       Map<String, dynamic> userMap = jsonDecode(userString);
@@ -110,13 +119,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       var user = UserModel.fromJson(userMap);
       editedUser = user;
 
-      Map<String, dynamic> mostPracticedSubjectMap =
-          jsonDecode(mostPracticedSubjecterString ?? "");
-      Map<String, dynamic> leastPracticedSubjectMap =
-          jsonDecode(leastPracticedSubjecterString ?? "");
-      mostPracticedSubject = PracticedSubject.fromJson(mostPracticedSubjectMap);
-      leastPracticedSubject =
-          PracticedSubject.fromJson(leastPracticedSubjectMap);
+      if (mostPracticedSubjecterString != null) {
+        Map<String, dynamic> mostPracticedSubjectMap =
+            jsonDecode(mostPracticedSubjecterString);
+        mostPracticedSubject =
+            PracticedSubject.fromJson(mostPracticedSubjectMap);
+      }
+
+      if (leastPracticedSubjecterString != null) {
+        Map<String, dynamic> leastPracticedSubjectMap =
+            jsonDecode(leastPracticedSubjecterString);
+        leastPracticedSubject =
+            PracticedSubject.fromJson(leastPracticedSubjectMap);
+      }
 
       setState(() {
         userName = "${user.firstName} ${user.lastName}";
@@ -138,6 +153,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void generalSettingsUpdated() {
+    // Navigator.pop(context);
+    userUpdated();
+  }
+
   void userUpdated() async {
     // LoadingDialog.show(context);
 
@@ -155,9 +175,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       leastPracticedSubjectTasksCount =
           response.data['leastPracticedSubjectTasksThisMonth'];
       var mostPracticed =
-          PracticedSubject.fromJson(response.data['most_practiced_subject']);
+          PracticedSubject.fromJson(response.data['mostPracticedSubject']);
       var leastPracticed =
-          PracticedSubject.fromJson(response.data['least_practiced_subject']);
+          PracticedSubject.fromJson(response.data['leastPracticedSubject']);
 
       editedUser = user;
       mostPracticedSubject = mostPracticed;
@@ -179,6 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         CustomSnackBar.show(context, CustomSnackBarType.error,
             error.response?.data['message'], true);
       } else {
+        print("ASDADADSADASDAD ${error.toString()}");
         // LoadingDialog.hide(context);
         CustomSnackBar.show(context, CustomSnackBarType.error,
             "Oops, something went wrong", true);
@@ -202,14 +223,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const PersonalizeScreen(),
+              builder: (context) => PersonalizeScreen(
+                    userUpdated: generalSettingsUpdated,
+                    currentUser: editedUser,
+                  ),
               fullscreenDialog: false));
     }
     if (index == 2) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>  GeneralSettingsScreen(currentUser: editedUser),
+              builder: (context) => GeneralSettingsScreen(
+                    currentUser: editedUser,
+                    userUpdated: generalSettingsUpdated,
+                  ),
               fullscreenDialog: false));
     }
     if (index == 3) {

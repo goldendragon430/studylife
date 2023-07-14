@@ -35,7 +35,6 @@ class _RotationScheduleSelectorState extends State<RotationScheduleSelector> {
 
       _rotationItems[index].selected = true;
       widget.rotationSelected(_rotationItems[index]);
-      print("CARD SELECTED $index");
     });
   }
 
@@ -48,7 +47,8 @@ class _RotationScheduleSelectorState extends State<RotationScheduleSelector> {
     }
     super.initState();
   }
-
+  
+  @override
   void dispose() {
     for (var rotation in _rotationItems) {
       rotation.selected = false;

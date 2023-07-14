@@ -10,7 +10,9 @@ import '../../Models/subjects_datasource.dart';
 
 class NumberOfWeeks extends StatefulWidget {
   final Function daySelected;
-  const NumberOfWeeks({super.key, required this.daySelected});
+  final int? selectedNumber;
+  const NumberOfWeeks(
+      {super.key, required this.daySelected, this.selectedNumber});
 
   @override
   State<NumberOfWeeks> createState() => _NumberOfWeeksState();
@@ -18,6 +20,24 @@ class NumberOfWeeks extends StatefulWidget {
 
 class _NumberOfWeeksState extends State<NumberOfWeeks> {
   final List<ClassTagItem> _days = ClassTagItem.settingsWeeksToDisplay;
+
+
+  @override
+  void initState() {
+    if (widget.selectedNumber != null) {
+        var index = widget.selectedNumber! - 1;
+        _days[index].selected = true;
+    }
+    super.initState();
+  }
+
+   @override
+  void dispose() {
+    for (var week in _days) {
+      week.selected = false;
+    }
+    super.dispose();
+  }
 
   void _selectTab(int index) {
     setState(() {

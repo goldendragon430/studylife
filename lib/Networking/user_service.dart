@@ -194,7 +194,7 @@ class UserService {
       'settingsAcademicInterval': settingsAcademicInterval,
       'settingsSession': settingsSession,
       'settingsDaysOff': settingsDaysOff
-    });
+    }..removeWhere((dynamic key, dynamic value) => value == null));
     var response = await Api().dio.put('/api/user/personalization', data: body);
 
     // if (response.statusCode == 201 || response.statusCode == 200) {
@@ -208,12 +208,21 @@ class UserService {
   }
 
   Future<Response> updateGeneralSettings(
-      int settingsFirstDayOfWeek,
-      String settingsDefaultStartTime,
-      int settingsDefaultDuration,
-      String settingsRotationalSchedule,
-      String settingsDaysToDisplayOnDashboard) async {
+    int? settingsFirstDayOfWeek,
+    String? settingsDefaultStartTime,
+    int? settingsDefaultDuration,
+    String? settingsRotationalSchedule,
+    String? settingsDaysToDisplayOnDashboard,
+    int? settingsRotationalScheduleNumberOfWeeks,
+    String? settingsRotationalScheduleStartWeek,
+    int? settingsRotationalScheduleNumberOfDays,
+    String? settingsRotationalScheduleStartDay,
+    List<String>? days,
+  ) async {
     String body;
+
+    String? stringDays = null;
+    stringDays = days?.join(",");
 
     body = jsonEncode({
       'settingsFirstDayOfWeek': settingsFirstDayOfWeek,
@@ -221,7 +230,15 @@ class UserService {
       'settingsDefaultDuration': settingsDefaultDuration,
       'settingsRotationalSchedule': settingsRotationalSchedule,
       'settingsDaysToDisplayOnDashboard': settingsDaysToDisplayOnDashboard,
-    });
+      'settingsRotationalScheduleDays': days,
+      'settingsRotationalScheduleNumberOfWeeks':
+          settingsRotationalScheduleNumberOfWeeks,
+      'settingsRotationalScheduleStartWeek':
+          settingsRotationalScheduleStartWeek,
+      'settingsRotationalScheduleNumberOfDays':
+          settingsRotationalScheduleNumberOfDays,
+      'settingsRotationalScheduleStartDay': settingsRotationalScheduleStartDay
+    }..removeWhere((dynamic key, dynamic value) => value == null));
     var response =
         await Api().dio.put('/api/user/general-settings', data: body);
 

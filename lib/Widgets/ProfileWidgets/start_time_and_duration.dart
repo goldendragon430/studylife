@@ -9,13 +9,22 @@ import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../datetime_selection_textfield.dart';
+import '../../Extensions/extensions.dart';
 
 class StartTimeAndDuration extends StatefulWidget {
   final Function timeSelected;
   final Function durationSelected;
+  final bool is24hour;
+  final String? selectedStartingTime;
+  final int defaultDuration;
 
   const StartTimeAndDuration(
-      {super.key, required this.timeSelected, required this.durationSelected});
+      {super.key,
+      required this.timeSelected,
+      required this.durationSelected,
+      required this.is24hour,
+      this.selectedStartingTime,
+      required this.defaultDuration});
 
   @override
   State<StartTimeAndDuration> createState() => _StartTimeAndDurationState();
@@ -27,12 +36,32 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
   String selectedDuration = ExamDuration.durations.first.title;
 
   int selectedTabIndex = 0;
-  late TimeOfDay pickedTimeFrom = const TimeOfDay(hour: 08, minute: 00);
+  TimeOfDay pickedTimeFrom = const TimeOfDay(hour: 08, minute: 00);
+  final now = DateTime.now();
 
   @override
   void initState() {
-    timeController.text = DateFormat('HH:mm').format(DateTime.now());
+    if (widget.selectedStartingTime != null) {
+      pickedTimeFrom = TimeOfDay(
+          hour: int.parse(widget.selectedStartingTime!.split(":")[0]),
+          minute: int.parse(widget.selectedStartingTime!.split(":")[1]));
+      timeController.text = pickedTimeFrom.toStringFormat;
+    }
+    if (!widget.is24hour) {
+      timeController.text = formatTimeOfDay(pickedTimeFrom);
+    }
+    selectedDuration = ExamDuration.durations
+        .firstWhere((element) => element.duration == widget.defaultDuration)
+        .title;
+
     super.initState();
+  }
+
+  String formatTimeOfDay(TimeOfDay tod) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    final format = DateFormat.jm(); //"6:00 AM"
+    return format.format(dt);
   }
 
   void _showiOSDateSelectionDialog(Widget child) {
@@ -104,7 +133,7 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
           );
         },
         context: context,
-        initialTime: TimeOfDay(hour: 08, minute: 00));
+        initialTime: pickedTimeFrom);
     if (picked != null) {
       setState(() {
         pickedTimeFrom = picked;
@@ -118,7 +147,8 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
 
         var fullDate = DateTime(DateTime.now().year, DateTime.now().month,
             DateTime.now().day, picked.hour, picked.minute);
-        String formattedDate = DateFormat('HH:mm').format(fullDate);
+        String formattedDate =
+            DateFormat(widget.is24hour ? 'HH:mm' : 'hh:mm').format(fullDate);
         timeController.text = formattedDate;
         widget.timeSelected(fullDate);
       });
@@ -129,12 +159,15 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
     Platform.isAndroid
         ? _showAndroidTimeSelectionDialog
         : _showiOSDateSelectionDialog(CupertinoDatePicker(
-            initialDateTime: DateTime.now(),
+            initialDateTime: DateTime(now.year, now.month, now.day,
+                pickedTimeFrom.hour, pickedTimeFrom.minute),
             mode: CupertinoDatePickerMode.time,
             use24hFormat: true,
             onDateTimeChanged: (DateTime newDate) {
               setState(() {
-                String formattedDate = DateFormat('HH:mm').format(newDate);
+                String formattedDate =
+                    DateFormat(widget.is24hour ? 'HH:mm' : 'hh:mm')
+                        .format(newDate);
                 timeController.text = formattedDate;
                 widget.timeSelected(newDate);
               });
@@ -148,7 +181,6 @@ class _StartTimeAndDurationState extends State<StartTimeAndDuration> {
   }
 
   void durationSelected(String? newValue) {
-
     setState(() => {
           selectedDuration = newValue ?? "",
           widget.durationSelected(selectedDuration)

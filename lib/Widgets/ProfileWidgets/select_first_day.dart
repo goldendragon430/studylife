@@ -21,9 +21,8 @@ class _SelectFirstDayState extends State<SelectFirstDay> {
 
   @override
   void initState() {
-     for (var item in widget.days) {
-        print("STTE ${item.selected}");
-      }
+    //  for (var item in widget.days) {
+    //   }
     super.initState();
   }
 
@@ -36,7 +35,6 @@ class _SelectFirstDayState extends State<SelectFirstDay> {
 
       widget.days[index].selected = true;
       widget.subjectSelected(widget.days[index]);
-      print("CARD SELECTED $index");
     });
   }
 

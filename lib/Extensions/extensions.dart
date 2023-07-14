@@ -47,6 +47,34 @@ extension Utility on BuildContext {
   }
 }
 
+extension TimeOfDayExtensions on TimeOfDay {
+  String format12Hour(BuildContext context) {
+    TimeOfDay time = replacing(hour: this.hourOfPeriod);
+    MaterialLocalizations localizations = MaterialLocalizations.of(context);
+
+    final StringBuffer buffer = StringBuffer();
+
+    buffer
+      ..write(time.format(context))
+      ..write(' ')
+      ..write(period == DayPeriod.am
+          ? localizations.anteMeridiemAbbreviation
+          : localizations.postMeridiemAbbreviation);
+
+    return '$buffer';
+  }
+
+  String get toStringFormat {
+    var time = this;
+    return '${_twoDigits(time.hour)}:${_twoDigits(time.minute)}';
+  }
+
+  static String _twoDigits(int n) {
+    if (n >= 10) return '$n';
+    return '0$n';
+  }
+}
+
 extension ExtendedIterable<E> on Iterable<E> {
   /// Like Iterable<T>.map but the callback has index as second argument
   Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
