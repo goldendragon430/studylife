@@ -179,12 +179,12 @@ class UserService {
   }
 
   Future<Response> updatePersonalization(
-      String country,
-      int settingsDateFormat,
-      String timeFormat,
-      String settingsAcademicInterval,
-      String settingsSession,
-      String settingsDaysOff) async {
+      String? country,
+      int? settingsDateFormat,
+      String? timeFormat,
+      String? settingsAcademicInterval,
+      String? settingsSession,
+      String? settingsDaysOff) async {
     String body;
 
     body = jsonEncode({
@@ -196,13 +196,6 @@ class UserService {
       'settingsDaysOff': settingsDaysOff
     }..removeWhere((dynamic key, dynamic value) => value == null));
     var response = await Api().dio.put('/api/user/personalization', data: body);
-
-    // if (response.statusCode == 201 || response.statusCode == 200) {
-    //   var user = UserModel.fromJson(response.data['data']);
-
-    //   await _storage.write(
-    //       key: "activeUser", value: jsonEncode(user.toJson()));
-    // }
 
     return response;
   }

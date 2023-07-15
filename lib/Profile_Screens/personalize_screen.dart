@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import '../../Widgets/loaderIndicator.dart';
 import '../../Widgets/custom_snack_bar.dart';
+import '../Widgets/rounded_elevated_button.dart';
 
 import '../../app.dart';
 import '../../Utilities/constants.dart';
@@ -51,6 +52,11 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
           personalSettings.timeFormat = widget.currentUser?.timeFormat;
         }
 
+        if (widget.currentUser?.settingsIs24Hour != null) {
+          personalSettings.settingsIs24Hour =
+              widget.currentUser?.settingsIs24Hour;
+        }
+
         if (widget.currentUser?.settingsAcademicInterval != null) {
           personalSettings.settingsAcademicInterval =
               widget.currentUser?.settingsAcademicInterval;
@@ -74,23 +80,68 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
   }
 
   void _selectedDateType(ClassTagItem type) {
-      personalSettings.settingsDateFormat = type.cardIndex;
+    personalSettings.settingsDateFormat = type.cardIndex;
   }
 
   void _selectedTimeType(ClassTagItem type) {
-    // print("Selected repetitionMode: ${type.title}");
+    if (type.cardIndex == 0) {
+      personalSettings.timeFormat = "12";
+    } else {
+      personalSettings.timeFormat = "24";
+    }
   }
 
   void _selectedAcademicIntervals(ClassTagItem type) {
-    // print("Selected repetitionMode: ${type.title}");
+    personalSettings.settingsAcademicInterval = type.title;
   }
 
   void _selectedTaughtSession(ClassTagItem type) {
-    // print("Selected repetitionMode: ${type.title}");
+    personalSettings.settingsSession = type.title;
   }
 
   void _selectedDaysOffssion(ClassTagItem type) {
-    // print("Selected repetitionMode: ${type.title}");
+    personalSettings.settingsDaysOff = type.title;
+  }
+
+  // API
+
+  void updatePersonalSettings() async {
+    LoadingDialog.show(context);
+
+    try {
+      var response = await UserService().updatePersonalization(
+          personalSettings.country,
+          personalSettings.settingsDateFormat,
+          personalSettings.timeFormat,
+          personalSettings.settingsAcademicInterval,
+          personalSettings.settingsSession,
+          personalSettings.settingsDaysOff);
+      if (!context.mounted) return;
+      LoadingDialog.hide(context);
+
+      CustomSnackBar.show(
+          context, CustomSnackBarType.success, response.data['message'], true);
+
+      widget.userUpdated();
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
+      }
+    }
+  }
+
+  void _saveSettings() {
+    updatePersonalSettings();
+  }
+
+  void _cancel() {
+    Navigator.pop(context);
   }
 
   @override
@@ -119,7 +170,7 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
         body: ListView.builder(
           controller: scrollcontroller,
           padding: const EdgeInsets.only(top: 30),
-          itemCount: 6,
+          itemCount: 7,
           itemBuilder: (context, index) {
             return Column(
               children: [
@@ -134,34 +185,65 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
                     height: 40,
                   ),
                   SelectPeronalizeOptions(
-                    selectedEntry: _selectedDateType,
-                    selectionType: PersonalizeType.dateFormat,
-                    preselectedDateFormatIndex: personalSettings.settingsDateFormat
-                  )
+                      selectedEntry: _selectedDateType,
+                      selectionType: PersonalizeType.dateFormat,
+                      preselectedDateFormatIndex:
+                          personalSettings.settingsDateFormat)
                 ],
                 if (index == 2) ...[
                   SelectPeronalizeOptions(
                     selectedEntry: _selectedTimeType,
                     selectionType: PersonalizeType.timeFormat,
+                    is24HourFormat: personalSettings.settingsIs24Hour,
                   )
                 ],
                 if (index == 3) ...[
                   SelectPeronalizeOptions(
-                    selectedEntry: _selectedAcademicIntervals,
-                    selectionType: PersonalizeType.academicIntervals,
-                  )
+                      selectedEntry: _selectedAcademicIntervals,
+                      selectionType: PersonalizeType.academicIntervals,
+                      preelectedAcademicInterval:
+                          personalSettings.settingsAcademicInterval)
                 ],
                 if (index == 4) ...[
                   SelectPeronalizeOptions(
-                    selectedEntry: _selectedTaughtSession,
-                    selectionType: PersonalizeType.sessionType,
-                  )
+                      selectedEntry: _selectedTaughtSession,
+                      selectionType: PersonalizeType.sessionType,
+                      preselectedSession: personalSettings.settingsSession)
                 ],
                 if (index == 5) ...[
                   SelectPeronalizeOptions(
-                    selectedEntry: _selectedDaysOffssion,
-                    selectionType: PersonalizeType.dayOffType,
-                  )
+                      selectedEntry: _selectedDaysOffssion,
+                      selectionType: PersonalizeType.dayOffType,
+                      preselectedDaysOffType: personalSettings.settingsDaysOff)
+                ],
+                if (index == 6) ...[
+                  // Save/Cancel buttons
+                  Container(
+                    height: 68,
+                  ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    width: double.infinity,
+                    // margin: const EdgeInsets.only(top: 260),
+                    padding: const EdgeInsets.only(left: 106, right: 106),
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        RoundedElevatedButton(_saveSettings, "Save Task",
+                            Constants.lightThemePrimaryColor, Colors.black, 45),
+                        RoundedElevatedButton(
+                            _cancel,
+                            "Cancel",
+                            Constants.blueButtonBackgroundColor,
+                            Colors.white,
+                            45)
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 88,
+                  ),
                 ],
               ],
             );

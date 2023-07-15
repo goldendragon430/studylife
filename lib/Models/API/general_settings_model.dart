@@ -34,17 +34,17 @@ class PersonalSettingsModel {
   String? country;
   int? settingsDateFormat;
   String? timeFormat;
-
   String? settingsAcademicInterval;
   String? settingsSession;
   String? settingsDaysOff;
+  bool? settingsIs24Hour;
 
-  PersonalSettingsModel({
-    this.country,
-    this.settingsDateFormat,
-    this.timeFormat,
-    this.settingsAcademicInterval,
-    this.settingsSession,
-    this.settingsDaysOff,
-  });
+  PersonalSettingsModel(
+      {this.country,
+      this.settingsDateFormat,
+      this.timeFormat,
+      this.settingsAcademicInterval,
+      this.settingsSession,
+      this.settingsDaysOff,
+      this.settingsIs24Hour});
 }

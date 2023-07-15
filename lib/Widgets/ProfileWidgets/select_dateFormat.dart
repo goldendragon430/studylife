@@ -21,13 +21,21 @@ class SelectPeronalizeOptions extends StatefulWidget {
   final String? preselectedtype;
   final PersonalizeType selectionType;
   final int? preselectedDateFormatIndex;
+  final bool? is24HourFormat;
+  final String? preelectedAcademicInterval;
+  final String? preselectedSession;
+  String? preselectedDaysOffType;
 
   SelectPeronalizeOptions(
       {super.key,
       this.preselectedtype,
       required this.selectedEntry,
       required this.selectionType,
-      this.preselectedDateFormatIndex});
+      this.preselectedDateFormatIndex,
+      this.is24HourFormat,
+      this.preelectedAcademicInterval,
+      this.preselectedSession,
+      this.preselectedDaysOffType});
 
   @override
   State<SelectPeronalizeOptions> createState() =>
@@ -102,13 +110,37 @@ class _SelectPeronalizeOptionsState extends State<SelectPeronalizeOptions> {
         _daysOffssions[firstIndex].selected = true;
       }
     }
-      if (widget.preselectedDateFormatIndex != null) {
-        print("IMAIMDIAMDSAD");
-        // setState(() {
-        // });
-                  _dateTypes[widget.preselectedDateFormatIndex!].selected = true;
-
+    if (widget.preselectedDateFormatIndex != null) {
+      _dateTypes[widget.preselectedDateFormatIndex!].selected = true;
+    }
+    if (widget.is24HourFormat != null) {
+      if (widget.is24HourFormat == true) {
+        _timeTypes[1].selected = true;
+      } else {
+        _timeTypes[0].selected = true;
       }
+    }
+
+    if (widget.preelectedAcademicInterval != null) {
+      var firstIndex = _academicIntervals.indexWhere((element) =>
+          element.title.toLowerCase() ==
+          widget.preelectedAcademicInterval!.toLowerCase());
+      _academicIntervals[firstIndex].selected = true;
+    }
+
+    if (widget.preselectedSession != null) {
+      var firstIndex = _taughtSessions.indexWhere((element) =>
+          element.title.toLowerCase() ==
+          widget.preselectedSession!.toLowerCase());
+      _taughtSessions[firstIndex].selected = true;
+    }
+
+    if (widget.preselectedDaysOffType != null) {
+      var firstIndex = _daysOffssions.indexWhere((element) =>
+          element.title.toLowerCase() ==
+          widget.preselectedDaysOffType!.toLowerCase());
+      _daysOffssions[firstIndex].selected = true;
+    }
   }
 
   void _selectTab(int index) {

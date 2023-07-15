@@ -309,7 +309,7 @@ class ClassTagItem {
   static List<ClassTagItem> timeTypes = [
     ClassTagItem(
         title: "12 hrs (Eg 3pm)",
-        selected: true,
+        selected: false,
         isAddNewCard: false,
         cardIndex: 0),
     ClassTagItem(
@@ -321,19 +321,19 @@ class ClassTagItem {
 
   static List<ClassTagItem> academicIntervals = [
     ClassTagItem(
-        title: "Semesters", selected: true, isAddNewCard: false, cardIndex: 0),
+        title: "Semesters", selected: false, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
         title: "Terms", selected: false, isAddNewCard: false, cardIndex: 1),
   ];
   static List<ClassTagItem> taughtSessions = [
     ClassTagItem(
-        title: "Lessons", selected: true, isAddNewCard: false, cardIndex: 0),
+        title: "Lessons", selected: false, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
         title: "Classes", selected: false, isAddNewCard: false, cardIndex: 1),
   ];
   static List<ClassTagItem> taughtSedaysOffssions = [
     ClassTagItem(
-        title: "Holidays", selected: true, isAddNewCard: false, cardIndex: 0),
+        title: "Holidays", selected: false, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
         title: "Vacations", selected: false, isAddNewCard: false, cardIndex: 1),
     ClassTagItem(
