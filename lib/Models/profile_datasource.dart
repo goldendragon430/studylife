@@ -10,12 +10,18 @@ class ProfileItemStatic {
     ProfileItemStatic(title: "Personalize"),
     ProfileItemStatic(title: "General"),
     ProfileItemStatic(title: "Reminder Notifications"),
-    ProfileItemStatic(title: "Premium Subscription")
+    ProfileItemStatic(title: "Premium Subscription"),
+    ProfileItemStatic(title: "Support")
   ];
 
   static List<ProfileItemStatic> editItems = [
     ProfileItemStatic(title: "Change Email"),
     ProfileItemStatic(title: "Change Password"),
+  ];
+
+    static List<ProfileItemStatic> tcItems = [
+    ProfileItemStatic(title: "Terms & Conditions"),
+    ProfileItemStatic(title: "Privacy Policy"),
   ];
 }
 

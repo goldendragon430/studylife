@@ -273,7 +273,7 @@ class UserService {
   }
 
   Future<Response> deleteUser() async {
-    var response = await Api().dio.get('/api/user/forgetMe');
+    var response = await Api().dio.delete('/api/user');
 
     return response;
   }

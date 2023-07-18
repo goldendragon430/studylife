@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,14 +5,12 @@ import '../../app.dart';
 import './profile_personalization_card.dart';
 import '../../Models/profile_datasource.dart';
 
-class PersonalizationList extends ConsumerWidget {
+class PolicyAndTermsList extends ConsumerWidget {
   final Function cardselected;
   final List<ProfileItemStatic> _items;
+  PolicyAndTermsList(this.cardselected, this._items, {super.key});
 
-  PersonalizationList(this.cardselected, this._items, {super.key});
-
-
-  void _selectedPersonalizationCard(int index) {
+  void _selectedEditCard(int index) {
     cardselected(index);
   }
 
@@ -23,7 +20,7 @@ class PersonalizationList extends ConsumerWidget {
 
     return Container(
       alignment: Alignment.topCenter,
-      height: 396,
+      height: 140,
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -31,7 +28,7 @@ class PersonalizationList extends ConsumerWidget {
         itemBuilder: (context, index) {
           return ProfilePersonalizationCard(
               cardIndex: index,
-              cardselected:_selectedPersonalizationCard,
+              cardselected: _selectedEditCard,
               title: _items[index].title);
         },
       ),

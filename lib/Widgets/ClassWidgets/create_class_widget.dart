@@ -17,10 +17,15 @@ import './class_days.dart';
 import '.././rounded_elevated_button.dart';
 import '../switch_row_widget.dart';
 import './select_dates.dart';
+import './adding_time_widgets.dart';
+import '../../Home_Screens/add_rotational_times_screen.dart';
 
 import '../../Models/Services/storage_service.dart';
 import '../../Models/API/subject.dart';
 import '../../Models/API/classmodel.dart';
+import '../../Models/user.model.dart';
+import '../../Models/API/rotation_time.dart';
+import '../../Models/API/rotation_time.dart';
 
 class CreateClass extends StatefulWidget {
   final Function saveClass;
@@ -35,12 +40,15 @@ class _CreateClassState extends State<CreateClass> {
   final ScrollController scrollcontroller = ScrollController();
   final StorageService _storageService = StorageService();
   static List<Subject> _subjects = [];
+  static List<RotationTimeSetting> _rotationSettings = [];
+
   late ClassModel newClass = ClassModel(occurs: "once", mode: "in-person");
 
   bool isClassInPerson = true;
   bool addStartEndDates = false;
   bool isOccurringOnce = true;
   bool isEditing = false;
+  String rotationScheduleSetting = '';
 
   @override
   void initState() {
@@ -48,6 +56,7 @@ class _CreateClassState extends State<CreateClass> {
     checkForEditedClass();
     Future.delayed(Duration.zero, () {
       getSubjects();
+      _getData();
     });
   }
 
@@ -93,6 +102,21 @@ class _CreateClassState extends State<CreateClass> {
         _subjects[selectedSubjectIndex] = selectedSubject;
       }
     });
+  }
+
+  void _getData() async {
+    var userString = await _storageService.readSecureData("activeUser");
+
+    if (userString != null && userString.isNotEmpty) {
+      Map<String, dynamic> userMap = jsonDecode(userString);
+
+      var user = UserModel.fromJson(userMap);
+      rotationScheduleSetting = user.settingsRotationalSchedule ?? "";
+
+      // setState(() {
+
+      // });
+    }
   }
 
   void _subjectSelected(Subject subject) {
@@ -168,8 +192,7 @@ class _CreateClassState extends State<CreateClass> {
     // final formattedTimeOfDay =
     //     localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
 
-            String formattedDate = DateFormat('HH:mm').format(time);
-
+    String formattedDate = DateFormat('HH:mm').format(time);
 
     if (isTimeFrom) {
       newClass.startTime = formattedDate;
@@ -205,6 +228,48 @@ class _CreateClassState extends State<CreateClass> {
       print("Swithc isOn : $isOn");
     });
   }
+
+  void _addNewTimeSelected() {
+    if (rotationScheduleSetting.isNotEmpty) {
+      if (rotationScheduleSetting == "fixed") {}
+      if (rotationScheduleSetting == "weekly") {
+        bottomSheetForTimes(context, true);
+      }
+      if (rotationScheduleSetting == "lettered") {
+        bottomSheetForTimes(context, false);
+      }
+    }
+  }
+
+  bottomSheetForTimes(BuildContext context, bool rotationSetting) {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        context: context,
+        // transitionAnimationController: controller,
+        enableDrag: false,
+        builder: (context) {
+          return AddRotationalTimesScreen(
+            isEditing: false,
+            timeAdded: _rotationalTimeAdded,
+            isWeekly: rotationSetting,
+          );
+        });
+  }
+
+  void _rotationalTimeAdded(RotationTimeSetting timeSetting) {
+    setState(() {
+      _rotationSettings.add(timeSetting);
+      print("EVO GA ${timeSetting.rotationDaysLettered}");
+    });
+  }
+
+  void _editRotationalTimesSelected() {}
 
   void _saveClass() {
     widget.saveClass(newClass);
@@ -275,14 +340,52 @@ class _CreateClassState extends State<CreateClass> {
                         )
                       ],
                       if (index == 4) ...[
-                        if (!isOccurringOnce) ...[
+                        if (newClass.occurs == "repeating") ...[
                           // Select Week days
                           ClassWeekDays(
                             classItem: newClass,
                             subjectSelected: _classDaysSelected,
                           )
                         ],
-                        if (isOccurringOnce) ...[
+                        if (newClass.occurs == "rotational") ...[
+                          if (_rotationSettings.isNotEmpty) ...[
+                            for (var setting in _rotationSettings) ...[
+                              if (rotationScheduleSetting == "weekly") ...[
+                                EditTimesAndDaysButton(
+                                    () => _editRotationalTimesSelected,
+                                    "${setting.startTime} - ${setting.endtime}",
+                                    "${setting.rotationDaysNormal}"),
+                                Container(
+                                  height: 8,
+                                )
+                              ],
+                              if (rotationScheduleSetting == "lettered") ...[
+                                if (setting.dayType == "Day of Week") ...[
+                                  EditTimesAndDaysButton(
+                                      () => _editRotationalTimesSelected,
+                                      "${setting.startTime} - ${setting.endtime}",
+                                      "${setting.rotationDaysNormal.toString()}"),
+                                  Container(
+                                    height: 8,
+                                  )
+                                ],
+                                if (setting.dayType == "Rotation Day") ...[
+                                  EditTimesAndDaysButton(
+                                      () => _editRotationalTimesSelected,
+                                      "${setting.startTime} - ${setting.endtime}",
+                                      "${setting.rotationDaysLettered.toString()}"),
+                                  Container(
+                                    height: 8,
+                                  )
+                                ],
+                              ],
+                            ],
+                          ],
+
+                          // Add Times
+                          ChooseNewTimeButton(_addNewTimeSelected)
+                        ],
+                        if (newClass.occurs == "once") ...[
                           SelectTimes(
                             classItem: newClass,
                             timeSelected: _selectedTimes,
@@ -290,14 +393,14 @@ class _CreateClassState extends State<CreateClass> {
                         ],
                       ],
                       if (index == 5) ...[
-                        if (!isOccurringOnce) ...[
+                        if (newClass.occurs == "repeating") ...[
                           // Select Time From/To
                           SelectTimes(
                             classItem: newClass,
                             timeSelected: _selectedTimes,
                           )
                         ],
-                        if (isOccurringOnce) ...[
+                        if (newClass.occurs == "once") ...[
                           // Switch Start dates
                           RowSwitch(
                             title: "Add Start/end dates?",
@@ -308,7 +411,7 @@ class _CreateClassState extends State<CreateClass> {
                         ]
                       ],
                       if (index == 6) ...[
-                        if (!isOccurringOnce) ...[
+                        if (newClass.occurs == "repeating") ...[
                           // Switch Start dates
                           RowSwitch(
                             title: "Add Start/end dates?",
@@ -317,7 +420,7 @@ class _CreateClassState extends State<CreateClass> {
                             index: 0,
                           )
                         ],
-                        if (isOccurringOnce) ...[
+                        if (newClass.occurs == "once") ...[
                           if (isOccurringOnce || addStartEndDates) ...[
                             if (index == 7) ...[
                               SelectDates(
@@ -329,7 +432,7 @@ class _CreateClassState extends State<CreateClass> {
                           ]
                         ]
                       ],
-                      if (isOccurringOnce || addStartEndDates) ...[
+                      if (newClass.occurs == "once" || addStartEndDates) ...[
                         if (index == 7) ...[
                           SelectDates(
                             classItem: newClass,

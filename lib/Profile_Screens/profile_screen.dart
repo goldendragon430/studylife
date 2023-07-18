@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:my_study_life_flutter/Widgets/ProfileWidgets/collection_widget_four_items.dart';
 import 'package:beamer/beamer.dart';
 import '../Models/Services/storage_service.dart';
 import 'dart:convert';
+///import 'package:url_launcher/url_launcher.dart';
 
 import '../../app.dart';
 import '../Controllers/auth_notifier.dart';
@@ -29,6 +31,8 @@ import '../../Widgets/custom_snack_bar.dart';
 import 'package:dio/dio.dart';
 import '../Networking/user_service.dart';
 import '../Models/API/practicedSubject.dart';
+import './subscription_screen.dart';
+import '../Widgets/ProfileWidgets/policy_and_terms_list.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -41,6 +45,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final List<ProfileItemStatic> _itemsPersonalize =
       ProfileItemStatic.personalizationItems;
   final List<ProfileItemStatic> _itemsEdit = ProfileItemStatic.editItems;
+  final List<ProfileItemStatic> _tcItems = ProfileItemStatic.tcItems;
+
   final StorageService _storageService = StorageService();
   List<Task> _tasks = [];
   List<Task> _tasksTotal = [];
@@ -168,20 +174,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       // var userString = await _storageService.readSecureData("activeUser");
       var user = UserModel.fromJson(response.data['user']);
-      tasksCompleted = response.data['tasksCompleted'];
-      yourStreak = response.data['streak'];
-      mostPracticedSubjectTasksCount =
-          response.data['mostPracticedSubjectTasksThisMonth'];
-      leastPracticedSubjectTasksCount =
-          response.data['leastPracticedSubjectTasksThisMonth'];
-      var mostPracticed =
-          PracticedSubject.fromJson(response.data['mostPracticedSubject']);
-      var leastPracticed =
-          PracticedSubject.fromJson(response.data['leastPracticedSubject']);
+      if (response.data['tasksCompleted'] != null) {
+        tasksCompleted = response.data['tasksCompleted'];
+      }
+      if (response.data['streak'] != null) {
+        yourStreak = response.data['streak'];
+      }
+      if (response.data['mostPracticedSubjectTasksThisMonth'] != null) {
+        mostPracticedSubjectTasksCount =
+            response.data['mostPracticedSubjectTasksThisMonth'];
+      }
+      if (response.data['leastPracticedSubjectTasksThisMonth'] != null) {
+        leastPracticedSubjectTasksCount =
+            response.data['leastPracticedSubjectTasksThisMonth'];
+      }
 
       editedUser = user;
-      mostPracticedSubject = mostPracticed;
-      leastPracticedSubject = leastPracticed;
+      if (response.data['mostPracticedSubject'] != null &&
+          response.data['leastPracticedSubject'] != null) {
+        var mostPracticed =
+            PracticedSubject.fromJson(response.data['mostPracticedSubject']);
+        var leastPracticed =
+            PracticedSubject.fromJson(response.data['leastPracticedSubject']);
+        mostPracticedSubject = mostPracticed;
+        leastPracticedSubject = leastPracticed;
+      }
 
       setState(() {
         userName = "${user.firstName} ${user.lastName}";
@@ -199,8 +216,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
         CustomSnackBar.show(context, CustomSnackBarType.error,
             error.response?.data['message'], true);
       } else {
-        print("ASDADADSADASDAD ${error.toString()}");
         // LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
+      }
+    }
+  }
+
+  void deleteUserAccount() async {
+    LoadingDialog.show(context);
+
+    try {
+      var response = await UserService().deleteUser();
+
+      if (!context.mounted) return;
+
+      LoadingDialog.hide(context);
+      CustomSnackBar.show(
+          context, CustomSnackBarType.success, response.data['message'], true);
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
         CustomSnackBar.show(context, CustomSnackBarType.error,
             "Oops, something went wrong", true);
       }
@@ -246,6 +286,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               builder: (context) => const ReminderNotificationsScreen(),
               fullscreenDialog: false));
     }
+    if (index == 4) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const SubscriptionScreen(),
+              fullscreenDialog: true));
+    }
   }
 
   void _selectedEditListCard(int index) {
@@ -268,6 +315,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print("Selected Personalization card with Index: $index");
   }
 
+    Future<void> _selectedPolicyTermsCard(int index) async {
+      if (index == 0) {
+
+      }
+    }
+
+
   void _logOutButtonTapped(WidgetRef ref) async {
     await ref.read(authProvider.notifier).logoutUser();
 
@@ -276,12 +330,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (!currentContext.mounted) return;
 
     Beamer.of(currentContext).update();
-
-    print("Logout tapped");
   }
 
   void _deleteAccountButtonTapped() {
-    print("Delete tapped");
+    deleteUserAccount();
   }
 
   @override
@@ -334,7 +386,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           height: double.infinity,
           child: ListView.builder(
               // controller: widget._controller,
-              itemCount: 11,
+              itemCount: 13,
               itemBuilder: (context, index) {
                 switch (index) {
                   case 0:
@@ -514,7 +566,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     );
                   case 8:
                     return EditList(_selectedEditListCard, _itemsEdit);
-                  case 9:
+                    case 9:
+                          return Container(
+                      margin: EdgeInsets.only(top: 33, bottom: 28),
+                      child: Container(
+                        height: 1,
+                        color: theme == ThemeMode.light
+                            ? Colors.black.withOpacity(0.1)
+                            : Colors.white.withOpacity(0.1),
+                      ),
+                    );
+                    case 10:
+                    return PolicyAndTermsList(_selectedPolicyTermsCard, _tcItems);
+
+                  case 11:
                     return Container(
                       alignment: Alignment.topCenter,
                       width: 142,
@@ -527,7 +592,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Colors.black,
                           34),
                     );
-                  case 10:
+                  case 12:
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

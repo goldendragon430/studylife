@@ -39,12 +39,13 @@ class PersonalSettingsModel {
   String? settingsDaysOff;
   bool? settingsIs24Hour;
 
-  PersonalSettingsModel(
-      {this.country,
-      this.settingsDateFormat,
-      this.timeFormat,
-      this.settingsAcademicInterval,
-      this.settingsSession,
-      this.settingsDaysOff,
-      this.settingsIs24Hour});
+  PersonalSettingsModel({
+    this.country,
+    this.settingsDateFormat,
+    this.timeFormat,
+    this.settingsAcademicInterval,
+    this.settingsSession,
+    this.settingsDaysOff,
+    this.settingsIs24Hour
+  });
 }

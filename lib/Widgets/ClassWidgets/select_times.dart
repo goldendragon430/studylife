@@ -17,8 +17,13 @@ class SelectTimes extends StatefulWidget {
   final Function timeSelected;
   final ClassModel? classItem;
   final Xtra? xtraItem;
+  final bool? isModalPopup;
   SelectTimes(
-      {super.key, required this.timeSelected, this.classItem, this.xtraItem});
+      {super.key,
+      required this.timeSelected,
+      this.classItem,
+      this.xtraItem,
+      this.isModalPopup});
 
   @override
   State<SelectTimes> createState() => _SelectTimesState();
@@ -33,6 +38,7 @@ class _SelectTimesState extends State<SelectTimes> {
   int selectedTabIndex = 0;
   late TimeOfDay pickedTimeFrom = const TimeOfDay(hour: 08, minute: 00);
   late TimeOfDay pickedTimeTo = const TimeOfDay(hour: 09, minute: 00);
+  double margin = 40;
 
   @override
   void initState() {
@@ -62,6 +68,10 @@ class _SelectTimesState extends State<SelectTimes> {
       timeFromController.text = "9:00AM";
       timeToController.text = "10:30AM";
     }
+
+     if (widget.isModalPopup != null) {
+        margin = 0;
+     }
 
     super.initState();
   }
@@ -236,7 +246,7 @@ class _SelectTimesState extends State<SelectTimes> {
         // Tag items
         width: double.infinity,
         alignment: Alignment.topCenter,
-        margin: const EdgeInsets.only(left: 40, right: 40),
+        margin: EdgeInsets.only(left: margin, right: margin),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

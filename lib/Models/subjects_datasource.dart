@@ -152,6 +152,15 @@ class ClassTagItem {
         title: " H ", selected: false, isAddNewCard: false, cardIndex: 7)
   ];
 
+  static List<ClassTagItem> rotationWeeks = [
+    ClassTagItem(
+        title: "Every Week", selected: true, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "Week A", selected: false, isAddNewCard: false, cardIndex: 1),
+    ClassTagItem(
+        title: "Week B", selected: false, isAddNewCard: false, cardIndex: 2)
+  ];
+
   static List<ClassTagItem> examTypes = [
     ClassTagItem(
         title: "Exam", selected: false, isAddNewCard: false, cardIndex: 0),
@@ -287,6 +296,13 @@ class ClassTagItem {
         selected: false,
         isAddNewCard: false,
         cardIndex: 2),
+  ];
+
+    static List<ClassTagItem> dayTypes = [
+    ClassTagItem(
+        title: "Day of Week", selected: true, isAddNewCard: false, cardIndex: 0),
+    ClassTagItem(
+        title: "Rotation Day", selected: false, isAddNewCard: false, cardIndex: 1),
   ];
 
   static List<ClassTagItem> dateTypes = [
