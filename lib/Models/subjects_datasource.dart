@@ -68,7 +68,7 @@ class ClassTagItem {
         title: "Sun", selected: false, isAddNewCard: false, cardIndex: 6)
   ];
 
-    static List<ClassTagItem> startDays = [
+  static List<ClassTagItem> startDays = [
     ClassTagItem(
         title: "Mon", selected: false, isAddNewCard: false, cardIndex: 0),
     ClassTagItem(
@@ -184,22 +184,35 @@ class ClassTagItem {
         isAddNewCard: false,
         cardIndex: 2),
     ClassTagItem(
-        title: "30 Minutes",
+        title: "45 Minutes",
         selected: false,
         isAddNewCard: false,
-        cardIndex: 2),
+        cardIndex: 3),
     ClassTagItem(
-        title: "1 Day", selected: false, isAddNewCard: false, cardIndex: 2),
+        title: "60 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 4),
     ClassTagItem(
-        title: "2 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+        title: "1 Day", selected: false, isAddNewCard: false, cardIndex: 5),
     ClassTagItem(
-        title: "3 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+        title: "2 Days", selected: false, isAddNewCard: false, cardIndex: 6),
     ClassTagItem(
-        title: "4 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+        title: "3 Days", selected: false, isAddNewCard: false, cardIndex: 7),
     ClassTagItem(
-        title: "5 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+        title: "4 Days", selected: false, isAddNewCard: false, cardIndex: 8),
     ClassTagItem(
-        title: "6 Days", selected: false, isAddNewCard: false, cardIndex: 2),
+        title: "5 Days", selected: false, isAddNewCard: false, cardIndex: 9),
+    ClassTagItem(
+        title: "6 Days", selected: false, isAddNewCard: false, cardIndex: 10),
+    ClassTagItem(
+        title: "7 Days", selected: false, isAddNewCard: false, cardIndex: 11),
+    ClassTagItem(
+        title: "14 Days", selected: false, isAddNewCard: false, cardIndex: 12),
+    ClassTagItem(
+        title: "21 Days", selected: false, isAddNewCard: false, cardIndex: 13),
+    ClassTagItem(
+        title: "30 Days", selected: false, isAddNewCard: false, cardIndex: 10),
   ];
 
   static List<ClassTagItem> taskTypes = [
@@ -298,11 +311,17 @@ class ClassTagItem {
         cardIndex: 2),
   ];
 
-    static List<ClassTagItem> dayTypes = [
+  static List<ClassTagItem> dayTypes = [
     ClassTagItem(
-        title: "Day of Week", selected: true, isAddNewCard: false, cardIndex: 0),
+        title: "Day of Week",
+        selected: true,
+        isAddNewCard: false,
+        cardIndex: 0),
     ClassTagItem(
-        title: "Rotation Day", selected: false, isAddNewCard: false, cardIndex: 1),
+        title: "Rotation Day",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1),
   ];
 
   static List<ClassTagItem> dateTypes = [

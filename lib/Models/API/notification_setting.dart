@@ -48,3 +48,29 @@ class NotificationSetting {
     return data;
   }
 }
+
+class NotificationReminder {
+  String? type;
+  String title;
+  bool isOn;
+  String? beforeTime;
+  String? taskReminderTime;
+
+  NotificationReminder({
+    required this.title,
+    required this.isOn,
+    this.type,
+    this.beforeTime,
+    this.taskReminderTime,
+  });
+
+  static List<NotificationReminder> notificationReminders = [
+    NotificationReminder(title: "Reminders", isOn: false),
+    NotificationReminder(title: "Sound", isOn: false),
+    NotificationReminder(title: "Vibrate", isOn: false),
+    NotificationReminder(title: "Class Reminders", isOn: false, type: 'class'),
+    NotificationReminder(title: "Exam Reminders", isOn: false, type: 'exam'),
+    NotificationReminder(title: "Task Reminders", isOn: false, type: 'task'),
+    NotificationReminder(title: "Xtras Reminders", isOn: false, type: 'xtra'),
+  ];
+}
