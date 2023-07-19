@@ -5,7 +5,8 @@ import 'package:my_study_life_flutter/Widgets/ProfileWidgets/collection_widget_f
 import 'package:beamer/beamer.dart';
 import '../Models/Services/storage_service.dart';
 import 'dart:convert';
-///import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:intercom_flutter/intercom_flutter.dart';
 
 import '../../app.dart';
 import '../Controllers/auth_notifier.dart';
@@ -293,6 +294,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               builder: (context) => const SubscriptionScreen(),
               fullscreenDialog: true));
     }
+    if (index == 5) {
+      // Intercom
+      openIntercomMessenger();
+    }
+  }
+
+  void openIntercomMessenger() async {
+    await Intercom.instance.displayMessages();
   }
 
   void _selectedEditListCard(int index) {
@@ -315,12 +324,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print("Selected Personalization card with Index: $index");
   }
 
-    Future<void> _selectedPolicyTermsCard(int index) async {
-      if (index == 0) {
-
-      }
+  Future<void> _selectedPolicyTermsCard(int index) async {
+    if (index == 0) {
+      final Uri _url = Uri.parse('https://mystudylife.com/terms-of-service/');
+      _launchUrl(_url);
     }
+    if (index == 1) {
+      final Uri _url = Uri.parse('https://mystudylife.com/privacy-policy/');
+      _launchUrl(_url);
+    }
+  }
 
+  Future<void> _launchUrl(Uri url) async {
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   void _logOutButtonTapped(WidgetRef ref) async {
     await ref.read(authProvider.notifier).logoutUser();
@@ -566,8 +585,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     );
                   case 8:
                     return EditList(_selectedEditListCard, _itemsEdit);
-                    case 9:
-                          return Container(
+                  case 9:
+                    return Container(
                       margin: EdgeInsets.only(top: 33, bottom: 28),
                       child: Container(
                         height: 1,
@@ -576,8 +595,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             : Colors.white.withOpacity(0.1),
                       ),
                     );
-                    case 10:
-                    return PolicyAndTermsList(_selectedPolicyTermsCard, _tcItems);
+                  case 10:
+                    return PolicyAndTermsList(
+                        _selectedPolicyTermsCard, _tcItems);
 
                   case 11:
                     return Container(

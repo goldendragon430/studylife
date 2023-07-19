@@ -22,12 +22,52 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.mystudylife.app</string>
+				<string>fb956309179018660</string>
+				<string>com.googleusercontent.apps.466708350180-aoaobgdf6a4ej8l79d0sgfeg9j3voehs</string>
+				<string>msauth.$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string>956309179018660</string>
+	<key>FacebookClientToken</key>
+	<string>dfa285540bc4325f7e2eab5a7877627f</string>
+	<key>FacebookDisplayName</key>
+	<string>MyStudyLife</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+		<string>msauthv2</string>
+		<string>msauthv3</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires permission to access camera in order to personalize your experience</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires permission to access microphone in order to personalize your experience</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires permission to access photo library in order to personalize your experience</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -36,35 +76,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-    <key>CFBundleURLTypes</key>
-    <array>
-
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>com.mystudylife.app</string>
-                <string>fb956309179018660</string>
-                <string>com.googleusercontent.apps.466708350180-aoaobgdf6a4ej8l79d0sgfeg9j3voehs</string>
-            </array>
-        </dict>
-  
-    </array>
-    <key>FacebookAppID</key>
-    <string>956309179018660</string>
-    <key>FacebookClientToken</key>
-    <string>dfa285540bc4325f7e2eab5a7877627f</string>
-    <key>FacebookDisplayName</key>
-    <string>MyStudyLife</string>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>fbapi</string>
-           <string>fb-messenger-share-api</string>
-           <string>fbauth2</string>
-           <string>fbshareextension</string>
-      
-    </array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -72,11 +83,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>NSPhotoLibraryUsageDescription</key>
-        <string>This app requires permission to access photo library in order to personalize your experience</string>
-        <key>NSCameraUsageDescription</key>
-        <string>This app requires permission to access camera in order to personalize your experience</string>
-        <key>NSMicrophoneUsageDescription</key>
-        <string>This app requires permission to access microphone in order to personalize your experience</string>
 </dict>
 </plist>

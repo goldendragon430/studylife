@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>466708350180-aoaobgdf6a4ej8l79d0sgfeg9j3voehs.apps.googleusercontent.com</string>
+	<string>430455547992-digdehufftknf27cie9obdh12vacduok.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.466708350180-aoaobgdf6a4ej8l79d0sgfeg9j3voehs</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>466708350180-3o0vmu0ncjinobjvgo5l61rg2c373nds.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.430455547992-digdehufftknf27cie9obdh12vacduok</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDxnyTg-yI941K3t_U5cTiE8TlSqfTastQ</string>
+	<string>AIzaSyCAQXIuz4rRur3LSfKRqtb5oL_egR4c7kY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>466708350180</string>
+	<string>430455547992</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.mystudylife.app</string>
 	<key>PROJECT_ID</key>
-	<string>mystudylife-37265</string>
+	<string>my-study-life-5932b</string>
 	<key>STORAGE_BUCKET</key>
-	<string>mystudylife-37265.appspot.com</string>
+	<string>my-study-life-5932b.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:466708350180:ios:bab616b11e6d21a99f58f1</string>
+	<string>1:430455547992:ios:c5af102f9a6c97a061c22d</string>
+	<key>DATABASE_URL</key>
+	<string>https://my-study-life-5932b.firebaseio.com</string>
 </dict>
 </plist>

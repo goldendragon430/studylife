@@ -99,6 +99,22 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> loginMicrosoftUser(
+      String email, String userId, String firstName, String lastName) async {
+    state = AuthState.loading();
+
+    UserModel user =
+        await repo.loginMicrosoftUser(email, userId, firstName, lastName);
+
+    if (user == UserModel.empty) {
+      state = const AuthState.unauthenticated();
+    } else {
+      /// do your pre-checks about the user before marking the state as
+      /// authenticated
+      state = AuthState.authenticated(user);
+    }
+  }
+
   Future<void> logoutUser() async {
     await repo.logoutUser();
     state = const AuthState.unauthenticated();

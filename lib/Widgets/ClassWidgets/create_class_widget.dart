@@ -352,7 +352,7 @@ class _CreateClassState extends State<CreateClass> {
                             for (var setting in _rotationSettings) ...[
                               if (rotationScheduleSetting == "weekly") ...[
                                 EditTimesAndDaysButton(
-                                    () => _editRotationalTimesSelected,
+                                    () => _addNewTimeSelected,
                                     "${setting.startTime} - ${setting.endtime}",
                                     "${setting.rotationDaysNormal}"),
                                 Container(
@@ -362,7 +362,7 @@ class _CreateClassState extends State<CreateClass> {
                               if (rotationScheduleSetting == "lettered") ...[
                                 if (setting.dayType == "Day of Week") ...[
                                   EditTimesAndDaysButton(
-                                      () => _editRotationalTimesSelected,
+                                      () => _addNewTimeSelected,
                                       "${setting.startTime} - ${setting.endtime}",
                                       "${setting.rotationDaysNormal.toString()}"),
                                   Container(
@@ -371,7 +371,7 @@ class _CreateClassState extends State<CreateClass> {
                                 ],
                                 if (setting.dayType == "Rotation Day") ...[
                                   EditTimesAndDaysButton(
-                                      () => _editRotationalTimesSelected,
+                                      () => _addNewTimeSelected,
                                       "${setting.startTime} - ${setting.endtime}",
                                       "${setting.rotationDaysLettered.toString()}"),
                                   Container(

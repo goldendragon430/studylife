@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 import '../Models/Services/storage_service.dart';
 import 'package:calendar_view/calendar_view.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -94,10 +95,33 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
+      
       _getUserName();
       syncData();
     });
   }
+
+  // void getFirebaseToken() async {
+  //   final fcmToken = await FirebaseMessaging.instance.getToken();
+  //   print("EVE GAAA $fcmToken");
+
+  //   FirebaseMessaging.instance.onTokenRefresh
+  //   .listen((fcmToken) {
+  //         print("MENJA $fcmToken");
+
+  //     // TODO: If necessary send token to application server.
+
+  //     // Note: This callback is fired at each app startup and whenever a new
+  //     // token is generated.
+  //   })
+  //   .onError((err) {
+  //     // Error getting token.
+  //               print("ERROR ${err.toString}");
+
+  //   });
+  // }
+
+  
 
   void syncData() async {
     LoadingDialog.show(context);

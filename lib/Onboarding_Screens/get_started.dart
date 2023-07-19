@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -6,6 +7,13 @@ import 'package:riverpod/riverpod.dart';
 import 'package:beamer/beamer.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
+import 'package:azure_ad_authentication/azure_ad_authentication.dart';
+import 'package:azure_ad_authentication/exeption.dart';
+import 'package:azure_ad_authentication/model/user_ad.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:io';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -28,6 +36,17 @@ class _GetStartedState extends State<GetStarted> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'https://www.googleapis.com/auth/userinfo.profile'],
   );
+
+  static const String _authority = "https://login.microsoftonline.com/common";
+  static const String _redirectUriIos = "msauth.com.mystudylife.app://auth";
+
+  static const String _clientId = "f629f6b8-b7ab-4bbb-8e72-2730508182d1";
+
+  String _output = 'NONE';
+  static const List<String> kScopes = [
+    "https://graph.microsoft.com/user.read",
+    "https://graph.microsoft.com/Calendars.ReadWrite",
+  ];
 
   //final FacebookAuth _facebookAuth = F
 
@@ -92,7 +111,6 @@ class _GetStartedState extends State<GetStarted> {
           userId.isNotEmpty) {
         loginGoogleUser(ref);
       }
-
     } catch (error) {
       print(error);
     }
@@ -148,7 +166,90 @@ class _GetStartedState extends State<GetStarted> {
     _handleSignIn(ref);
   }
 
-  void _officeLogin() {}
+  void _officeLogin(WidgetRef ref) async {
+    _acquireToken(ref);
+    //  print("bhldsbhjsdbhjsdfbhjsfdbhljsfd ${result.toString()}");
+  }
+
+  // Microsoft Azure
+  Future<void> _acquireToken(WidgetRef ref) async {
+    await getResult(ref);
+  }
+
+  Future<void> _acquireTokenSilently(WidgetRef ref) async {
+    await getResult(ref, isAcquireToken: false);
+  }
+
+  /// example return "{accessToken": xxx,"expiresOn" : xxx}"
+  Future<String> tokenString() async {
+    AzureAdAuthentication pca = await intPca();
+    return await pca.acquireTokenString(scopes: kScopes);
+  }
+
+  Future<String> getResult(WidgetRef ref, {bool isAcquireToken = true}) async {
+    AzureAdAuthentication pca = await intPca();
+    String? res;
+    UserAdModel? userAdModel;
+    try {
+      if (isAcquireToken) {
+        userAdModel = await pca.acquireToken(scopes: kScopes);
+      } else {
+        userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
+      }
+    } on MsalUserCancelledException {
+      res = "User cancelled";
+    } on MsalNoAccountException {
+      res = "no account";
+    } on MsalInvalidConfigurationException {
+      res = "invalid config";
+    } on MsalInvalidScopeException {
+      res = "Invalid scope";
+    } on MsalException {
+      res = "Error getting token. Unspecified reason";
+    }
+
+    setState(() {
+      _output = (userAdModel?.toJson().toString() ?? res)!;
+      userId = userAdModel?.id ?? "";
+      firstName = userAdModel?.givenName ?? "";
+      lastName = userAdModel?.surname ?? "";
+      email = userAdModel?.mail ?? "";
+
+      if (firstName.isNotEmpty &&
+          lastName.isNotEmpty &&
+          email.isNotEmpty &&
+          userId.isNotEmpty) {
+        loginMicrosoftUser(ref);
+      }
+    });
+    return (userAdModel?.toJson().toString() ?? res)!;
+  }
+
+  Future<AzureAdAuthentication> intPca() async {
+    var _redirectUri = _redirectUriIos;
+    return await AzureAdAuthentication.createPublicClientApplication(
+      clientId: _clientId,
+      authority: _authority,
+      redirectUri: _redirectUri,
+    );
+  }
+
+  Future _logout() async {
+    AzureAdAuthentication pca = await intPca();
+    String res;
+    try {
+      await pca.logout();
+      res = "Account removed";
+    } on MsalException {
+      res = "Error signing out";
+    } on PlatformException catch (e) {
+      res = "some other exception ${e.toString()}";
+    }
+
+    setState(() {
+      _output = res;
+    });
+  }
 
   void _login(BuildContext context, WidgetRef ref) {
     context.beamToNamed('/started/login');
@@ -185,6 +286,25 @@ class _GetStartedState extends State<GetStarted> {
     await ref
         .read(authProvider.notifier)
         .loginFacebookUser(email, userId, firstName, lastName);
+
+    if (!context.mounted) return;
+
+    LoadingDialog.hide(context);
+
+    var loggedIn = ref.read(authProvider.notifier);
+
+    if (loggedIn.state.status == AuthStatus.authenticated) {
+      // context.beamBack();
+      Beamer.of(context).update();
+    }
+  }
+
+  void loginMicrosoftUser(WidgetRef ref) async {
+    LoadingDialog.show(context);
+
+    await ref
+        .read(authProvider.notifier)
+        .loginMicrosoftUser(email, userId, firstName, lastName);
 
     if (!context.mounted) return;
 
@@ -295,7 +415,7 @@ class _GetStartedState extends State<GetStarted> {
                                         "assets/images/GoogleLoginIcon.png"),
                                     false),
                                 SocialLoginButton(
-                                    _officeLogin,
+                                    () => _officeLogin(ref),
                                     "Office 365",
                                     Image.asset(
                                         "assets/images/OfficeLoginIcon.png"),
@@ -476,7 +596,7 @@ class _GetStartedState extends State<GetStarted> {
                                         "assets/images/GoogleLoginIcon.png"),
                                     true),
                                 SocialLoginButton(
-                                    _officeLogin,
+                                    () => _officeLogin(ref),
                                     "Office 365",
                                     Image.asset(
                                         "assets/images/OfficeLoginIcon.png"),

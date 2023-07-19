@@ -125,6 +125,31 @@ class UserService {
     return response;
   }
 
+   Future<Response> loginMicrosoftUser(
+      String email, String userId, String firstName, String lastName) async {
+    var body = jsonEncode({
+      'email': email,
+      'providerUserId': userId,
+      "firstName": firstName,
+      "lastName": lastName,
+    });
+
+    var response = await Api().tokenDio.post('/api/auth/microsoft', data: body);
+    if (response.statusCode == 200) {
+      // var tokenData = JwtDecoder.decode(response.data['token']);
+      var tokenString = response.data['token'];
+      // print("TOKEN DATA $tokenData");
+
+      // var token = AccessToken.fromJson(tokenData);
+      var user = UserModel.fromJson(response.data['user']);
+
+      await _storage.write(key: "access_token", value: tokenString);
+      await _storage.write(key: "activeUser", value: jsonEncode(user.toJson()));
+    }
+
+    return response;
+  }
+
   Future<Response> refreshToken() async {
     var tokenString = await _storage.read(key: "access_token");
 
