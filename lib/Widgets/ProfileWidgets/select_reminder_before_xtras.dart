@@ -8,22 +8,22 @@ import '../../app.dart';
 import '../tag_card.dart';
 import '../../Models/subjects_datasource.dart';
 
-class SelectReminderBefore extends StatefulWidget {
+class SelectReminderBeforeXtras extends StatefulWidget {
   final Function reminderSelected;
   final String? type;
   final int? preselectedSeconds;
-  SelectReminderBefore(
+  SelectReminderBeforeXtras(
       {super.key,
       required this.reminderSelected,
       this.type,
       this.preselectedSeconds});
 
   @override
-  State<SelectReminderBefore> createState() => _SelectReminderBeforeState();
+  State<SelectReminderBeforeXtras> createState() => _SelectReminderBeforeXtrasState();
 }
 
-class _SelectReminderBeforeState extends State<SelectReminderBefore> {
-  final List<ClassTagItem> _types = ClassTagItem.notificationReminderTimes;
+class _SelectReminderBeforeXtrasState extends State<SelectReminderBeforeXtras> {
+  final List<ClassTagItem> _types = ClassTagItem.notificationReminderTimesXtras;
 
   int selectedTabIndex = 0;
 

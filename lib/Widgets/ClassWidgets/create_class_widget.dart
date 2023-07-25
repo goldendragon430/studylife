@@ -25,12 +25,16 @@ import '../../Models/API/subject.dart';
 import '../../Models/API/classmodel.dart';
 import '../../Models/user.model.dart';
 import '../../Models/API/rotation_time.dart';
-import '../../Models/API/rotation_time.dart';
 
 class CreateClass extends StatefulWidget {
   final Function saveClass;
   final ClassModel? editedClass;
-  const CreateClass({super.key, required this.saveClass, this.editedClass});
+  final Function deleteClass;
+  const CreateClass(
+      {super.key,
+      required this.saveClass,
+      this.editedClass,
+      required this.deleteClass});
 
   @override
   State<CreateClass> createState() => _CreateClassState();
@@ -67,6 +71,7 @@ class _CreateClassState extends State<CreateClass> {
     addStartEndDates = false;
     isOccurringOnce = true;
     isEditing = false;
+    _rotationSettings = [];
     super.dispose();
   }
 
@@ -82,6 +87,18 @@ class _CreateClassState extends State<CreateClass> {
       if (newClass.occurs != "once") {
         isOccurringOnce = false;
       }
+
+      for (var time in newClass.classTimes ?? []) {
+        RotationTimeSetting rotationSetting = RotationTimeSetting();
+        rotationSetting.rotationDaysLettered = time.daysFormatted;
+        rotationSetting.rotationDaysNormal = time.daysFormatted;
+        rotationSetting.startTime = time.startTime;
+        rotationSetting.endtime = time.endTime;
+        rotationSetting.dayType = "Day of Week";
+        _rotationSettings.add(rotationSetting);
+      }
+
+      setState(() {});
     }
   }
 
@@ -113,9 +130,7 @@ class _CreateClassState extends State<CreateClass> {
       var user = UserModel.fromJson(userMap);
       rotationScheduleSetting = user.settingsRotationalSchedule ?? "";
 
-      // setState(() {
-
-      // });
+      setState(() {});
     }
   }
 
@@ -225,7 +240,6 @@ class _CreateClassState extends State<CreateClass> {
   void _switchChangedState(bool isOn, int index) {
     setState(() {
       addStartEndDates = isOn;
-      print("Swithc isOn : $isOn");
     });
   }
 
@@ -265,18 +279,21 @@ class _CreateClassState extends State<CreateClass> {
   void _rotationalTimeAdded(RotationTimeSetting timeSetting) {
     setState(() {
       _rotationSettings.add(timeSetting);
-      print("EVO GA ${timeSetting.rotationDaysLettered}");
     });
   }
 
   void _editRotationalTimesSelected() {}
 
   void _saveClass() {
-    widget.saveClass(newClass);
+    widget.saveClass(newClass, _rotationSettings);
   }
 
   void _cancel() {
     Navigator.pop(context);
+  }
+
+  void _deleteButtonTapped() {
+    widget.deleteClass(newClass);
   }
 
   @override
@@ -293,7 +310,13 @@ class _CreateClassState extends State<CreateClass> {
           child: ListView.builder(
               controller: scrollcontroller,
               padding: const EdgeInsets.only(top: 30),
-              itemCount: addStartEndDates ? 9 : 8,
+              itemCount: addStartEndDates
+                  ? isEditing
+                      ? 10
+                      : 9
+                  : isEditing
+                      ? 9
+                      : 8,
               itemBuilder: (context, index) {
                 if (index == 10) {
                   // Save/Cancel Buttons
@@ -474,6 +497,41 @@ class _CreateClassState extends State<CreateClass> {
                             height: 88,
                           ),
                         ],
+                        if (index == 9) ...[
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                height: 1,
+                                color: theme == ThemeMode.light
+                                    ? Colors.black.withOpacity(0.1)
+                                    : Colors.white.withOpacity(0.1),
+                              ),
+                              Container(
+                                alignment: Alignment.topCenter,
+                                // width: 142,
+                                margin: const EdgeInsets.only(top: 10),
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      overlayColor: MaterialStateProperty.all(
+                                          Colors.transparent),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.transparent)),
+                                  onPressed: _deleteButtonTapped,
+                                  child: Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.normal,
+                                        color: Constants.overdueTextColor),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ],
                       if (!addStartEndDates) ...[
                         if (index == 7) ...[
@@ -510,6 +568,40 @@ class _CreateClassState extends State<CreateClass> {
                             height: 88,
                           ),
                         ],
+                      ],
+                      if (index == 8) ...[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: 1,
+                              color: theme == ThemeMode.light
+                                  ? Colors.black.withOpacity(0.1)
+                                  : Colors.white.withOpacity(0.1),
+                            ),
+                            Container(
+                              alignment: Alignment.topCenter,
+                              // width: 142,
+                              margin: const EdgeInsets.only(top: 10),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.all(
+                                        Colors.transparent),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.transparent)),
+                                onPressed: _deleteButtonTapped,
+                                child: Text(
+                                  "Delete",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.normal,
+                                      color: Constants.overdueTextColor),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ],
                   );

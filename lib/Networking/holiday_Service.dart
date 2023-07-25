@@ -82,4 +82,10 @@ class HolidayService {
       return response;
     }
   }
+
+   Future<Response> deleteHoliday(int holidayId) async {
+    var response = await Api().dio.delete('/api/holiday/$holidayId');
+
+    return response;
+  }
 }

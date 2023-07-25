@@ -473,21 +473,21 @@ class _ExamDetailsScreenState extends State<ExamDetailsScreen> {
                 ],
               ),
             ),
-            Container(
-              alignment: Alignment.topCenter,
-              height: double.infinity,
-              margin: const EdgeInsets.only(top: 567),
-              child: ListView.builder(
-                  // controller: widget._controller,
-                  itemCount: _tasksDue.length,
-                  itemBuilder: (context, index) {
-                    return TaskDueCardForClassOrExam(
-                      index,
-                      _tasksDue[index],
-                      _selectTaskDue,
-                    );
-                  }),
-            ),
+            // Container(
+            //   alignment: Alignment.topCenter,
+            //   height: double.infinity,
+            //   margin: const EdgeInsets.only(top: 567),
+            //   child: ListView.builder(
+            //       // controller: widget._controller,
+            //       itemCount: examItem.tasks?.length,
+            //       itemBuilder: (context, index) {
+            //         return TaskDueCardForClassOrExam(
+            //           index,
+            //           _tasksDue[index],
+            //           _selectTaskDue,
+            //         );
+            //       }),
+            // ),
           ],
         ),
       );

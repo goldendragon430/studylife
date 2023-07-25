@@ -22,7 +22,12 @@ import '../../Models/API/exam.dart';
 class CreateExam extends StatefulWidget {
   final Function saveExam;
   final Exam? editedExam;
-  const CreateExam({super.key, required this.saveExam, this.editedExam});
+  final Function deleteExam;
+  const CreateExam(
+      {super.key,
+      required this.saveExam,
+      this.editedExam,
+      required this.deleteExam});
 
   @override
   State<CreateExam> createState() => _CreateExamState();
@@ -181,6 +186,10 @@ class _CreateExamState extends State<CreateExam> {
     Navigator.pop(context);
   }
 
+  void _deleteButtonTapped() {
+    widget.deleteExam(newExam);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
@@ -194,7 +203,7 @@ class _CreateExamState extends State<CreateExam> {
           child: ListView.builder(
               controller: scrollcontroller,
               padding: const EdgeInsets.only(top: 30),
-              itemCount: 7,
+              itemCount: isEditing ? 8 : 7,
               itemBuilder: (context, index) {
                 if (index == 10) {
                   // Save/Cancel Buttons
@@ -286,6 +295,40 @@ class _CreateExamState extends State<CreateExam> {
                         ),
                         Container(
                           height: 88,
+                        ),
+                      ],
+                      if (index == 7) ...[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: 1,
+                              color: theme == ThemeMode.light
+                                  ? Colors.black.withOpacity(0.1)
+                                  : Colors.white.withOpacity(0.1),
+                            ),
+                            Container(
+                              alignment: Alignment.topCenter,
+                              // width: 142,
+                              margin: const EdgeInsets.only(top: 10),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.all(
+                                        Colors.transparent),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.transparent)),
+                                onPressed: _deleteButtonTapped,
+                                child: Text(
+                                  "Delete",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.normal,
+                                      color: Constants.overdueTextColor),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ],

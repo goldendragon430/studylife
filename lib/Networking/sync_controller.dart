@@ -28,6 +28,7 @@ import '../Models/API/holiday.dart';
 import '../Models/API/xtra.dart';
 import '../Models/user.model.dart';
 import '../Models/API/practicedSubject.dart';
+import '../Models/API/notification_setting.dart';
 
 class SyncController {
   final StorageService _storageService = StorageService();
@@ -38,13 +39,15 @@ class SyncController {
   static List<Event> events = [];
   static List<Holiday> holidays = [];
   static List<Xtra> xtras = [];
+  static List<NotificationSetting> reminders = [];
 
   Future<dynamic> syncAll() async {
     // ErrorState error = ErrorState("Opps");
     Result finalResult = Result.loading("Loading");
     await Future.wait([
-     // _getUser(),
+      // _getUser(),
       _getSubjects(),
+      _getUserReminders(),
       _getHomeData(),
       _getClasses(),
       _getCalendarEvents(),
@@ -235,10 +238,11 @@ class SyncController {
   Future _getCalendarEvents() async {
     DateTime today = DateTime.now();
     DateTime dateFrom = today.subtract(Duration(days: 30));
+    DateTime dateTo = today.add(Duration(days: 30));
 
     String formattedDateFrom = DateFormat('yyyy/MM/dd').format(dateFrom);
 
-    String formattedDateTo = DateFormat('yyyy/MM/dd').format(today);
+    String formattedDateTo = DateFormat('yyyy/MM/dd').format(dateTo);
 
     try {
       var calendarEventssResponse = await CalendarEventService()
@@ -312,6 +316,30 @@ class SyncController {
     }
   }
 
+  Future _getUserReminders() async {
+    try {
+      var holidaysResponse = await UserService().getReminders();
+
+      final remindersList = (holidaysResponse.data['reminders']) as List;
+      var reminders =
+          remindersList.map((i) => NotificationSetting.fromJson(i)).toList();
+
+      var allRemindersStatus = (holidaysResponse.data['allActive']) as bool;
+
+      _storageService.writeSecureData(
+          StorageItem("user_reminders", jsonEncode(reminders)));
+      _storageService.writeSecureData(StorageItem(
+          "user_reminders_all_status", allRemindersStatus.toString()));
+          
+    } catch (error) {
+      if (error is DioError) {
+        throw Result.error(error.response?.data['message']);
+      } else {
+        throw Result.error(error.toString());
+      }
+    }
+  }
+
   Future _getUser() async {
     try {
       var response = await UserService().getUser();
@@ -331,19 +359,18 @@ class SyncController {
 
       _storageService.writeSecureData(
           StorageItem("activeUser", jsonEncode(user.toJson())));
+      _storageService.writeSecureData(
+          StorageItem("tasks_completed", tasksCompleted.toString()));
       _storageService
-          .writeSecureData(StorageItem("tasks_completed", tasksCompleted.toString()));
-      _storageService.writeSecureData(StorageItem("user_streak", yourStreak.toString()));
-      _storageService.writeSecureData(StorageItem(
-          "most_practiced_tasks_count", mostPracticedSubjectTasksCount.toString()));
-      _storageService.writeSecureData(StorageItem(
-          "least_practiced_tasks_count", leastPracticedSubjectTasksCount.toString()));
+          .writeSecureData(StorageItem("user_streak", yourStreak.toString()));
+      _storageService.writeSecureData(StorageItem("most_practiced_tasks_count",
+          mostPracticedSubjectTasksCount.toString()));
+      _storageService.writeSecureData(StorageItem("least_practiced_tasks_count",
+          leastPracticedSubjectTasksCount.toString()));
       _storageService.writeSecureData(StorageItem(
           "most_practiced_subject", jsonEncode(mostPracticedSubject.toJson())));
       _storageService.writeSecureData(StorageItem("least_practiced_subject",
           jsonEncode(leastPracticedSubject.toJson())));
-
-
     } catch (error) {
       if (error is DioError) {
         throw Result.error(error.response?.data['message']);

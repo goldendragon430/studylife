@@ -104,4 +104,10 @@ class XtrasService {
       return response;
     }
   }
+
+  Future<Response> deleteXtra(int xtraId) async {
+    var response = await Api().dio.delete('/api/xtra/$xtraId');
+
+    return response;
+  }
 }

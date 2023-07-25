@@ -23,6 +23,7 @@ class ClassModel {
   Subject? subject;
   List<Task>? tasks;
   bool? upNext;
+  List<ClassTime>? classTimes;
 
   // Calculated
 
@@ -98,7 +99,8 @@ class ClassModel {
       this.createdAt,
       this.updatedAt,
       this.tasks,
-      this.upNext});
+      this.upNext,
+      this.classTimes});
 
   factory ClassModel.fromJson(Map<String, dynamic> json) {
     List<String> dayStrings = [];
@@ -117,6 +119,14 @@ class ClassModel {
     if (json['tasks'] != null) {
       final tasksList = json['tasks'] as List;
       tasksFinal = tasksList.map((i) => Task.fromJson(i)).toList();
+    }
+
+    List<ClassTime> timesOfClasses = [];
+
+    if (json['classTimes'] != null) {
+      final classTimesList = json['classTimes'] as List;
+      timesOfClasses =
+          classTimesList.map((i) => ClassTime.fromJson(i)).toList();
     }
 
     return ClassModel(
@@ -140,6 +150,7 @@ class ClassModel {
         createdAt: json['created_at'],
         updatedAt: json['updated_at'],
         tasks: tasksFinal,
+        classTimes: timesOfClasses,
         upNext: json['upNext']);
   }
 
@@ -165,10 +176,126 @@ class ClassModel {
     if (tasks != null) {
       data['tasks'] = tasks;
     }
+    if (classTimes != null) {
+      data['classTimes'] = classTimes;
+    }
     if (subject != null) {
       data['subject'] = subject!.toJson();
     }
     data['upNext'] = upNext;
+    return data;
+  }
+}
+
+class ClassTime {
+  int? id;
+  List<String>? daysFormatted;
+  int? guid;
+  int? classId;
+  int? days;
+  int? rotationWeek;
+  String? startTime;
+  String? endTime;
+  String? createdAt;
+  String? updatedAt;
+  String? daysToSend;
+
+  // Calculated
+
+  String getFormattedDate() {
+    DateTime? createdAtDate = DateTime.tryParse(createdAt ?? "");
+
+    if (createdAtDate != null) {
+      String formattedDate =
+          DateFormat('MM/dd/yyyy HH:mm:ss').format(createdAtDate);
+      return formattedDate;
+    } else {
+      return "";
+    }
+  }
+
+  ClassTime(
+      {this.id,
+      this.daysFormatted,
+      this.guid,
+      this.classId,
+      this.createdAt,
+      this.updatedAt,
+      this.days,
+      this.rotationWeek,
+      this.startTime,
+      this.endTime,
+      this.daysToSend});
+
+  factory ClassTime.fromJson(Map<String, dynamic> json) {
+    List<String> dayStrings = [];
+
+    if (json['daysFormatted'] != null) {
+      List<dynamic> rawDays = json['daysFormatted'];
+      dayStrings = rawDays.map(
+        (item) {
+          return item as String;
+        },
+      ).toList();
+    }
+
+    return ClassTime(
+        id: json['id'],
+        daysFormatted: dayStrings,
+        guid: json['guid'],
+        classId: json['classId'],
+        createdAt: json['created_at'],
+        updatedAt: json['updated_at'],
+        days: json['days'],
+        rotationWeek: json['rotationWeek'],
+        startTime: json['startTime'],
+        endTime: json['endTime']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['daysFormatted'] = daysFormatted;
+    data['guid'] = guid;
+    data['classId'] = classId;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['days'] = days;
+    data['rotationWeek'] = rotationWeek;
+    data['startTime'] = startTime;
+    data['endTime'] = endTime;
+    return data;
+  }
+}
+
+class ClassTimeToSend {
+  String? daysFormatted;
+  int? rotationWeek;
+  String? startTime;
+  String? endTime;
+
+  ClassTimeToSend(
+      {
+      this.daysFormatted,
+      this.rotationWeek,
+      this.startTime,
+      this.endTime});
+
+  factory ClassTimeToSend.fromJson(Map<String, dynamic> json) {
+
+    return ClassTimeToSend(
+       // daysFormatted: dayStrings,
+        rotationWeek: json['rotationWeek'],
+        startTime: json['startTime'],
+        endTime: json['endTime']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['daysFormatted'] = daysFormatted;
+    data['rotationWeek'] = rotationWeek;
+    data['startTime'] = startTime;
+    data['endTime'] = endTime;
     return data;
   }
 }

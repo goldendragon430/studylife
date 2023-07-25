@@ -21,7 +21,12 @@ import 'package:intl/intl.dart';
 class CreateExtra extends StatefulWidget {
   final Function saveXtra;
   final Xtra? xtraItem;
-  const CreateExtra({super.key, required this.saveXtra, this.xtraItem});
+  final Function deleteXtra;
+  const CreateExtra(
+      {super.key,
+      required this.saveXtra,
+      this.xtraItem,
+      required this.deleteXtra});
 
   @override
   State<CreateExtra> createState() => _CreateExtraState();
@@ -145,12 +150,16 @@ class _CreateExtraState extends State<CreateExtra> {
     Navigator.pop(context);
   }
 
+  void _deleteButtonTapped() {
+    widget.deleteXtra(newXtra);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
       return GestureDetector(
-       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Container(
           color: theme == ThemeMode.light
               ? Constants.lightThemeBackgroundColor
@@ -158,7 +167,7 @@ class _CreateExtraState extends State<CreateExtra> {
           child: ListView.builder(
               controller: scrollcontroller,
               padding: const EdgeInsets.only(top: 30),
-              itemCount: 7,
+              itemCount: isEditing ? 8 : 7,
               itemBuilder: (context, index) {
                 if (index == 10) {
                   // Save/Cancel Buttons
@@ -199,7 +208,7 @@ class _CreateExtraState extends State<CreateExtra> {
                         // ClassWeekDays(
                         //   subjectSelected: _classDaysSelected,
                         // ),
-      
+
                         if (!isOccurringOnce) ...[
                           // Select Week days
                           ClassWeekDays(
@@ -276,7 +285,7 @@ class _CreateExtraState extends State<CreateExtra> {
                           )
                         ],
                       ],
-      
+
                       // if (index == 5) ...[
                       //   // Select Subject
                       //   SelectTaskRepeatOptions(
@@ -315,6 +324,40 @@ class _CreateExtraState extends State<CreateExtra> {
                         ),
                         Container(
                           height: 88,
+                        ),
+                      ],
+                      if (index == 7) ...[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: 1,
+                              color: theme == ThemeMode.light
+                                  ? Colors.black.withOpacity(0.1)
+                                  : Colors.white.withOpacity(0.1),
+                            ),
+                            Container(
+                              alignment: Alignment.topCenter,
+                              // width: 142,
+                              margin: const EdgeInsets.only(top: 10),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.all(
+                                        Colors.transparent),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.transparent)),
+                                onPressed: _deleteButtonTapped,
+                                child: Text(
+                                  "Delete",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.normal,
+                                      color: Constants.overdueTextColor),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ],

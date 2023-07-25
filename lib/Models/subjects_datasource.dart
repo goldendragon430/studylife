@@ -4,15 +4,16 @@ class ClassTagItem {
   final String title;
   bool selected;
   bool isAddNewCard;
+  int? durationInSeconds;
 
   final int cardIndex;
 
-  ClassTagItem({
-    required this.title,
-    required this.selected,
-    required this.isAddNewCard,
-    required this.cardIndex,
-  });
+  ClassTagItem(
+      {required this.title,
+      required this.selected,
+      required this.isAddNewCard,
+      required this.cardIndex,
+      this.durationInSeconds});
 
   static List<ClassTagItem> subjects = [
     ClassTagItem(
@@ -172,47 +173,299 @@ class ClassTagItem {
 
   static List<ClassTagItem> notificationReminderTimes = [
     ClassTagItem(
-        title: "5 Minutes", selected: false, isAddNewCard: false, cardIndex: 0),
+        title: "5 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 0,
+        durationInSeconds: 300),
+    ClassTagItem(
+        title: "10 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1,
+        durationInSeconds: 600),
     ClassTagItem(
         title: "15 Minutes",
         selected: false,
         isAddNewCard: false,
-        cardIndex: 1),
+        cardIndex: 2,
+        durationInSeconds: 900),
     ClassTagItem(
         title: "30 Minutes",
         selected: false,
         isAddNewCard: false,
-        cardIndex: 2),
+        cardIndex: 3,
+        durationInSeconds: 1800),
     ClassTagItem(
         title: "45 Minutes",
         selected: false,
         isAddNewCard: false,
-        cardIndex: 3),
+        cardIndex: 4,
+        durationInSeconds: 2700),
     ClassTagItem(
         title: "60 Minutes",
         selected: false,
         isAddNewCard: false,
-        cardIndex: 4),
+        cardIndex: 5,
+        durationInSeconds: 3600),
     ClassTagItem(
-        title: "1 Day", selected: false, isAddNewCard: false, cardIndex: 5),
+        title: "1 Day",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 6,
+        durationInSeconds: 86400),
     ClassTagItem(
-        title: "2 Days", selected: false, isAddNewCard: false, cardIndex: 6),
+        title: "2 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 7,
+        durationInSeconds: 172800),
     ClassTagItem(
-        title: "3 Days", selected: false, isAddNewCard: false, cardIndex: 7),
+        title: "3 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 8,
+        durationInSeconds: 259200),
     ClassTagItem(
-        title: "4 Days", selected: false, isAddNewCard: false, cardIndex: 8),
+        title: "4 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 9,
+        durationInSeconds: 345600),
     ClassTagItem(
-        title: "5 Days", selected: false, isAddNewCard: false, cardIndex: 9),
+        title: "5 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 10,
+        durationInSeconds: 432000),
     ClassTagItem(
-        title: "6 Days", selected: false, isAddNewCard: false, cardIndex: 10),
+        title: "6 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 11,
+        durationInSeconds: 518400),
     ClassTagItem(
-        title: "7 Days", selected: false, isAddNewCard: false, cardIndex: 11),
+        title: "7 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 12,
+        durationInSeconds: 604800),
     ClassTagItem(
-        title: "14 Days", selected: false, isAddNewCard: false, cardIndex: 12),
+        title: "14 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 13,
+        durationInSeconds: 1209600),
     ClassTagItem(
-        title: "21 Days", selected: false, isAddNewCard: false, cardIndex: 13),
+        title: "21 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 14,
+        durationInSeconds: 1814400),
     ClassTagItem(
-        title: "30 Days", selected: false, isAddNewCard: false, cardIndex: 10),
+        title: "30 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 15,
+        durationInSeconds: 2592000),
+  ];
+
+  static List<ClassTagItem> notificationReminderTimesExams = [
+    ClassTagItem(
+        title: "5 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 0,
+        durationInSeconds: 300),
+    ClassTagItem(
+        title: "10 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1,
+        durationInSeconds: 600),
+    ClassTagItem(
+        title: "15 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 2,
+        durationInSeconds: 900),
+    ClassTagItem(
+        title: "30 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 3,
+        durationInSeconds: 1800),
+    ClassTagItem(
+        title: "45 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 4,
+        durationInSeconds: 2700),
+    ClassTagItem(
+        title: "60 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 5,
+        durationInSeconds: 3600),
+    ClassTagItem(
+        title: "1 Day",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 6,
+        durationInSeconds: 86400),
+    ClassTagItem(
+        title: "2 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 7,
+        durationInSeconds: 172800),
+    ClassTagItem(
+        title: "3 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 8,
+        durationInSeconds: 259200),
+    ClassTagItem(
+        title: "4 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 9,
+        durationInSeconds: 345600),
+    ClassTagItem(
+        title: "5 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 10,
+        durationInSeconds: 432000),
+    ClassTagItem(
+        title: "6 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 11,
+        durationInSeconds: 518400),
+    ClassTagItem(
+        title: "7 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 12,
+        durationInSeconds: 604800),
+    ClassTagItem(
+        title: "14 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 13,
+        durationInSeconds: 1209600),
+    ClassTagItem(
+        title: "21 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 14,
+        durationInSeconds: 1814400),
+    ClassTagItem(
+        title: "30 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 15,
+        durationInSeconds: 2592000),
+  ];
+
+  static List<ClassTagItem> notificationReminderTimesXtras = [
+    ClassTagItem(
+        title: "5 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 0,
+        durationInSeconds: 300),
+    ClassTagItem(
+        title: "10 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 1,
+        durationInSeconds: 600),
+    ClassTagItem(
+        title: "15 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 2,
+        durationInSeconds: 900),
+    ClassTagItem(
+        title: "30 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 3,
+        durationInSeconds: 1800),
+    ClassTagItem(
+        title: "45 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 4,
+        durationInSeconds: 2700),
+    ClassTagItem(
+        title: "60 Minutes",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 5,
+        durationInSeconds: 3600),
+    ClassTagItem(
+        title: "1 Day",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 6,
+        durationInSeconds: 86400),
+    ClassTagItem(
+        title: "2 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 7,
+        durationInSeconds: 172800),
+    ClassTagItem(
+        title: "3 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 8,
+        durationInSeconds: 259200),
+    ClassTagItem(
+        title: "4 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 9,
+        durationInSeconds: 345600),
+    ClassTagItem(
+        title: "5 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 10,
+        durationInSeconds: 432000),
+    ClassTagItem(
+        title: "6 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 11,
+        durationInSeconds: 518400),
+    ClassTagItem(
+        title: "7 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 12,
+        durationInSeconds: 604800),
+    ClassTagItem(
+        title: "14 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 13,
+        durationInSeconds: 1209600),
+    ClassTagItem(
+        title: "21 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 14,
+        durationInSeconds: 1814400),
+    ClassTagItem(
+        title: "30 Days",
+        selected: false,
+        isAddNewCard: false,
+        cardIndex: 15,
+        durationInSeconds: 2592000),
   ];
 
   static List<ClassTagItem> taskTypes = [

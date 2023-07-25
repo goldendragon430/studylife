@@ -6,11 +6,12 @@ import 'package:my_study_life_flutter/Extensions/extensions.dart';
 import '../app.dart';
 import '../Models/tasks_due_dataSource.dart';
 import '../Utilities/constants.dart';
+import '../Models/API/task.dart';
 
 class TaskDueCardForClassOrExam extends ConsumerWidget {
   final int cardIndex;
 
-  final TaskDueStatic taskDueItem;
+  final Task taskDueItem;
   final Function cardselected;
 
   const TaskDueCardForClassOrExam(
@@ -61,7 +62,7 @@ class TaskDueCardForClassOrExam extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Flexible(
-                      child: Text(taskDueItem.title,
+                      child: Text(taskDueItem.details ?? "",
                           maxLines: 4,
                           style: theme == ThemeMode.light
                               ? Constants.lightThemeTaskDueDescriptionTextStyle
@@ -71,12 +72,11 @@ class TaskDueCardForClassOrExam extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(taskDueItem.subject,
+                        Text(taskDueItem.subject?.subjectName ?? "",
                             style: theme == ThemeMode.light
                                 ? Constants.lightThemeTaskSubjectStyle
                                 : Constants.darkThemeTaskSubjectStyle),
-
-                        Text('Due ${_getFormattedTime(taskDueItem.dueDate)}',
+                        Text('Due ${taskDueItem.getTaskDueFormattedDate}',
                             style: theme == ThemeMode.light
                                 ? Constants.lightThemeTaskDueDatetStyle
                                 : Constants.darkThemeTaskDueDatetStyle),
@@ -92,9 +92,13 @@ class TaskDueCardForClassOrExam extends ConsumerWidget {
                   height: 29,
                   width: 3,
                   decoration: BoxDecoration(
-                    color: taskDueItem.subjectColor,
+                      color: taskDueItem.subject?.colorHex != null
+                          ? HexColor.fromHex(taskDueItem.subject!.colorHex!)
+                          : Colors.red,
                       border: Border.all(
-                        color: taskDueItem.subjectColor,
+                        color: taskDueItem.subject?.colorHex != null
+                            ? HexColor.fromHex(taskDueItem.subject!.colorHex!)
+                            : Colors.red,
                       ),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(10))),

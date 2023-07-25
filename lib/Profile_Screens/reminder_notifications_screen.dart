@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
@@ -7,11 +8,19 @@ import '../../app.dart';
 import '../../Utilities/constants.dart';
 import '../../Models/Services/storage_service.dart';
 import '../Widgets/ProfileWidgets/select_reminder_before.dart';
+import '../Widgets/ProfileWidgets/select_reminder_before_exams.dart';
+import '../Widgets/ProfileWidgets/select_reminder_before_xtras.dart';
 import '../Models/API/notification_setting.dart';
 import '../Widgets/switch_row_spaceAround.dart';
 import '../../Models/subjects_datasource.dart';
 import '../Models/user.model.dart';
 import '../Widgets/ProfileWidgets/select_reminder_time.dart';
+import '../Widgets/rounded_elevated_button.dart';
+import 'package:dio/dio.dart';
+import '../../Widgets/loaderIndicator.dart';
+import '../../Widgets/custom_snack_bar.dart';
+import '../Networking/user_service.dart';
+import 'dart:convert';
 
 class ReminderNotificationsScreen extends StatefulWidget {
   final UserModel? currentUser;
@@ -34,6 +43,8 @@ class _ReminderNotificationsScreenState
   final List<NotificationReminder> remindersList =
       NotificationReminder.notificationReminders;
 
+  List<NotificationSetting> savedReminders = [];
+
   bool classReminders = false;
   bool examReminders = false;
   bool xtraReminders = false;
@@ -41,48 +52,146 @@ class _ReminderNotificationsScreenState
 
   @override
   void initState() {
+    _getData();
     // TODO: implement initState
     super.initState();
+  }
+
+  void _getData() async {
+    // Get Tasks from storage
+    var reminderData = await _storageService.readSecureData("user_reminders");
+
+    List<dynamic> decodedReminders = jsonDecode(reminderData ?? "");
+
+    var allRemindersStatus =
+        await _storageService.readSecureData("user_reminders_all_status");
+
+    setState(() {
+      if (allRemindersStatus != null) {
+        if (allRemindersStatus == 'true') {
+          allReminders = true;
+        } else {
+          allReminders = false;
+        }
+        // allReminders =
+        //     bool.fromEnvironment(allRemindersStatus, defaultValue: false);
+
+        remindersList[0].isOn = allReminders;
+      }
+      savedReminders = List<NotificationSetting>.from(
+        decodedReminders.map(
+            (x) => NotificationSetting.fromJson(x as Map<String, dynamic>)),
+      );
+
+      for (var reminder in savedReminders) {
+        var reminderIndex = remindersList
+            .indexWhere((element) => element.type == reminder.type);
+        remindersList[reminderIndex].isOn = reminder.status == 0 ? false : true;
+        remindersList[reminderIndex].selectedSeconds = reminder.beforeTime;
+      }
+    });
   }
 
   void _switchChangedState(bool isOn, int index) {
     setState(() {
       remindersList[index].isOn = isOn;
-      // if (index == 0) {
-      //   allReminders = isOn;
-      // }
-      // if (index == 3) {
-      //   classReminders = isOn;
-      // }
-      // if (index == 4) {
-      //   examReminders = isOn;
-      // }
-      // if (index == 6) {
-      //   xtraReminders = isOn;
-      // }
-      print("Swithc isOn : $isOn");
+
+      if (index == 0) {
+        updateNotificationSettings(isOn);
+      }
     });
   }
 
   void _selectedTime(DateTime time) {
-    if (widget.currentUser?.settingsIs24Hour != null &&
-        widget.currentUser?.settingsIs24Hour == true) {
-      final DateFormat formatter = DateFormat('HH:mm');
-      final String formatted = formatter.format(time);
-      print("Selected repetitionMode: ${formatted}");
-    } else {
-      final DateFormat formatter = DateFormat('hh:mm');
-      final String formatted = formatter.format(time);
-      print("Selected repetitionMode: ${formatted}");
-    }
+    final DateFormat formatter = DateFormat('HH:mm');
+    final String formatted = formatter.format(time);
+    remindersList[3].taskReminderTime = formatted;
+    print("Selected repetitionMode: ${formatted}");
   }
 
   void _remindClassBeforeSelected(ClassTagItem type) {
-    // print("Selected repetitionMode: ${type.title}");
+    remindersList[1].selectedSeconds = type.durationInSeconds;
+  }
+
+  void _remindExamBeforeSelected(ClassTagItem type) {
+    remindersList[2].selectedSeconds = type.durationInSeconds;
   }
 
   void _remindXtraBeforeSelected(ClassTagItem type) {
-    // print("Selected repetitionMode: ${type.title}");
+    remindersList[4].selectedSeconds = type.durationInSeconds;
+  }
+
+  void _saveSettings() {
+    updateNotificationSettings(null);
+  }
+
+  void _cancel() {
+    Navigator.pop(context);
+  }
+
+  // API
+
+  void updateNotificationSettings(bool? isAllSwitch) async {
+    LoadingDialog.show(context);
+
+    if (isAllSwitch != null) {
+      try {
+        var response = await UserService().updateReminders(isAllSwitch, null);
+
+        if (!context.mounted) return;
+        LoadingDialog.hide(context);
+
+        CustomSnackBar.show(context, CustomSnackBarType.success,
+            response.data['message'], true);
+
+        // widget.userUpdated();
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(context, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(context, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    } else {
+      for (var i = 1; i < remindersList.length; i++) {
+        var reminder = remindersList[i];
+        var reminderIndex = savedReminders
+            .indexWhere((element) => element.type == reminder.type);
+        print("INDEXX $reminderIndex");
+        savedReminders[reminderIndex].status = reminder.isOn ? 1 : 0;
+        savedReminders[reminderIndex].beforeTime = reminder.selectedSeconds;
+        savedReminders[reminderIndex].taskReminderTime =
+            reminder.taskReminderTime;
+      }
+
+      try {
+        var response =
+            await UserService().updateReminders(null, savedReminders);
+
+        if (!context.mounted) return;
+        LoadingDialog.hide(context);
+
+        CustomSnackBar.show(context, CustomSnackBarType.success,
+            response.data['message'], true);
+
+        // widget.userUpdated();
+      } catch (error) {
+        if (error is DioError) {
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(context, CustomSnackBarType.error,
+              error.response?.data['message'], true);
+        } else {
+          print("DASDSDSAASDSADDSADS ${error.toString()}");
+          LoadingDialog.hide(context);
+          CustomSnackBar.show(context, CustomSnackBarType.error,
+              "Oops, something went wrong", true);
+        }
+      }
+    }
   }
 
   @override
@@ -111,7 +220,7 @@ class _ReminderNotificationsScreenState
         body: ListView.builder(
           controller: scrollcontroller,
           padding: const EdgeInsets.only(top: 30),
-          itemCount: remindersList[0].isOn ? 7 : 1,
+          itemCount: remindersList[0].isOn ? 6 : 2,
           itemBuilder: (context, index) {
             return Column(
               children: [
@@ -124,81 +233,120 @@ class _ReminderNotificationsScreenState
                     bottomBorderOn: true,
                   )
                 ],
+                // if (index == 1) ...[
+                //   RowSwitchSpaceAround(
+                //     title: remindersList[index].title,
+                //     isOn: remindersList[index].isOn,
+                //     changedState: _switchChangedState,
+                //     index: index,
+                //     bottomBorderOn: true,
+                //   )
+                // ],
+                // if (index == 2) ...[
+                //   RowSwitchSpaceAround(
+                //     title: remindersList[index].title,
+                //     isOn: remindersList[index].isOn,
+                //     changedState: _switchChangedState,
+                //     index: index,
+                //     bottomBorderOn: true,
+                //   )
+                // ],
                 if (index == 1) ...[
-                  RowSwitchSpaceAround(
-                    title: remindersList[index].title,
-                    isOn: remindersList[index].isOn,
-                    changedState: _switchChangedState,
-                    index: index,
-                    bottomBorderOn: true,
-                  )
+                  if (!remindersList[0].isOn) ...[
+                    Container(
+                      height: 68,
+                    ),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      width: double.infinity,
+                      // margin: const EdgeInsets.only(top: 260),
+                      padding: const EdgeInsets.only(left: 106, right: 106),
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          RoundedElevatedButton(
+                              _saveSettings,
+                              "Save Changes",
+                              Constants.lightThemePrimaryColor,
+                              Colors.black,
+                              45),
+                          RoundedElevatedButton(
+                              _cancel,
+                              "Cancel",
+                              Constants.blueButtonBackgroundColor,
+                              Colors.white,
+                              45)
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 88,
+                    ),
+                  ],
+                  if (remindersList[0].isOn) ...[
+                    if (remindersList[index].isOn) ...[
+                      RowSwitchSpaceAround(
+                        title: remindersList[index].title,
+                        isOn: remindersList[index].isOn,
+                        changedState: _switchChangedState,
+                        index: index,
+                        bottomBorderOn: false,
+                      ),
+                      Container(
+                        height: 30,
+                      ),
+                      SelectReminderBefore(
+                        reminderSelected: _remindClassBeforeSelected,
+                        preselectedSeconds:
+                            remindersList[index].selectedSeconds,
+                      ),
+                      Container(
+                        height: 20,
+                      ),
+                    ],
+                    if (!remindersList[index].isOn) ...[
+                      RowSwitchSpaceAround(
+                        title: remindersList[index].title,
+                        isOn: remindersList[index].isOn,
+                        changedState: _switchChangedState,
+                        index: index,
+                        bottomBorderOn: true,
+                      )
+                    ],
+                  ]
                 ],
                 if (index == 2) ...[
-                  RowSwitchSpaceAround(
-                    title: remindersList[index].title,
-                    isOn: remindersList[index].isOn,
-                    changedState: _switchChangedState,
-                    index: index,
-                    bottomBorderOn: true,
-                  )
+                  if (remindersList[index].isOn) ...[
+                    RowSwitchSpaceAround(
+                      title: remindersList[index].title,
+                      isOn: remindersList[index].isOn,
+                      changedState: _switchChangedState,
+                      index: index,
+                      bottomBorderOn: false,
+                    ),
+                    Container(
+                      height: 30,
+                    ),
+                    SelectReminderBeforeExams(
+                      reminderSelected: _remindExamBeforeSelected,
+                      preselectedSeconds: remindersList[index].selectedSeconds,
+                    ),
+                    Container(
+                      height: 20,
+                    ),
+                  ],
+                  if (!remindersList[index].isOn) ...[
+                    RowSwitchSpaceAround(
+                      title: remindersList[index].title,
+                      isOn: remindersList[index].isOn,
+                      changedState: _switchChangedState,
+                      index: index,
+                      bottomBorderOn: true,
+                    )
+                  ],
                 ],
                 if (index == 3) ...[
-                  if (remindersList[index].isOn) ...[
-                    RowSwitchSpaceAround(
-                      title: remindersList[index].title,
-                      isOn: remindersList[index].isOn,
-                      changedState: _switchChangedState,
-                      index: index,
-                      bottomBorderOn: false,
-                    ),
-                    Container(
-                      height: 30,
-                    ),
-                    SelectReminderBefore(
-                        reminderSelected: _remindClassBeforeSelected),
-                    Container(
-                      height: 20,
-                    ),
-                  ],
-                  if (!remindersList[index].isOn) ...[
-                    RowSwitchSpaceAround(
-                      title: remindersList[index].title,
-                      isOn: remindersList[index].isOn,
-                      changedState: _switchChangedState,
-                      index: index,
-                      bottomBorderOn: true,
-                    )
-                  ],
-                ],
-                if (index == 4) ...[
-                  if (remindersList[index].isOn) ...[
-                    RowSwitchSpaceAround(
-                      title: remindersList[index].title,
-                      isOn: remindersList[index].isOn,
-                      changedState: _switchChangedState,
-                      index: index,
-                      bottomBorderOn: false,
-                    ),
-                    Container(
-                      height: 30,
-                    ),
-                    SelectReminderBefore(
-                        reminderSelected: _remindClassBeforeSelected),
-                    Container(
-                      height: 20,
-                    ),
-                  ],
-                  if (!remindersList[index].isOn) ...[
-                    RowSwitchSpaceAround(
-                      title: remindersList[index].title,
-                      isOn: remindersList[index].isOn,
-                      changedState: _switchChangedState,
-                      index: index,
-                      bottomBorderOn: true,
-                    )
-                  ],
-                ],
-                if (index == 5) ...[
                   if (remindersList[index].isOn) ...[
                     RowSwitchSpaceAround(
                       title: remindersList[index].title,
@@ -273,7 +421,7 @@ class _ReminderNotificationsScreenState
                   //   height: 19,
                   // ),
                 ],
-                if (index == 6) ...[
+                if (index == 4) ...[
                   if (remindersList[index].isOn) ...[
                     RowSwitchSpaceAround(
                       title: remindersList[index].title,
@@ -285,8 +433,10 @@ class _ReminderNotificationsScreenState
                     Container(
                       height: 30,
                     ),
-                    SelectReminderBefore(
-                        reminderSelected: _remindXtraBeforeSelected),
+                    SelectReminderBeforeXtras(
+                      reminderSelected: _remindXtraBeforeSelected,
+                      preselectedSeconds: remindersList[index].selectedSeconds,
+                    ),
                     Container(
                       height: 20,
                     ),
@@ -300,6 +450,35 @@ class _ReminderNotificationsScreenState
                       bottomBorderOn: true,
                     )
                   ],
+                ],
+                if (index == 5) ...[
+                  // Save/Cancel buttons
+                  Container(
+                    height: 68,
+                  ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    width: double.infinity,
+                    // margin: const EdgeInsets.only(top: 260),
+                    padding: const EdgeInsets.only(left: 106, right: 106),
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        RoundedElevatedButton(_saveSettings, "Save Changes",
+                            Constants.lightThemePrimaryColor, Colors.black, 45),
+                        RoundedElevatedButton(
+                            _cancel,
+                            "Cancel",
+                            Constants.blueButtonBackgroundColor,
+                            Colors.white,
+                            45)
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 88,
+                  ),
                 ],
               ],
             );

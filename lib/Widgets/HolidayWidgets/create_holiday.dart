@@ -15,7 +15,12 @@ import '.././rounded_elevated_button.dart';
 class CreateHoliday extends StatefulWidget {
   final Function saveHoliday;
   final Holiday? holidayItem;
-  const CreateHoliday({super.key, required this.saveHoliday, this.holidayItem});
+  final Function deleteHoliday;
+  const CreateHoliday(
+      {super.key,
+      required this.saveHoliday,
+      this.holidayItem,
+      required this.deleteHoliday});
 
   @override
   State<CreateHoliday> createState() => _CreateHolidayState();
@@ -33,7 +38,7 @@ class _CreateHolidayState extends State<CreateHoliday> {
     super.initState();
   }
 
-   void checkForEditedHoliday() {
+  void checkForEditedHoliday() {
     if (widget.holidayItem != null) {
       isEditing = true;
       newHoliday = widget.holidayItem!;
@@ -54,7 +59,7 @@ class _CreateHolidayState extends State<CreateHoliday> {
   }
 
   void _photoAdded(String path) {
-   // newHoliday.imageUrl = path;
+    // newHoliday.imageUrl = path;
     newHoliday.newImagePath = path;
   }
 
@@ -66,12 +71,16 @@ class _CreateHolidayState extends State<CreateHoliday> {
     Navigator.pop(context);
   }
 
+  void _deleteButtonTapped() {
+    widget.deleteHoliday(newHoliday);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
       return GestureDetector(
-       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Container(
           color: theme == ThemeMode.light
               ? Constants.lightThemeBackgroundColor
@@ -79,7 +88,7 @@ class _CreateHolidayState extends State<CreateHoliday> {
           child: ListView.builder(
               controller: scrollcontroller,
               padding: const EdgeInsets.only(top: 30),
-              itemCount: 4,
+              itemCount: isEditing ? 5 : 4,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -100,7 +109,8 @@ class _CreateHolidayState extends State<CreateHoliday> {
                     ],
                     if (index == 2) ...[
                       AddPhotoWidget(
-                        imageUrl: newHoliday.newImagePath ?? newHoliday.imageUrl,
+                        imageUrl:
+                            newHoliday.newImagePath ?? newHoliday.imageUrl,
                         photoAdded: _photoAdded,
                       )
                     ],
@@ -135,6 +145,40 @@ class _CreateHolidayState extends State<CreateHoliday> {
                       ),
                       Container(
                         height: 88,
+                      ),
+                    ],
+                    if (index == 4) ...[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: 1,
+                            color: theme == ThemeMode.light
+                                ? Colors.black.withOpacity(0.1)
+                                : Colors.white.withOpacity(0.1),
+                          ),
+                          Container(
+                            alignment: Alignment.topCenter,
+                            // width: 142,
+                            margin: const EdgeInsets.only(top: 10),
+                            child: TextButton(
+                              style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(
+                                      Colors.transparent),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.transparent)),
+                              onPressed: _deleteButtonTapped,
+                              child: Text(
+                                "Delete",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.normal,
+                                    color: Constants.overdueTextColor),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ],

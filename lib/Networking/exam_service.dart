@@ -93,16 +93,21 @@ class ExamService {
     return response;
   }
 
-   Future<Response> addExamScore(int examItemId, String score, String scoreType) async {
+  Future<Response> addExamScore(
+      int examItemId, String score, String scoreType) async {
     String body;
 
-    body = jsonEncode({
-      'score': score,
-      'scoreType': scoreType
-    });
+    body = jsonEncode({'score': score, 'scoreType': scoreType});
 
-    var response = await Api().dio.put('/api/exam/$examItemId/score', data: body);
+    var response =
+        await Api().dio.put('/api/exam/$examItemId/score', data: body);
     print(response);
+
+    return response;
+  }
+
+  Future<Response> deleteExam(int examId) async {
+    var response = await Api().dio.delete('/api/exam/$examId');
 
     return response;
   }

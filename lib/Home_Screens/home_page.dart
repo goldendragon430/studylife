@@ -7,6 +7,7 @@ import '../Models/Services/storage_service.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io' show Platform;
+import 'package:dio/dio.dart';
 
 import '../app.dart';
 import '../Utilities/constants.dart';
@@ -32,6 +33,7 @@ import '../Models/API/exam.dart';
 import '../Models/API/task.dart';
 import '../Models/user.model.dart';
 import '../Models/API/event.dart';
+import '../Networking/user_service.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
@@ -108,13 +110,13 @@ class _HomePageState extends State<HomePage> {
       firebaseMessaging.requestPermission();
     }
 
-    
-
     final fcmToken = await FirebaseMessaging.instance.getToken();
-    print("EVE GAAA $fcmToken");
+    if (fcmToken != null) {
+      subscribeUserToPushNotifications(fcmToken);
+    }
 
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
-      print("MENJA $fcmToken");
+      subscribeUserToPushNotifications(fcmToken);
 
       // TODO: If necessary send token to application server.
 
@@ -124,6 +126,24 @@ class _HomePageState extends State<HomePage> {
       // Error getting token.
       print("ERROR ${err.toString}");
     });
+  }
+
+  void subscribeUserToPushNotifications(String token) async {
+    // LoadingDialog.show(context);
+
+    try {
+      var response = await UserService().subscribeToNotifications(token);
+    } catch (error) {
+      if (error is DioError) {
+        //   LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        // LoadingDialog.hide(context);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
+      }
+    }
   }
 
   void syncData() async {
@@ -188,34 +208,61 @@ class _HomePageState extends State<HomePage> {
         );
 
         for (var eventEntry in events) {
-          var newCalendarEntry = CalendarEventData(
-            date: eventEntry.getFormattedStartingDate(),
-            event: eventEntry,
-            title: eventEntry.mode ?? "",
-            description: "Today is project meeting.",
-            startTime: DateTime(
-                eventEntry.getFormattedStartingDate().year,
-                eventEntry.getFormattedStartingDate().month,
-                eventEntry.getFormattedStartingDate().day,
-                eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
-                eventEntry.toTimeOfDay(eventEntry.startTime ?? "").minute),
-            endTime: DateTime(
-                eventEntry.getFormattedStartingDate().year,
-                eventEntry.getFormattedStartingDate().month,
-                eventEntry.getFormattedStartingDate().day,
-                eventEntry.endTime != null
-                    ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").hour
-                    : eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
-                eventEntry.endTime != null
-                    ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").minute
-                    : eventEntry.duration ?? 60),
-          );
+          if (eventEntry.occurs == "once") {
+            var newCalendarEntry = CalendarEventData(
+              date: eventEntry.getFormattedStartingDate(),
+              event: eventEntry,
+              title: eventEntry.module ?? "",
+              description: "",
+              startTime: DateTime(
+                  eventEntry.getFormattedStartingDate().year,
+                  eventEntry.getFormattedStartingDate().month,
+                  eventEntry.getFormattedStartingDate().day,
+                  eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
+                  eventEntry.toTimeOfDay(eventEntry.startTime ?? "").minute),
+              endTime: DateTime(
+                  eventEntry.getFormattedStartingDate().year,
+                  eventEntry.getFormattedStartingDate().month,
+                  eventEntry.getFormattedStartingDate().day,
+                  eventEntry.endTime != null
+                      ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").hour
+                      : eventEntry.toTimeOfDay(eventEntry.startTime ?? "").hour,
+                  eventEntry.endTime != null
+                      ? eventEntry.toTimeOfDay(eventEntry.endTime ?? "").minute
+                      : eventEntry.duration ?? 60),
+            );
 
-          // print("DATE START : ${newCalendarEntry.date}");
-          // print("TIMEEE : ${newCalendarEntry.startTime}");
-          // print("TIMEEE END: ${newCalendarEntry.endTime}");
+            // print("DATE START : ${newCalendarEntry.date}");
+            // print("TIMEEE : ${newCalendarEntry.startTime}");
+            // print("TIMEEE END: ${newCalendarEntry.endTime}");
 
-          _events.add(newCalendarEntry);
+            _events.add(newCalendarEntry);
+          } else {
+            var newCalendarEntry = CalendarEventData(
+                date: eventEntry.getFormattedStartingDateForRepeating(),
+                event: eventEntry,
+                title: eventEntry.module ?? "",
+                description: "",
+                startTime: DateTime(
+                    eventEntry.getFormattedStartingDateForRepeating().year,
+                    eventEntry.getFormattedStartingDateForRepeating().month,
+                    eventEntry.getFormattedStartingDateForRepeating().day,
+                    eventEntry.getFormattedStartingDateForRepeating().hour,
+                    eventEntry.getFormattedStartingDateForRepeating().minute),
+                endTime: DateTime(
+                  eventEntry.getFormattedEndingDateForRepeating().year,
+                  eventEntry.getFormattedEndingDateForRepeating().month,
+                  eventEntry.getFormattedEndingDateForRepeating().day,
+                  eventEntry.getFormattedEndingDateForRepeating().hour,
+                  eventEntry.getFormattedEndingDateForRepeating().minute,
+                ));
+
+            // print("DATE START : ${newCalendarEntry.date}");
+            // print("TIMEEE : ${newCalendarEntry.startTime}");
+            // print("TIMEEE END: ${newCalendarEntry.endTime}");
+
+            _events.add(newCalendarEntry);
+          }
         }
 
         CalendarControllerProvider.of<Event>(

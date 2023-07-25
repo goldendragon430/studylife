@@ -20,7 +20,12 @@ import '../../Models/Services/storage_service.dart';
 class CreateTask extends StatefulWidget {
   final Function saveTask;
   final Task? taskitem;
-  const CreateTask({super.key, required this.saveTask, this.taskitem});
+  final Function deleteTask;
+  const CreateTask(
+      {super.key,
+      required this.saveTask,
+      this.taskitem,
+      required this.deleteTask});
 
   @override
   State<CreateTask> createState() => _CreateTaskState();
@@ -49,7 +54,7 @@ class _CreateTaskState extends State<CreateTask> {
     super.dispose();
   }
 
-   void getSubjects() async {
+  void getSubjects() async {
     var subjectsData = await _storageService.readSecureData("user_subjects");
 
     List<dynamic> decodedData = jsonDecode(subjectsData ?? "");
@@ -68,7 +73,7 @@ class _CreateTaskState extends State<CreateTask> {
     });
   }
 
-    void _subjectSelected(Subject subject) {
+  void _subjectSelected(Subject subject) {
     for (var savedSubject in _subjects) {
       savedSubject.selected = false;
       if (savedSubject.id == subject.id) {
@@ -86,7 +91,7 @@ class _CreateTaskState extends State<CreateTask> {
   }
 
   void _taskTypeSelected(ClassTagItem taskType) {
-   // print("Selected task: ${taskType.title}");
+    // print("Selected task: ${taskType.title}");
     newTask.type = taskType.title.toLowerCase();
   }
 
@@ -100,7 +105,7 @@ class _CreateTaskState extends State<CreateTask> {
 
   void _taskOccuringSelected(ClassTagItem occuring) {
     newTask.occurs = occuring.title.toLowerCase();
-   // print("Selected repetitionMode: ${occuring.title}");
+    // print("Selected repetitionMode: ${occuring.title}");
   }
 
   void _dateOfTaskSelected(DateTime date) {
@@ -110,7 +115,7 @@ class _CreateTaskState extends State<CreateTask> {
 
   void _taskRepeatOptionSelected(ClassTagItem repeatOption) {
     newTask.repeatOption = repeatOption.title.toLowerCase();
-   // print("Selected task: ${repeatOption.title}");
+    // print("Selected task: ${repeatOption.title}");
   }
 
   void _tasRepeatDateSelect(DateTime date) {
@@ -123,7 +128,7 @@ class _CreateTaskState extends State<CreateTask> {
     // final formattedTimeOfDay =
     //     localizations.formatTimeOfDay(time, alwaysUse24HourFormat: true);
 
-        String formattedDate = DateFormat('yyyy-MM-dd').format(time);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(time);
     //newTask.startDate = formattedDate;
 
     // newTask.startTime = formattedTimeOfDay;
@@ -134,7 +139,11 @@ class _CreateTaskState extends State<CreateTask> {
   }
 
   void _cancel() {
-     Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  void _deleteButtonTapped() {
+    widget.deleteTask(newTask);
   }
 
   //  void _selectedTimes(TimeOfDay time, bool isTimeFrom) {
@@ -164,7 +173,7 @@ class _CreateTaskState extends State<CreateTask> {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
       return GestureDetector(
-       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Container(
           color: theme == ThemeMode.light
               ? Constants.lightThemeBackgroundColor
@@ -172,7 +181,7 @@ class _CreateTaskState extends State<CreateTask> {
           child: ListView.builder(
               controller: scrollcontroller,
               padding: const EdgeInsets.only(top: 30),
-              itemCount: 7,
+              itemCount: isEditing ? 8 : 7,
               itemBuilder: (context, index) {
                 if (index == 10) {
                   // Save/Cancel Buttons
@@ -185,7 +194,7 @@ class _CreateTaskState extends State<CreateTask> {
                   // Add Questions
                   return Column(
                     children: [
-                       if (index == 0) ...[
+                      if (index == 0) ...[
                         // Select Subject
                         SelectSubject(
                           subjectSelected: _subjectSelected,
@@ -261,6 +270,40 @@ class _CreateTaskState extends State<CreateTask> {
                         ),
                         Container(
                           height: 88,
+                        ),
+                      ],
+                      if (index == 7) ...[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: 1,
+                              color: theme == ThemeMode.light
+                                  ? Colors.black.withOpacity(0.1)
+                                  : Colors.white.withOpacity(0.1),
+                            ),
+                            Container(
+                              alignment: Alignment.topCenter,
+                              // width: 142,
+                              margin: const EdgeInsets.only(top: 10),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.all(
+                                        Colors.transparent),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.transparent)),
+                                onPressed: _deleteButtonTapped,
+                                child: Text(
+                                  "Delete",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.normal,
+                                      color: Constants.overdueTextColor),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ],

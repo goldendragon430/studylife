@@ -48,7 +48,7 @@ class ClassDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeModeProvider);
-    final List<TaskDueStatic> _tasksDue = TaskDueStatic.tasksDue;
+   // final List<TaskDueStatic> _tasksDue = TaskDueStatic.tasksDue;
 
     return Container(
       color: theme == ThemeMode.light
@@ -108,10 +108,28 @@ class ClassDetailsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          ClassExamDetailsInfoCard(classItem.subject?.colorHex != null
-                              ? HexColor.fromHex(classItem.subject!.colorHex!)
-                              : Colors.red, "Class", classItem.subject?.subjectName ?? "",
-              classItem.module ?? "", classItem.startDate, classItem.startTime),
+          if (classItem.occurs == "rotational") ...[
+            ClassExamDetailsInfoCard(
+                classItem.subject?.colorHex != null
+                    ? HexColor.fromHex(classItem.subject!.colorHex!)
+                    : Colors.red,
+                "Class",
+                classItem.subject?.subjectName ?? "",
+                classItem.module ?? "",
+                classItem.startDate,
+                classItem.classTimes?.first.startTime),
+          ],
+          if (classItem.occurs != "rotational") ...[
+            ClassExamDetailsInfoCard(
+                classItem.subject?.colorHex != null
+                    ? HexColor.fromHex(classItem.subject!.colorHex!)
+                    : Colors.red,
+                "Class",
+                classItem.subject?.subjectName ?? "",
+                classItem.module ?? "",
+                classItem.startDate,
+                classItem.startTime),
+          ],
           Container(
             margin: const EdgeInsets.only(left: 20, top: 349),
             child: Column(
@@ -121,7 +139,7 @@ class ClassDetailsScreen extends ConsumerWidget {
                 IconLabelDetailsRow(
                     Image.asset("assets/images/LocationPinGrey.png"),
                     "Where",
-                    '${classItem.room ?? ""}, ${classItem.building ?? ""}'),
+                    classItem.mode != "online" ? '${classItem.room ?? ""}, ${classItem.building ?? ""}' : "online"),
                 Container(
                   height: 8,
                 ),
@@ -147,11 +165,11 @@ class ClassDetailsScreen extends ConsumerWidget {
             margin: const EdgeInsets.only(top: 483),
             child: ListView.builder(
                 // controller: widget._controller,
-                itemCount: classItem.tasks?.length,
+                itemCount: classItem.tasks != null ? classItem.tasks!.length : 0,
                 itemBuilder: (context, index) {
                   return TaskDueCardForClassOrExam(
                     index,
-                    _tasksDue[index],
+                    classItem.tasks![index],
                     _selectTaskDue,
                   );
                 }),

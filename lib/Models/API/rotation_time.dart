@@ -4,7 +4,7 @@ class RotationTimeSetting {
   List<String>? rotationDaysNormal;
   String? startTime;
   String? endtime;
-  String? rotationWeek;
+  int? rotationWeek;
 
 
   RotationTimeSetting({

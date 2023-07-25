@@ -35,6 +35,11 @@ class Event {
   EventType? eventType;
   Subject? subject;
   String? seat;
+  String? eventStart;
+  String? eventEnd;
+
+  // "eventStart": "2023-06-27 11:00:00",
+  //           "eventEnd": "2023-06-27 12:00:00",
 
   // Calculated
 
@@ -62,6 +67,30 @@ class Event {
     }
   }
 
+  DateTime getFormattedStartingDateForRepeating() {
+    DateTime? createdAtDate = DateTime.tryParse(eventStart ?? "");
+
+    if (createdAtDate != null) {
+      // String formattedDate =
+      //     DateFormat('MM/dd/yyyy HH:mm:ss').format(createdAtDate);
+      return createdAtDate;
+    } else {
+      return DateTime.now();
+    }
+  }
+
+  DateTime getFormattedEndingDateForRepeating() {
+    DateTime? createdAtDate = DateTime.tryParse(eventEnd ?? "");
+
+    if (createdAtDate != null) {
+      // String formattedDate =
+      //     DateFormat('MM/dd/yyyy HH:mm:ss').format(createdAtDate);
+      return createdAtDate;
+    } else {
+      return DateTime.now();
+    }
+  }
+
   TimeOfDay toTimeOfDay(String? time) {
     if (time != null && time.isNotEmpty) {
       List<String> timeSplit = time.split(":");
@@ -78,7 +107,7 @@ class Event {
       case "class":
         return EventType.classEvent;
       case "exam":
-        return EventType.eventsEvent;
+        return EventType.examEvent;
       case "holiday":
         return EventType.breakEvent;
       case "task":
@@ -110,7 +139,9 @@ class Event {
       this.subject,
       this.duration,
       this.resit,
-      this.seat});
+      this.seat,
+      this.eventStart,
+      this.eventEnd});
 
   Event.fromJson(Map<String, dynamic> json) {
     List<String> dayStrings = [];
@@ -145,6 +176,8 @@ class Event {
     seat = json['seat'];
     subject =
         json['subject'] != null ? Subject.fromJson(json['subject']) : null;
+    eventStart = json['eventStart'];
+    eventEnd = json['eventEnd'];
   }
 
   Map<String, dynamic> toJson() {
@@ -171,6 +204,8 @@ class Event {
     data['duration'] = this.duration;
     data['resit'] = resit;
     data['seat'] = seat;
+    data['eventStart'] = eventStart;
+    data['eventEnd'] = eventEnd;
     return data;
   }
 }

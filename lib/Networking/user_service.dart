@@ -7,6 +7,7 @@ import './api_service.dart';
 import 'dart:convert';
 import '../Models/user.model.dart';
 import '../Models/API/practicedSubject.dart';
+import '../Models/API/notification_setting.dart';
 
 class UserService {
   static UserService? _instance;
@@ -125,7 +126,7 @@ class UserService {
     return response;
   }
 
-   Future<Response> loginMicrosoftUser(
+  Future<Response> loginMicrosoftUser(
       String email, String userId, String firstName, String lastName) async {
     var body = jsonEncode({
       'email': email,
@@ -295,6 +296,46 @@ class UserService {
     var response = await Api().dio.post('/api/user/get-help', data: body);
 
     return response;
+  }
+
+  Future<Response> subscribeToNotifications(String token) async {
+    var body = jsonEncode({'platformType': "ios", "firebaseToken": token});
+
+    var response =
+        await Api().dio.post('/api/user/subscribe-firebase', data: body);
+
+    return response;
+  }
+
+  Future<Response> getReminders() async {
+    var response = await Api().dio.get("/api/reminder/");
+
+    return response;
+  }
+
+  Future<Response> updateReminders(
+      bool? allSwitch, List<NotificationSetting>? reminders) async {
+    String body;
+
+    if (allSwitch != null) {
+      List<dynamic> listData = [
+        {'type': 'all', 'status': allSwitch == true ? 1 : 0}
+      ];
+
+      body = jsonEncode(listData);
+
+      var response = await Api().dio.post('/api/reminder', data: body);
+
+      return response;
+    } else {
+      body = jsonEncode(reminders?.map((e) => e.toJson()).toList());
+
+      //body = jsonEncode({reminders});
+
+      var response = await Api().dio.post('/api/reminder', data: body);
+
+      return response;
+    }
   }
 
   Future<Response> deleteUser() async {

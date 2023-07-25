@@ -73,7 +73,7 @@ class _AddRotationalTimesScreenState extends State<AddRotationalTimesScreen>
       }
 
       _rotationWeeks[index].selected = true;
-      _rotationSetting.rotationWeek = _rotationWeeks[index].title;
+      _rotationSetting.rotationWeek = rotationWeekIndex;
     });
   }
 
@@ -118,17 +118,17 @@ class _AddRotationalTimesScreenState extends State<AddRotationalTimesScreen>
 
       _startDays[index].selected = !_startDays[index].selected;
 
-      var existingItem = letteredDays.firstWhere(
+      var existingItem = normalDays.firstWhere(
           (itemToCheck) => itemToCheck == _startDays[index].title,
           orElse: () => "");
 
       if (_startDays[index].selected) {
         if (existingItem.isEmpty) {
-          letteredDays.add(_startDays[index].title);
+          normalDays.add(_startDays[index].title);
         }
       } else {
         if (existingItem.isNotEmpty) {
-          letteredDays.remove(_startDays[index].title);
+          normalDays.remove(_startDays[index].title);
         }
       }
     });
@@ -150,7 +150,7 @@ class _AddRotationalTimesScreenState extends State<AddRotationalTimesScreen>
       if (normalDays.isEmpty) {
         return;
       } else {
-        _rotationSetting.rotationDaysLettered = normalDays;
+        _rotationSetting.rotationDaysNormal = normalDays;
       }
 
       if (_rotationSetting.startTime == null ||
@@ -184,7 +184,6 @@ class _AddRotationalTimesScreenState extends State<AddRotationalTimesScreen>
       widget.timeAdded(_rotationSetting);
       Navigator.pop(context);
     }
-
   }
 
   @override

@@ -103,7 +103,7 @@ class ClassExamDetailsInfoCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "".getFormattedDateClass(dateFrom ?? ""),
+                      dateFrom != null ? "".getFormattedDateClass(dateFrom ?? "") : "",
                       //dateFrom.getFormattedDate(dateFrom),
                       style: theme == ThemeMode.light
                           ? Constants.lightThemeDetailsDateStyle
@@ -117,7 +117,7 @@ class ClassExamDetailsInfoCard extends ConsumerWidget {
                           : Colors.white.withOpacity(0.2),
                     ),
                     Text(
-                      "".getFormattedTimeClass(dateTo ?? "", context),
+                     dateTo != null ?  "".getFormattedTimeClass(dateTo ?? "", context) : "",
                       style: theme == ThemeMode.light
                           ? Constants.lightThemeDetailsDateStyle
                           : Constants.darkThemeDetailsDateStyle,

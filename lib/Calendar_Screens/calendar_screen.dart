@@ -103,7 +103,7 @@ class _CalendarScreenState extends State<CalendarScreen>
   @override
   void initState() {
     super.initState();
-   // WidgetsBinding.instance.addObserver(this);
+    // WidgetsBinding.instance.addObserver(this);
     currentMonthName = _getCurrentMonthName();
     currentWeekName = _getCurrentWeekName();
     currentSelectedDayStringName = _getCurrentDayName();
@@ -121,31 +121,48 @@ class _CalendarScreenState extends State<CalendarScreen>
   void getData() async {
     var eventData = await _storageService.readSecureData("user_events");
 
-    List<dynamic> decodedDataClasses = jsonDecode(eventData ?? "");
+    List<dynamic> decodedDataEvents = jsonDecode(eventData ?? "");
+
+        List<Event> newEvents = [];
+
+
+    var allEvents = List<Event>.from(
+      decodedDataEvents.map((x) => Event.fromJson(x as Map<String, dynamic>)),
+    );
+
+    for (var event in allEvents) {
+      if (event.occurs != "once") {
+        if (event.getFormattedStartingDateForRepeating().isToday()) {
+          // print("USAOOO");
+          newEvents.add(event);
+        }
+      } else {
+        if (event.getFormattedStartingDate().isToday()) {
+          newEvents.add(event);
+        }
+      }
+    }
 
     setState(() {
-      var allEvents = List<Event>.from(
-        decodedDataClasses
-            .map((x) => Event.fromJson(x as Map<String, dynamic>)),
-      );
+      _events = newEvents;
 
-      _events = allEvents.where((e) {
-        final mapDate = e.getFormattedStartingDate();
+      // _events = allEvents.where((e) {
+      //   final mapDate = e.getFormattedStartingDate();
 
-        return mapDate.isToday();
-      }).toList();
+      //   return mapDate.isToday();
+      // }).toList();
       // for (var event in _events) {
-      //   print("OVA LISTA OH ${event.getEventType()}");
+      //   print("OVA LISTA OH ${event.eventTypeRaw}");
       // }
     });
   }
 
   Future _getCalendarEventsForDate(DateTime date) async {
-    //  DateTime dateTo = date.add(Duration(days: 1));
+    DateTime dateTo = date.add(Duration(days: 1));
 
     String formattedDateFrom = DateFormat('yyyy/MM/dd').format(date);
 
-    String formattedDateTo = DateFormat('yyyy/MM/dd').format(date);
+    String formattedDateTo = DateFormat('yyyy/MM/dd').format(dateTo);
 
     LoadingDialog.show(context);
 
@@ -705,6 +722,11 @@ class _CalendarScreenState extends State<CalendarScreen>
                                   upNext: true,
                                   cardselected: _selectedExamCard);
                             default:
+                                 return ClassWidget(
+                                  eventItem: _events[index],
+                                  cardIndex: index,
+                                  upNext: true,
+                                  cardselected: _selectedCard);
                           }
                         }),
                   ),

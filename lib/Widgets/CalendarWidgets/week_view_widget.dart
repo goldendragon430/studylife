@@ -7,6 +7,7 @@ import '../../app.dart';
 import '../../Models/API/event.dart';
 import '../../Utilities/constants.dart';
 import '../custom_painter_class.dart';
+import '../../Extensions/extensions.dart';
 
 class WeekViewWidget extends StatefulWidget {
   final GlobalKey<WeekViewState>? state;
@@ -99,7 +100,9 @@ class _WeekViewWidgetState extends State<WeekViewWidget> {
                   height: 14,
                   width: 14,
                   decoration: BoxDecoration(
-                    color: Colors.red,
+                    color: finalEvent.event?.subject?.colorHex != null
+                  ? HexColor.fromHex(finalEvent.event!.subject!.colorHex!)
+                  : Colors.red,
                     borderRadius: BorderRadius.circular(7),
                   ),
                 ),
@@ -114,7 +117,9 @@ class _WeekViewWidgetState extends State<WeekViewWidget> {
                     ? Colors.white
                     : Constants.darkThemeSecondaryBackgroundColor,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(width: 2.0, color: Colors.red),
+                border: Border.all(width: 2.0, color: theme == ThemeMode.light
+                        ? Constants.lightThemeTextSelectionColor
+                        : Colors.white),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -131,7 +136,9 @@ class _WeekViewWidgetState extends State<WeekViewWidget> {
                     fontSize: 12,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.bold,
-                    color: Colors.red),
+                    color: theme == ThemeMode.light
+                            ? Constants.lightThemeTextSelectionColor
+                            : Colors.white),
               ),
             ),
           );

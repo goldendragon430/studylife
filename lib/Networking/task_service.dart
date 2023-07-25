@@ -78,4 +78,10 @@ class TaskService {
 
     return response;
   }
+
+    Future<Response> deleteTask(int taskId) async {
+    var response = await Api().dio.delete('/api/task/$taskId');
+
+    return response;
+  }
 }

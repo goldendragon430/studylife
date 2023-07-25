@@ -11,7 +11,7 @@ import '../../Extensions/extensions.dart';
 import '../../Models/API/classmodel.dart';
 import '../../Home_Screens/class_details_screen.dart';
 import '../../Models/API/exam.dart';
-import '../../Home_Screens/exam_details_screen.dart'; 
+import '../../Home_Screens/exam_details_screen.dart';
 
 class DayViewWidget extends StatefulWidget {
   final GlobalKey<DayViewState>? state;
@@ -37,7 +37,7 @@ class _DayViewWidgetState extends State<DayViewWidget> {
   // static GlobalKey<DayViewState> dayViewStateKey = GlobalKey<DayViewState>();
   // final GlobalKey weekViewStateKey = GlobalKey();
 
-   void _openClassDetails(Event eventItem) {
+  void _openClassDetails(Event eventItem) {
     var classModel = ClassModel(
         id: eventItem.id,
         module: eventItem.module,
@@ -228,21 +228,24 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          margin: const EdgeInsets.only(
-                              top: 22, left: 15, right: 15),
-                          height: 14,
-                          width: 14,
-                          decoration: BoxDecoration(
-                            color: finalEvent.event?.subject?.colorHex != null
-                                ? HexColor.fromHex(
-                                    finalEvent.event!.subject!.colorHex!)
-                                : Colors.red,
-                            borderRadius: BorderRadius.circular(7),
+                        FittedBox(
+                                                    fit: BoxFit.scaleDown,
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                top: 22, left: 8, right: 8),
+                            height: 14,
+                            width: 14,
+                            decoration: BoxDecoration(
+                              color: finalEvent.event?.subject?.colorHex != null
+                                  ? HexColor.fromHex(
+                                      finalEvent.event!.subject!.colorHex!)
+                                  : Colors.red,
+                              borderRadius: BorderRadius.circular(7),
+                            ),
                           ),
                         ),
                         Flexible(
-                        //  fit: FlexFit.tight,
+                          //  fit: FlexFit.tight,
                           child: Container(
                             margin: const EdgeInsets.only(top: 18, right: 15),
                             child: FittedBox(
@@ -254,48 +257,61 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                                     fontSize: 20,
                                     fontFamily: 'BebasNeue',
                                     fontWeight: FontWeight.normal,
-                                    color: finalEvent.event?.subject?.colorHex !=
-                                            null
-                                        ? HexColor.fromHex(
-                                            finalEvent.event!.subject!.colorHex!)
-                                        : Colors.red),
+                                    color:
+                                        finalEvent.event?.subject?.colorHex !=
+                                                null
+                                            ? HexColor.fromHex(finalEvent
+                                                .event!.subject!.colorHex!)
+                                            : Colors.red),
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 15, top: 8),
-                      child: Text(
-                        finalEvent.event?.eventTypeRaw ?? "",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.normal,
-                          color: theme == ThemeMode.light
-                              ? Colors.black.withOpacity(0.44)
-                              : Colors.white.withOpacity(0.4),
+                    Flexible(
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 8, top: 8),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            finalEvent.event?.eventTypeRaw ?? "",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.normal,
+                              color: theme == ThemeMode.light
+                                  ? Colors.black.withOpacity(0.44)
+                                  : Colors.white.withOpacity(0.4),
+                            ),
+                          ),
                         ),
                       ),
                     ),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.bottomLeft,
+                        margin: const EdgeInsets.only(
+                          left: 8, right: 15
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            "${startHourString} - ${endHourString}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.bold,
+                              color: theme == ThemeMode.light
+                                  ? Constants.lightThemeTextSelectionColor
+                                  : Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
-                Container(
-                  alignment: Alignment.bottomLeft,
-                  margin: const EdgeInsets.only(left: 15, top: 8, bottom: 18),
-                  child: Text(
-                    "${startHourString} - ${endHourString}",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.bold,
-                      color: theme == ThemeMode.light
-                          ? Constants.lightThemeTextSelectionColor
-                          : Colors.white,
-                    ),
-                  ),
-                )
               ],
             ),
           );
@@ -455,13 +471,13 @@ class _DayViewWidgetState extends State<DayViewWidget> {
                   onEventTap: (events, date) {
                     var tappedevent = events.first;
 
-                  //  print("EVENT ${tappedevent.event!.getEventType()}");
+                    //  print("EVENT ${tappedevent.event!.getEventType()}");
 
                     switch (tappedevent.event!.getEventType()) {
                       case EventType.classEvent:
                         _openClassDetails(tappedevent.event ?? Event());
                         break;
-                        case EventType.examEvent:
+                      case EventType.examEvent:
                         _openExamDetails(tappedevent.event ?? Event());
                         break;
                       default:

@@ -35,6 +35,7 @@ import '../Models/API/result.dart';
 import '../Models/API/event.dart';
 import '../Models/API/xtra.dart';
 import '../Networking/xtras_service.dart';
+import '../../Models/API/rotation_time.dart';
 
 class CreateScreen extends StatefulWidget {
   final ClassModel? classItem;
@@ -63,6 +64,7 @@ class _CreateScreenState extends State<CreateScreen>
   final SyncController _syncController = SyncController();
   List<CalendarEventData<Event>> _events = [];
   final StorageService _storageService = StorageService();
+  String screenName = "New";
 
   @override
   void initState() {
@@ -89,30 +91,35 @@ class _CreateScreenState extends State<CreateScreen>
     if (widget.classItem != null) {
       setState(() {
         isEditing = true;
+        screenName = "Edit";
         initialTabIndex = 0;
       });
     }
     if (widget.examItem != null) {
       setState(() {
         isEditing = true;
+        screenName = "Edit";
         initialTabIndex = 1;
       });
     }
     if (widget.taskItem != null) {
       setState(() {
         isEditing = true;
+        screenName = "Edit";
         initialTabIndex = 2;
       });
     }
     if (widget.holidayItem != null) {
       setState(() {
         isEditing = true;
+        screenName = "Edit";
         initialTabIndex = 3;
       });
     }
     if (widget.xtraItem != null) {
       setState(() {
         isEditing = true;
+        screenName = "Edit";
         initialTabIndex = 4;
       });
     }
@@ -183,7 +190,8 @@ class _CreateScreenState extends State<CreateScreen>
     }
   }
 
-  void _saveClass(ClassModel classItem) async {
+  void _saveClass(
+      ClassModel classItem, List<RotationTimeSetting> rotationSettings) async {
     final contextMain = scaffoldMessengerKey.currentContext!;
 
     // print(classItem.subject);
@@ -197,32 +205,60 @@ class _CreateScreenState extends State<CreateScreen>
     // print(classItem.endTime);
 
     if (classItem.mode == "in-person") {
-      if (classItem.subject == null ||
-          classItem.mode == null ||
-          classItem.module == null ||
-          classItem.room == null ||
-          classItem.building == null ||
-          classItem.teacher == null ||
-          classItem.occurs == null ||
-          classItem.startTime == null ||
-          classItem.endTime == null) {
-        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
-            "Please fill in all fields.", true);
-        return;
+      if (classItem.occurs == "rotational") {
+        if (classItem.subject == null ||
+            classItem.mode == null ||
+            classItem.module == null ||
+            classItem.teacher == null ||
+            classItem.occurs == null ||
+            rotationSettings.isEmpty) {
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Please fill in all fields.", true);
+          return;
+        }
+      } else {
+        if (classItem.subject == null ||
+            classItem.mode == null ||
+            classItem.module == null ||
+            classItem.room == null ||
+            classItem.building == null ||
+            classItem.teacher == null ||
+            classItem.occurs == null ||
+            classItem.startTime == null ||
+            classItem.endTime == null) {
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Please fill in all fields.", true);
+          return;
+        }
       }
     } else {
-      if (classItem.subject == null ||
-          classItem.mode == null ||
-          classItem.module == null ||
-          classItem.onlineUrl == null ||
-          classItem.teachersEmail == null ||
-          classItem.teacher == null ||
-          classItem.occurs == null ||
-          classItem.startTime == null ||
-          classItem.endTime == null) {
-        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
-            "Please fill in all fields.", true);
-        return;
+      if (classItem.occurs == "rotational") {
+        if (classItem.subject == null ||
+            classItem.mode == null ||
+            classItem.module == null ||
+            classItem.onlineUrl == null ||
+            classItem.teachersEmail == null ||
+            classItem.teacher == null ||
+            classItem.occurs == null ||
+            rotationSettings.isEmpty) {
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Please fill in all fields.", true);
+          return;
+        }
+      } else {
+        if (classItem.subject == null ||
+            classItem.mode == null ||
+            classItem.module == null ||
+            classItem.onlineUrl == null ||
+            classItem.teachersEmail == null ||
+            classItem.teacher == null ||
+            classItem.occurs == null ||
+            classItem.startTime == null ||
+            classItem.endTime == null) {
+          CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+              "Please fill in all fields.", true);
+          return;
+        }
       }
     }
 
@@ -230,7 +266,8 @@ class _CreateScreenState extends State<CreateScreen>
       LoadingDialog.show(context);
 
       try {
-        var response = await ClassService().updateClass(classItem);
+        var response =
+            await ClassService().updateClass(classItem, rotationSettings);
         var sync = await _syncController.syncAll();
 
         if (!contextMain.mounted) return;
@@ -254,7 +291,8 @@ class _CreateScreenState extends State<CreateScreen>
       try {
         LoadingDialog.show(context);
 
-        var response = await ClassService().createClass(classItem);
+        var response =
+            await ClassService().createClass(classItem, rotationSettings);
 
         if (!contextMain.mounted) return;
 
@@ -274,6 +312,34 @@ class _CreateScreenState extends State<CreateScreen>
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
               "Oops, something went wrong", true);
         }
+      }
+    }
+  }
+
+  void _deleteClass(ClassModel classModel) async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+
+    try {
+      LoadingDialog.show(context);
+
+      var response = await ClassService().deleteClass(classModel.id ?? 0);
+      var sync = await _syncController.syncAll();
+
+      if (!contextMain.mounted) return;
+
+      LoadingDialog.hide(context);
+      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+          response.data['message'], true);
+      Navigator.pop(context);
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
       }
     }
   }
@@ -369,6 +435,34 @@ class _CreateScreenState extends State<CreateScreen>
     }
   }
 
+  void _deleteExam(Exam exam) async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+
+    try {
+      LoadingDialog.show(context);
+
+      var response = await ExamService().deleteExam(exam.id ?? 0);
+      var sync = await _syncController.syncAll();
+
+      if (!contextMain.mounted) return;
+
+      LoadingDialog.hide(context);
+      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+          response.data['message'], true);
+      Navigator.pop(context);
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
+      }
+    }
+  }
+
   void _saveTask(Task taskItem) async {
     final contextMain = scaffoldMessengerKey.currentContext!;
 
@@ -382,7 +476,8 @@ class _CreateScreenState extends State<CreateScreen>
     //     print(examItem.seat);
     //     print(examItem.duration);
 
-    if (taskItem.subject == null || taskItem.title == null ||
+    if (taskItem.subject == null ||
+        taskItem.title == null ||
         taskItem.dueDate == null ||
         taskItem.type == null) {
       CustomSnackBar.show(contextMain, CustomSnackBarType.error,
@@ -435,6 +530,34 @@ class _CreateScreenState extends State<CreateScreen>
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
               "Oops, something went wrong", true);
         }
+      }
+    }
+  }
+
+  void _deleteTask(Task task) async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+
+    try {
+      LoadingDialog.show(context);
+
+      var response = await TaskService().deleteTask(task.id ?? 0);
+      var sync = await _syncController.syncAll();
+
+      if (!contextMain.mounted) return;
+
+      LoadingDialog.hide(context);
+      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+          response.data['message'], true);
+      Navigator.pop(context);
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
       }
     }
   }
@@ -497,6 +620,34 @@ class _CreateScreenState extends State<CreateScreen>
           CustomSnackBar.show(contextMain, CustomSnackBarType.error,
               "Oops, something went wrong", true);
         }
+      }
+    }
+  }
+
+  void _deleteHoliday(Holiday holiday) async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+
+    try {
+      LoadingDialog.show(context);
+
+      var response = await HolidayService().deleteHoliday(holiday.id ?? 0);
+      var sync = await _syncController.syncAll();
+
+      if (!contextMain.mounted) return;
+
+      LoadingDialog.hide(context);
+      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+          response.data['message'], true);
+      Navigator.pop(context);
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
       }
     }
   }
@@ -583,6 +734,34 @@ class _CreateScreenState extends State<CreateScreen>
     }
   }
 
+  void _deleteXtra(Xtra xtra) async {
+    final contextMain = scaffoldMessengerKey.currentContext!;
+
+    try {
+      LoadingDialog.show(context);
+
+      var response = await XtrasService().deleteXtra(xtra.id ?? 0);
+      var sync = await _syncController.syncAll();
+
+      if (!contextMain.mounted) return;
+
+      LoadingDialog.hide(context);
+      CustomSnackBar.show(contextMain, CustomSnackBarType.success,
+          response.data['message'], true);
+      Navigator.pop(context);
+    } catch (error) {
+      if (error is DioError) {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            error.response?.data['message'], true);
+      } else {
+        LoadingDialog.hide(context);
+        CustomSnackBar.show(contextMain, CustomSnackBarType.error,
+            "Oops, something went wrong", true);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (_, WidgetRef ref, __) {
@@ -657,7 +836,7 @@ class _CreateScreenState extends State<CreateScreen>
                     ],
                   ),
                   title: Text(
-                    'New',
+                    screenName,
                     style: theme == ThemeMode.light
                         ? Constants.lightThemeTitleTextStyle
                         : Constants.darkThemeTitleTextStyle,
@@ -668,19 +847,27 @@ class _CreateScreenState extends State<CreateScreen>
                     CreateClass(
                       saveClass: _saveClass,
                       editedClass: widget.classItem,
+                      deleteClass: _deleteClass,
                     ),
                     CreateExam(
                       editedExam: widget.examItem,
                       saveExam: _saveExam,
+                      deleteExam: _deleteExam,
                     ),
-                    CreateTask(saveTask: _saveTask, taskitem: widget.taskItem),
+                    CreateTask(
+                      saveTask: _saveTask,
+                      taskitem: widget.taskItem,
+                      deleteTask: _deleteTask,
+                    ),
                     CreateHoliday(
                       holidayItem: widget.holidayItem,
                       saveHoliday: _saveHoliday,
+                      deleteHoliday: _deleteHoliday,
                     ),
                     CreateExtra(
                       saveXtra: _saveXtra,
                       xtraItem: widget.xtraItem,
+                      deleteXtra: _deleteXtra,
                     ),
                   ],
                 ),

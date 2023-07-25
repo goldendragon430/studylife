@@ -92,6 +92,7 @@ _isFirstLoadRunning = true;
   }
 
   void _selectedCard(int index) {
+    print("INDEX $index");
     Navigator.push(
         context,
         MaterialPageRoute(
