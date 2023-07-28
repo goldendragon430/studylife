@@ -5,19 +5,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../regular_teztField.dart';
 import '../../app.dart';
 import '../multiline_textField.dart';
+import '../../Models/API/task.dart';
 
 class TaskTextImputs extends StatefulWidget {
   final Function titleFormFilled;
   final Function detailsFormFilled;
   final String labelTitle;
   final String hintText;
+  final Task? taskitem;
 
   const TaskTextImputs(
       {super.key,
       required this.detailsFormFilled,
       required this.labelTitle,
       required this.hintText,
-      required this.titleFormFilled});
+      required this.titleFormFilled,
+      this.taskitem});
 
   @override
   State<TaskTextImputs> createState() => _TaskTextImputsState();
@@ -26,6 +29,15 @@ class TaskTextImputs extends StatefulWidget {
 class _TaskTextImputsState extends State<TaskTextImputs> {
   final titleController = TextEditingController();
   final detailsController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.taskitem != null) {
+      titleController.text = widget.taskitem?.title ?? "";
+      detailsController.text = widget.taskitem?.details ?? "";
+    }
+    super.initState();
+  }
 
   void _multilineFormSubmitted(String text) {
     widget.detailsFormFilled(text);
@@ -64,7 +76,7 @@ class _TaskTextImputsState extends State<TaskTextImputs> {
                 _titleTextSubmitted();
                 //  FocusScope.of(context).unfocus();
               },
-              TextInputType.emailAddress,
+              TextInputType.name,
               titleController,
               theme == ThemeMode.dark,
               autofocus: false,
@@ -83,9 +95,11 @@ class _TaskTextImputsState extends State<TaskTextImputs> {
               height: 6,
             ),
             MultilineTextField(
-                submitForm: _multilineFormSubmitted,
-                height: 122,
-                hintText: "Task Description"),
+              submitForm: _multilineFormSubmitted,
+              height: 122,
+              hintText: "Task Description",
+              textController: detailsController,
+            ),
             Container(
               height: 14,
             ),

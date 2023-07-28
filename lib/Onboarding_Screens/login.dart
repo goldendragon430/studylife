@@ -49,8 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
     String finalPassword = passwordController.text;
 
     if (finalEmail.isEmpty || finalPassword.isEmpty) {
-      CustomSnackBar.show(
-          context, CustomSnackBarType.error, "Please fill in all fields.", false);
+      CustomSnackBar.show(context, CustomSnackBarType.error,
+          "Please fill in all fields.", false);
       return;
     }
 
@@ -115,8 +115,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ? Stack(
                         // Light Theme
                         children: [
-                          Image.asset(
-                              "assets/images/LoginSignupBackground.png"),
+                          Container(
+                            width: double.infinity,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: Image.asset(
+                                  "assets/images/LoginSignupBackground.png"),
+                            ),
+                          ),
                           Container(
                             alignment: Alignment.topCenter,
                             width: double.infinity,
@@ -163,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         "Your email",
                                         (value) {
                                           print(value);
-                                         // FocusScope.of(context).nextFocus();
+                                          // FocusScope.of(context).nextFocus();
                                         },
                                         TextInputType.emailAddress,
                                         emailController,
@@ -174,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       RegularTextField(
                                         "Password",
                                         (value) {
-                                         // FocusScope.of(context).unfocus();
+                                          // FocusScope.of(context).unfocus();
                                         },
                                         TextInputType.visiblePassword,
                                         passwordController,
@@ -229,8 +235,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     : Stack(
                         // Dark Theme
                         children: [
-                          Image.asset(
-                              "assets/images/LoginSignupBackgroundDark.png"),
+                          Container(
+                            width: double.infinity,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: Image.asset(
+                                  "assets/images/LoginSignupBackgroundDark.png"),
+                            ),
+                          ),
                           Container(
                             alignment: Alignment.topCenter,
                             width: double.infinity,
@@ -276,7 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       RegularTextField(
                                         "Your email",
                                         (value) {
-                                         // FocusScope.of(context).nextFocus();
+                                          // FocusScope.of(context).nextFocus();
                                         },
                                         TextInputType.emailAddress,
                                         emailController,
@@ -287,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       RegularTextField(
                                         "Password",
                                         (value) {
-                                         // FocusScope.of(context).unfocus();
+                                          // FocusScope.of(context).unfocus();
                                         },
                                         TextInputType.visiblePassword,
                                         passwordController,

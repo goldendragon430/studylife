@@ -324,6 +324,7 @@ class _GetStartedState extends State<GetStarted> {
     return Consumer(builder: (_, WidgetRef ref, __) {
       final theme = ref.watch(themeModeProvider);
       double screenWidth = MediaQuery.of(context).size.width;
+      final screenHeight = MediaQuery.of(context).size.height;
 
       return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -335,7 +336,16 @@ class _GetStartedState extends State<GetStarted> {
               ? Stack(
                   // Light Theme
                   children: [
-                    Image.asset("assets/images/LoginSignupBackground.png"),
+                    Container(
+                      width: double.infinity,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: Image.asset(
+                          "assets/images/LoginSignupBackground.png",
+                          // fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                     Container(
                       alignment: Alignment.topCenter,
                       width: double.infinity,
@@ -346,7 +356,7 @@ class _GetStartedState extends State<GetStarted> {
                     Container(
                       alignment: Alignment.topCenter,
                       width: double.infinity,
-                      margin: const EdgeInsets.only(top: 396),
+                      margin: EdgeInsets.only(top: (screenHeight - 456)),
                       height: double.infinity,
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -516,7 +526,14 @@ class _GetStartedState extends State<GetStarted> {
               : Stack(
                   // Dark Theme
                   children: [
-                    Image.asset("assets/images/LoginSignupBackgroundDark.png"),
+                          Container(
+                      width: double.infinity,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: Image.asset("assets/images/LoginSignupBackgroundDark.png"),
+
+                      ),
+                    ),
                     Container(
                       alignment: Alignment.topCenter,
                       width: double.infinity,
@@ -527,7 +544,7 @@ class _GetStartedState extends State<GetStarted> {
                     Container(
                       alignment: Alignment.topCenter,
                       width: double.infinity,
-                      margin: const EdgeInsets.only(top: 396),
+                      margin: EdgeInsets.only(top: (screenHeight - 456)),
                       height: double.infinity,
                       decoration: BoxDecoration(
                         color: Constants.darkThemeSecondaryBackgroundColor,

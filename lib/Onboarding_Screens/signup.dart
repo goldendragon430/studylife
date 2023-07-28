@@ -39,8 +39,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (finalEmail.isEmpty ||
         finalPassword.isEmpty ||
         finalConfirmPassword.isEmpty) {
-      CustomSnackBar.show(
-          context, CustomSnackBarType.error, "Please fill in all fields.", false);
+      CustomSnackBar.show(context, CustomSnackBarType.error,
+          "Please fill in all fields.", false);
       return;
     }
 
@@ -71,12 +71,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } catch (error) {
       if (error is DioError) {
         LoadingDialog.hide(context);
-        CustomSnackBar.show(
-            context, CustomSnackBarType.error, error.response?.data['message'], false);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            error.response?.data['message'], false);
       } else {
         LoadingDialog.hide(context);
-        CustomSnackBar.show(
-            context, CustomSnackBarType.error, "Oops, something went wrong", false);
+        CustomSnackBar.show(context, CustomSnackBarType.error,
+            "Oops, something went wrong", false);
       }
     }
   }
@@ -110,6 +110,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ? Stack(
                       // Light Theme
                       children: [
+                        Container(
+                          width: double.infinity,
+                          child: FittedBox(
+                            fit: BoxFit.cover,
+                            child: Image.asset(
+                                "assets/images/LoginSignupBackground.png"),
+                          ),
+                        ),
                         Image.asset("assets/images/LoginSignupBackground.png"),
                         Container(
                           alignment: Alignment.topCenter,
@@ -155,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Your email",
                                       (value) {
-                                       // FocusScope.of(context).nextFocus();
+                                        // FocusScope.of(context).nextFocus();
                                       },
                                       TextInputType.emailAddress,
                                       emailController,
@@ -165,7 +173,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Password",
                                       (value) {
-                                      //  FocusScope.of(context).nextFocus();
+                                        //  FocusScope.of(context).nextFocus();
                                       },
                                       TextInputType.visiblePassword,
                                       passwordController,
@@ -176,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Confirm Password",
                                       (value) {
-                                       // FocusScope.of(context).unfocus();
+                                        // FocusScope.of(context).unfocus();
                                       },
                                       TextInputType.visiblePassword,
                                       confirmController,
@@ -201,8 +209,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   : Stack(
                       // Dark Theme
                       children: [
-                        Image.asset(
-                            "assets/images/LoginSignupBackgroundDark.png"),
+                        Container(
+                          width: double.infinity,
+                          child: FittedBox(
+                            fit: BoxFit.cover,
+                            child: Image.asset(
+                                "assets/images/LoginSignupBackgroundDark.png"),
+                          ),
+                        ),
                         Container(
                           alignment: Alignment.topCenter,
                           width: double.infinity,
@@ -247,7 +261,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Your email",
                                       (value) {
-                                       // FocusScope.of(context).nextFocus();
+                                        // FocusScope.of(context).nextFocus();
                                       },
                                       TextInputType.emailAddress,
                                       emailController,
@@ -257,7 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Password",
                                       (value) {
-                                       // FocusScope.of(context).nextFocus();
+                                        // FocusScope.of(context).nextFocus();
                                       },
                                       TextInputType.visiblePassword,
                                       passwordController,
@@ -268,7 +282,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     RegularTextField(
                                       "Confirm Password",
                                       (value) {
-                                      //  FocusScope.of(context).unfocus();
+                                        //  FocusScope.of(context).unfocus();
                                       },
                                       TextInputType.visiblePassword,
                                       confirmController,

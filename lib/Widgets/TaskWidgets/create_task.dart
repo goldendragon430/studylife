@@ -37,6 +37,8 @@ class _CreateTaskState extends State<CreateTask> {
   late Task newTask = Task();
   bool isEditing = false;
   final StorageService _storageService = StorageService();
+  //final List<ClassTagItem> _occuring = ClassTagItem.taskOccuring;
+  final List<ClassTagItem> _taskTypes = ClassTagItem.taskTypes;
 
   @override
   void initState() {
@@ -212,18 +214,21 @@ class _CreateTaskState extends State<CreateTask> {
                           detailsFormFilled: _detailsAdded,
                           labelTitle: 'Title*',
                           hintText: 'Task Title',
+                          taskitem: isEditing ? newTask : null,
                         ),
                       ],
                       if (index == 2) ...[
                         // Select Day,Time, Duration
                         TaskDateTime(
                             dateSelected: _dateOfTaskSelected,
-                            timeSelected: _timeOfTaskelected),
+                            timeSelected: _timeOfTaskelected,
+                            taskItem: newTask,),
                       ],
                       if (index == 3) ...[
                         // Select Subject
                         SelectTaskType(
                           taskSelected: _taskTypeSelected,
+                          preselectedType: newTask.type,
                         )
                       ],
                       if (index == 4) ...[

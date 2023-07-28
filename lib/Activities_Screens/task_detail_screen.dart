@@ -184,7 +184,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     Expanded(
                       child: Text(
                         maxLines: 4,
-                        'lsjdhvfksgdvfgvdskfvsgkfvdsghkfvgdhksvfgkhdsvfghkdsvfghdsvfghksdvfghksdvghkvsdghkvsdghkfvdsfghkvsdvsdghkfvsdghkfvdskghfvdsghkfvdsgkhfvdsghkvfdgshkvfdhsgvfhdgksvhgkdsvfhgk',
+                        widget.taskItem.details ?? "",
                         style: TextStyle(
                           fontFamily: "Roboto",
                           fontSize: 14,

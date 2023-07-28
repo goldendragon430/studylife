@@ -6,24 +6,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app.dart';
 
 class MultilineTextField extends StatelessWidget {
-  final textController = TextEditingController();
+  final TextEditingController textController;
   final Function submitForm;
   final double height;
   final String hintText;
 
   String? prefilledText;
-  TextEditingController editingController;
+  // TextEditingController editingController;
 
   MultilineTextField(
       {super.key,
       required this.submitForm,
       required this.height,
       this.prefilledText,
-      required this.hintText})
-      : editingController = TextEditingController(text: prefilledText);
+      required this.hintText,
+      required this.textController});
 
   void _submitForm() {
-    final text = editingController.text;
+    final text = textController.text;
 
     submitForm(
       text,
@@ -49,33 +49,33 @@ class MultilineTextField extends StatelessWidget {
             fillColor: theme == ThemeMode.dark
                 ? Colors.black.withOpacity(0.2)
                 : Colors.transparent,
-               enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: theme == ThemeMode.dark
-                  ? Colors.transparent
-                  : Colors.black.withOpacity(0.2),
-              width: 1,
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: theme == ThemeMode.dark
+                    ? Colors.transparent
+                    : Colors.black.withOpacity(0.2),
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(5),
             ),
-            borderRadius: BorderRadius.circular(5),
-          ),
-              focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: theme == ThemeMode.dark
-                  ? Colors.transparent
-                  : Colors.black.withOpacity(0.2),
-              width: 1,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: theme == ThemeMode.dark
+                    ? Colors.transparent
+                    : Colors.black.withOpacity(0.2),
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(5),
             ),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: theme == ThemeMode.dark
-                  ? Colors.transparent
-                  : Colors.black.withOpacity(0.2),
-              width: 1,
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: theme == ThemeMode.dark
+                    ? Colors.transparent
+                    : Colors.black.withOpacity(0.2),
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(5),
             ),
-            borderRadius: BorderRadius.circular(5),
-          ),
             hintText: hintText,
             hintStyle: TextStyle(
               color: theme == ThemeMode.dark
@@ -86,9 +86,9 @@ class MultilineTextField extends StatelessWidget {
           ),
           maxLines: 50,
           style: theme == ThemeMode.dark
-            ? Constants.roboto15DarkThemeTextStyle
-            : Constants.roboto15LightThemeTextStyle,
-          controller: editingController,
+              ? Constants.roboto15DarkThemeTextStyle
+              : Constants.roboto15LightThemeTextStyle,
+          controller: textController,
           // onSubmitted: (value) => submitForm(),
           onChanged: (value) => _submitForm(),
         ),

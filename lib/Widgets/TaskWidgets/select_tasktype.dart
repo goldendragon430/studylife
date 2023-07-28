@@ -10,7 +10,8 @@ import '../../Models/subjects_datasource.dart';
 
 class SelectTaskType extends StatefulWidget {
   final Function taskSelected;
-  SelectTaskType({super.key, required this.taskSelected});
+  final String? preselectedType;
+  SelectTaskType({super.key, required this.taskSelected, this.preselectedType});
 
   @override
   State<SelectTaskType> createState() => _SelectTaskTypeState();
@@ -20,6 +21,38 @@ class _SelectTaskTypeState extends State<SelectTaskType> {
   final List<ClassTagItem> _taskTypes = ClassTagItem.taskTypes;
 
   int selectedTabIndex = 0;
+
+  @override
+  void initState() {
+    if (widget.preselectedType != null) {
+      for (var i = 0; i < _taskTypes.length; i++) {
+        var type = _taskTypes[i];
+        if (type.title == widget.preselectedType) {
+          type.selected = true;
+          _taskTypes[i] = type;
+        }
+      }
+    }
+    // TODO: implement initState
+    super.initState();
+  }
+
+  // @override
+  //   void dispose() {
+
+  //     }
+  //   super.dispose();
+  // }
+
+  @override
+  void dispose() {
+    for (var i = 0; i < _taskTypes.length; i++) {
+      var type = _taskTypes[i];
+      type.selected = false;
+      _taskTypes[i] = type;
+    }
+    super.dispose();
+  }
 
   void _selectTab(int index) {
     setState(() {
@@ -49,7 +82,9 @@ class _SelectTaskTypeState extends State<SelectTaskType> {
           children: [
             Text(
               'Type*',
-              style: theme == ThemeMode.light ? Constants.lightThemeSubtitleTextStyle : Constants.darkThemeSubtitleTextStyle,
+              style: theme == ThemeMode.light
+                  ? Constants.lightThemeSubtitleTextStyle
+                  : Constants.darkThemeSubtitleTextStyle,
               textAlign: TextAlign.left,
             ),
             Container(

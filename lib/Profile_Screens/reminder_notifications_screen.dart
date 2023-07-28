@@ -20,7 +20,7 @@ import 'package:dio/dio.dart';
 import '../../Widgets/loaderIndicator.dart';
 import '../../Widgets/custom_snack_bar.dart';
 import '../Networking/user_service.dart';
-import 'dart:convert';
+import '../Models/Services/storage_item.dart';
 
 class ReminderNotificationsScreen extends StatefulWidget {
   final UserModel? currentUser;
@@ -138,6 +138,15 @@ class _ReminderNotificationsScreenState
       try {
         var response = await UserService().updateReminders(isAllSwitch, null);
 
+        final remindersList = (response.data['data']) as List;
+        var reminders =
+            remindersList.map((i) => NotificationSetting.fromJson(i)).toList();
+
+        _storageService.writeSecureData(
+            StorageItem("user_reminders", jsonEncode(reminders)));
+        _storageService.writeSecureData(
+            StorageItem("user_reminders_all_status", isAllSwitch.toString()));
+
         if (!context.mounted) return;
         LoadingDialog.hide(context);
 
@@ -151,6 +160,7 @@ class _ReminderNotificationsScreenState
           CustomSnackBar.show(context, CustomSnackBarType.error,
               error.response?.data['message'], true);
         } else {
+          print("ERRORCE ${error.toString()}");
           LoadingDialog.hide(context);
           CustomSnackBar.show(context, CustomSnackBarType.error,
               "Oops, something went wrong", true);
@@ -161,7 +171,7 @@ class _ReminderNotificationsScreenState
         var reminder = remindersList[i];
         var reminderIndex = savedReminders
             .indexWhere((element) => element.type == reminder.type);
-        print("INDEXX $reminderIndex");
+        //print("INDEXX $reminderIndex");
         savedReminders[reminderIndex].status = reminder.isOn ? 1 : 0;
         savedReminders[reminderIndex].beforeTime = reminder.selectedSeconds;
         savedReminders[reminderIndex].taskReminderTime =
@@ -171,6 +181,13 @@ class _ReminderNotificationsScreenState
       try {
         var response =
             await UserService().updateReminders(null, savedReminders);
+
+        final remindersList = (response.data) as List;
+        var reminders =
+            remindersList.map((i) => NotificationSetting.fromJson(i)).toList();
+
+        _storageService.writeSecureData(
+            StorageItem("user_reminders", jsonEncode(reminders)));
 
         if (!context.mounted) return;
         LoadingDialog.hide(context);
@@ -185,7 +202,6 @@ class _ReminderNotificationsScreenState
           CustomSnackBar.show(context, CustomSnackBarType.error,
               error.response?.data['message'], true);
         } else {
-          print("DASDSDSAASDSADDSADS ${error.toString()}");
           LoadingDialog.hide(context);
           CustomSnackBar.show(context, CustomSnackBarType.error,
               "Oops, something went wrong", true);
